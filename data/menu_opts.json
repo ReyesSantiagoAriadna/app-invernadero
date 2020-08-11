@@ -1,0 +1,55 @@
+{
+    "nombreApp" : "App Invernadero",
+    "rutas"     : [
+        {
+            "ruta"      :   "solar_cultivos",
+            "icon"      :   "sun_o",
+            "texto"     :   "Solares",
+            "subtitulo" :   "Solares y cultivos."
+        },
+        {
+            "ruta"      :   "plagas",
+            "icon"      :   "bug",
+            "texto"     :   "Plagas",
+            "subtitulo" :   "Plagas y enfermedades."
+        },
+        
+        {
+            "ruta"      :   "insumos",
+            "icon"      :   "insumo.svg",
+            "texto"     :   "Insumos",
+            "subtitulo" :   "Insumos."
+        },
+
+        {
+            "ruta"      :   "herramientas",
+            "icon"      :   "tools_icon.svg",
+            "texto"     :   "Herramientas",
+            "subtitulo" :   "Herramientas."
+        },
+        {
+            "ruta"      :   "actividades",
+            "icon"      :   "task_icon.svg",
+            "texto"     :   "Actividades",
+            "subtitulo" :   "Actividades."
+        },
+        {
+            "ruta"  :   "pedidos",
+            "icon"  :   "order_icon.svg",
+            "texto" :   "Pedidos",
+            "subtitulo" :   "Pedidos"
+        },
+        {
+            "ruta"  :   "ofertas",
+            "icon"  :   "sale_icon.svg",
+            "texto" :   "Ofertas",
+            "subtitulo" :   "Ofertas"
+        },
+        {
+            "ruta"  :       "ventas",
+            "icon"  :       "money",
+            "texto" :       "Ventas",
+            "subtitulo" :   "Ventas"
+        }
+    ]
+}

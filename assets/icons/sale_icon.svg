@@ -1,0 +1,18 @@
+<svg width="1530" height="1590" xmlns="http://www.w3.org/2000/svg" clip-rule="evenodd">
+
+ <g>
+  <title>background</title>
+  <rect fill="none" id="canvas_background" height="1592" width="1532" y="-1" x="-1"/>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <g id="Capa_x0020_1">
+   <metadata transform="translate(-3901.341796875,-683.5684204101562) " id="CorelCorpID_0Corel-Layer"/>
+   <g id="_1623655262080">
+    <path id="svg_1" d="m704.6582,179.43158l454,9l2,430l-595,599c-98,-48 -381,-338 -454,-446l593,-592zm-749,592c68,98 531,563 618,608l685,-675l6,-637l-595,0l-714,704z" fill="black"/>
+    <path id="svg_2" d="m1500.6582,884.43158l0,-637l-162,12c-7,169 18,32 57,149l0,419l-554,566c-104,-26 -28,-85 -143,-6c12,79 64,117 135,165c116,-75 574,-546 667,-668z" fill="black"/>
+    <path id="svg_3" d="m958.6582,414.43158c74,-32 111,-6 27,-104c-80,34 -86,28 -27,104z" fill="black"/>
+   </g>
+  </g>
+ </g>
+</svg>
