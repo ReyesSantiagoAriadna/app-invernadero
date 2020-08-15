@@ -1,5 +1,5 @@
 
-import 'package:app_invernadero_trabajador/src/app_config.dart';
+import 'package:app_invernadero_trabajador/app_config.dart';
 import 'package:app_invernadero_trabajador/src/blocs/page_bloc.dart';
 import 'package:app_invernadero_trabajador/src/pages/zoom_scafold.dart';
 import 'package:app_invernadero_trabajador/src/providers/menu_provider.dart';
@@ -48,6 +48,7 @@ class _MenuScreenState extends State<MenuScreen> {
         if (details.delta.dx < -6) {
           Provider.of<MenuController>(context, listen: true).toggle();
         }
+
       },
       child: Container(
         padding: EdgeInsets.only(
@@ -71,6 +72,8 @@ class _MenuScreenState extends State<MenuScreen> {
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20,
+                    fontFamily: AppConfig.quicksand,
+                    fontWeight: FontWeight.w700
                   ),
                 )
               ],
@@ -79,7 +82,11 @@ class _MenuScreenState extends State<MenuScreen> {
             _options(),
             Spacer(),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                // Provider.of<MenuController>(context, listen: true).toggle();
+               
+                Navigator.pushNamed(context, 'ajustes');
+              },
               leading: Icon(Icons.settings_applications,color:Colors.white),
               title: Text('Ajustes  ',
                 style: TextStyle(
@@ -94,7 +101,7 @@ class _MenuScreenState extends State<MenuScreen> {
               onTap: () {},
               leading: Icon(
                 LineIcons.sign_out,
-                color: Colors.white,
+                color: Colors.white ,
                 size: 20,
               ),
               title: Text('Salir',
@@ -133,14 +140,17 @@ class _MenuScreenState extends State<MenuScreen> {
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: 'Quicksand',
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w700,
                   fontSize: _responsive.ip(1.5)
                 ),
                 ),
       leading: getIcon(opt['icon'],_responsive),
       onTap: (){
         // Navigator.pushNamed(context, opt['ruta']);
+        //Provider.of<MenuController>(context, listen: true).toggle();
         _pageBloc.pickPage(opt['ruta'],opt['texto']);
+
+        
       },
       );
 

@@ -2,7 +2,10 @@ import 'package:app_invernadero_trabajador/src/blocs/page_bloc.dart';
 import 'package:app_invernadero_trabajador/src/pages/menu_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/pedidos/pedidos_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/zoom_scafold.dart';
+import 'package:app_invernadero_trabajador/src/storage/secure_storage.dart';
+import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:provider/provider.dart';
 class MyHomePage extends StatefulWidget {
   @override
@@ -12,11 +15,14 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   MenuController menuController;
   PageBloc _pageBloc; 
+  SecureStorage _prefs = SecureStorage(); 
 
   @override
   void initState() {
     super.initState();
-
+    _prefs.route='home';
+    FlutterStatusbarcolor.setStatusBarColor(Colors.white);
+    
     menuController = new MenuController(
       vsync: this,
     )..addListener(() => setState(() {}));
@@ -36,6 +42,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    
     return ChangeNotifierProvider(
       builder: (context) => menuController,
       child: ZoomScaffold(

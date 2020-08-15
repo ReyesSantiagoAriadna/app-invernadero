@@ -17,7 +17,7 @@ final _icons = <String,IconData>{
 };
 
 final _icons_svg = <String,String>{ 
-  'insumo.svg'        :   'assets/icons/insumo.svg',
+  'insumo_icon.svg'        :   'assets/icons/insumo_icon.svg',
   'tools_icon.svg'    :   'assets/icons/tools_icon.svg',
   'task_icon.svg'     :   'assets/icons/task_icon.svg',
   'order_icon.svg'    :   'assets/icons/order_icon.svg',
@@ -28,7 +28,7 @@ final _icons_svg = <String,String>{
 dynamic getIcon(String iconName,Responsive _responsive){
   
   if(_icons.containsKey(iconName))
-    return Icon(_icons[iconName],color: Colors.white,size:_responsive.ip(2.5) ,);
+    return Icon(_icons[iconName],color: icon_color,size:_responsive.ip(2.5) ,);
   else
     return SvgPicture.asset(_icons_svg[iconName],color: icon_color,height: _responsive.ip(2.5),);
 }

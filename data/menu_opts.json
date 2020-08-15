@@ -16,7 +16,7 @@
         
         {
             "ruta"      :   "insumos",
-            "icon"      :   "insumo.svg",
+            "icon"      :   "insumo_icon.svg",
             "texto"     :   "Insumos",
             "subtitulo" :   "Insumos."
         },

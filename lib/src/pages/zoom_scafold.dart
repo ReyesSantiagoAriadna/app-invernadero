@@ -1,11 +1,14 @@
+import 'package:app_invernadero_trabajador/app_config.dart';
 import 'package:app_invernadero_trabajador/src/blocs/page_bloc.dart';
+import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:provider/provider.dart';
 
 class ZoomScaffold extends StatefulWidget {
   final Widget menuScreen;
   final Layout contentScreen;
-
+ 
   ZoomScaffold({
     this.menuScreen,
     this.contentScreen,
@@ -23,23 +26,17 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
   Curve slideInCurve = new Interval(0.0, 1.0, curve: Curves.easeOut);
   
   PageBloc _pageBloc;
+  bool color=true;
+  AppBar _appBar;
+
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _pageBloc = PageBloc();
-  }
 
-  createContentDisplay() {
-    return zoomAndSlideContent(new Container(
-      child: GestureDetector(
-        onTap: (){
-           Provider.of<MenuController>(context, listen: true).toggle();
-        },
-              child: new Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: new AppBar(
-            
+    _appBar = new AppBar(
+            brightness: Brightness.light,
             title: StreamBuilder(
               stream: _pageBloc.pageTitleStream ,
               initialData: "Home" ,
@@ -57,18 +54,50 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
                     color: Colors.black,
                   ),
                   onPressed: () {
-                    
+                    _statusBarColor();                    
                     Provider.of<MenuController>(context, listen: true).toggle();
                   }),
-              actions: <Widget>[
-                IconButton(
-                  onPressed: () {},
+              );
+  }
+
+  createContentDisplay() {
+    return zoomAndSlideContent(new Container(
+      child: GestureDetector(
+        onTap: (){
+          _statusBarColor();
+          Provider.of<MenuController>(context, listen: true).toggle();
+        },
+          child: new Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: new AppBar(
+            brightness: color? Brightness.light:Brightness.dark,
+            title: StreamBuilder(
+              stream: _pageBloc.pageTitleStream ,
+              initialData: "Home" ,
+              builder: (BuildContext context, AsyncSnapshot snapshot){
+                if(snapshot.hasData){
+                  return Text(
+                    snapshot.data,
+                    style: TextStyle(
+                      color:Colors.black,
+                      fontFamily: AppConfig.quicksand,
+                      fontWeight: FontWeight.w700
+                      ),);
+                }
+              },
+            ),
+              backgroundColor: Colors.white,
+              elevation: 0.0,
+              leading: new IconButton(
                   icon: Icon(
-                    Icons.access_time,
-                    color: Colors.grey,
+                    Icons.menu,
+                    color: Colors.black,
                   ),
-                )
-              ]),
+                  onPressed: () {
+                    _statusBarColor();                    
+                    Provider.of<MenuController>(context, listen: true).toggle();
+                  }),
+              ),
           body: widget.contentScreen.contentBuilder(context),
           // bottomNavigationBar: BottomNavigationBar(
           //   type: BottomNavigationBarType.fixed,
@@ -93,6 +122,46 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
         ),
       ),
     ));
+  }
+  _statusBarColor(){
+    if(color){
+      FlutterStatusbarcolor.setStatusBarColor(miTema.accentColor);
+      color=false;
+    }
+    else{
+      FlutterStatusbarcolor.setStatusBarColor(Colors.white);
+      color=true;
+    }
+
+    
+  }
+
+  AppBar _setBrigthsAppBar(Brightness brightness){
+  return  new AppBar(
+            brightness: Brightness.dark,
+            title: StreamBuilder(
+              stream: _pageBloc.pageTitleStream ,
+              initialData: "Home" ,
+              builder: (BuildContext context, AsyncSnapshot snapshot){
+                if(snapshot.hasData){
+                  return Text(snapshot.data,style: TextStyle(color:Colors.black),);
+                }
+              },
+            ),
+              backgroundColor: Colors.white,
+              elevation: 0.0,
+              leading: new IconButton(
+                  icon: Icon(
+                    Icons.menu,
+                    color: Colors.black,
+                  ),
+                  onPressed: () {
+                    _statusBarColor();                    
+                    Provider.of<MenuController>(context, listen: true).toggle();
+                  }),
+              );
+
+              
   }
 
   zoomAndSlideContent(Widget content) {
@@ -150,6 +219,8 @@ class _ZoomScaffoldState extends State<ZoomScaffold>
 
   @override
   Widget build(BuildContext context) {
+    //color?  FlutterStatusbarcolor.setStatusBarColor(miTema.accentColor): FlutterStatusbarcolor.setStatusBarColor(Colors.white);
+    
     return Stack(
       children: [
         Container(
