@@ -26,10 +26,10 @@ final _icons_svg = <String,String>{
 };
 
 
-dynamic getIcon(String iconName,Responsive _responsive){
+dynamic getIcon(String iconName,Responsive _responsive,Color color){
   
   if(_icons.containsKey(iconName))
-    return Icon(_icons[iconName],color: icon_color,size:_responsive.ip(2.8) ,);
+    return Icon(_icons[iconName],color: color,size:_responsive.ip(2.8) ,);
   else
-    return SvgPicture.asset(_icons_svg[iconName],color: icon_color,height: _responsive.ip(2.8),);
+    return SvgPicture.asset(_icons_svg[iconName],color: color,height: _responsive.ip(2.8),);
 }

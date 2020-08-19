@@ -144,7 +144,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   fontSize: _responsive.ip(1.5)
                 ),
                 ),
-      leading: getIcon(opt['icon'],_responsive),
+     // leading: getIcon(opt['icon'],_responsive),
       onTap: (){
         // Navigator.pushNamed(context, opt['ruta']);
         //Provider.of<MenuController>(context, listen: true).toggle();
