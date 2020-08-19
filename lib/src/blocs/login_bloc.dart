@@ -119,4 +119,16 @@ class LoginBloc with Validators{
     }
   }
 
+  
+  void login(String password)async{
+    final phone = await  _prefs.read('celular');
+    Map response = await _userProvider.login(celular: phone, password: password);
+
+    if(response['ok']){
+      changeNavRoute('menu_drawer');
+    }else{
+      changeNavRoute('Error al ingresar');
+    }
+  }
+
 }

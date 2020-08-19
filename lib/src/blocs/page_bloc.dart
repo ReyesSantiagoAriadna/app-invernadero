@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:app_invernadero_trabajador/src/pages/actividades/actividades_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/herramientas/herramientas_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/home/home_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/home/main_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/insumos/insumos_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/ofertas/ofertas_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/pedidos/pedidos_home_page.dart';
@@ -50,6 +51,9 @@ class PageBloc{
     // indice = i;
     _pageTitleController.sink.add(pageTitle);
     switch (route) {
+      case 'main':
+        _pageController.sink.add(MainPage());
+      break;
       case 'home':
         // _pageController.sink.add(Widget.MyHomePage);
         _pageController.sink.add(MyHomePage());

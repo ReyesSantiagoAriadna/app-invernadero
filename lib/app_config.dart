@@ -5,4 +5,7 @@ class AppConfig{
   static const String quicksand = 'Quicksand';
   static const nexmo_country_code='52';
 
+
+//'Seleccione', 'Tunel' => 'Tunel','MacroTunel'=>'MacroTunel', 'MicroTunel' => 'MicroTunel', 'Campo Abierto' => 'Campo Abierto', 'Invernadero' => 'Invernadero', 'Hidroponia' => 'Hidroponia', 'Frutales' => 'Frutales'],null,['class'=>'form-control col-md-7 select2','required','id'=>'tipo'])!!}
+
 }

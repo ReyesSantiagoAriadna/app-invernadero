@@ -1,3 +1,4 @@
+import 'package:app_invernadero_trabajador/app_config.dart';
 import 'package:app_invernadero_trabajador/src/blocs/login_bloc.dart';
 import 'package:app_invernadero_trabajador/src/providers/user_provider.dart';
 import 'package:app_invernadero_trabajador/src/storage/secure_storage.dart';
@@ -68,7 +69,15 @@ class _CodeRegisterPageState extends State<CodeRegisterPage> {
                   ),
                   SizedBox(height: responsive.ip(4),),
                   _inputText(bloc),
-                  SizedBox(height: responsive.ip(5),),      
+                  SizedBox(height: responsive.ip(2),),    
+                  GestureDetector(
+                    onTap: ()=>Navigator.pushReplacementNamed(context, 'login_phone'),
+                    child:  Text("Ya tengo una cuenta",style: TextStyle(
+                    color:miTema.accentColor, fontFamily:AppConfig.quicksand,
+                    fontWeight: FontWeight.w700,fontSize: responsive.ip(1.5)
+                  ),),
+                  ) , 
+                  SizedBox(height: responsive.ip(2),),  
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: _createButon(bloc),

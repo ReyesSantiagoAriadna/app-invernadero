@@ -129,8 +129,27 @@ class _LoginPasswordPageState extends State<LoginPasswordPage> {
     // Navigator.pushReplacementNamed(context, 'pin_code',arguments: _user.phone);
   }
 
-  _submit(){
-    print("send login");
+  _submit()async{
+     if(_isLoading)return;
+    
+    setState(() {
+      _isLoading=true;
+    });
+
+    await bloc.login(bloc.password);
+    
+    setState(() {
+      _isLoading = false;
+    });
+    
+    if(bloc.navRoute.toLowerCase().contains("error")){
+      Flushbar(
+        message:  bloc.navRoute,
+        duration:  Duration(seconds: 2),              
+      )..show(context);
+    }else{
+      Navigator.pushReplacementNamed(context, bloc.navRoute); 
+    }    
   }
   
   // _submit(BuildContext context,LoginBloc bloc)async{

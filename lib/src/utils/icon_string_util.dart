@@ -1,10 +1,11 @@
+import 'package:app_invernadero_trabajador/src/utils/colors.dart';
 import 'package:app_invernadero_trabajador/src/utils/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:line_icons/line_icons.dart';
 
 final double icon_height =12;
-final Color icon_color = Colors.white;
+final Color icon_color = MyColors.GreyIcon;
 
 
 final _icons = <String,IconData>{
@@ -28,7 +29,7 @@ final _icons_svg = <String,String>{
 dynamic getIcon(String iconName,Responsive _responsive){
   
   if(_icons.containsKey(iconName))
-    return Icon(_icons[iconName],color: icon_color,size:_responsive.ip(2.5) ,);
+    return Icon(_icons[iconName],color: icon_color,size:_responsive.ip(2.8) ,);
   else
-    return SvgPicture.asset(_icons_svg[iconName],color: icon_color,height: _responsive.ip(2.5),);
+    return SvgPicture.asset(_icons_svg[iconName],color: icon_color,height: _responsive.ip(2.8),);
 }

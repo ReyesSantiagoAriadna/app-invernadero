@@ -2,12 +2,14 @@ import 'package:app_invernadero_trabajador/src/pages/actividades/actividades_hom
 import 'package:app_invernadero_trabajador/src/pages/ajustes/ajustes_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/herramientas/herramientas_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/home/home_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/home/main_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/insumos/insumos_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/login/config_password_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/login/login_password_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/login/login_phone_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/login/pin_code_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/login/register_code_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/menu_drawer.dart';
 import 'package:app_invernadero_trabajador/src/pages/ofertas/ofertas_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/pedidos/pedidos_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/plagas/plagas_home_page.dart';
@@ -65,17 +67,21 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
      return new MaterialApp(
-      title: 'Zoom Menu',
+      title: 'SS Invernadero',
       theme: miTema,
       initialRoute: prefs.route,
       debugShowCheckedModeBanner: false,
       routes: {
+        'main'                  : (BuildContext)=>MainPage(),
+        'menu'                  : (BuildContext)=>MenuDrawer(),
         'register_code'         : (BuildContext)=>CodeRegisterPage(),
         'login_phone'           : (BuildContext)=>LoginPhonePage(),
         'login_password'        : (BuildContext)=>LoginPasswordPage(),
         'pin_code'              : (BuildContext)=>PinCodePage(),
         'config_password'       : (BuildContext)=>ConfigPasswordPage(),
         
+        'menu_drawer'           : (BuildContext)=>MenuDrawer(),
+
         'home'                  : (BuildContext)=>MyHomePage(),
         'solar_cultivos'        : (BuildContext)=>SolarCultivosHomePage(),
         'actividades'           : (BuildContext)=>ActividadesHomePage(),
@@ -85,8 +91,6 @@ class _MyAppState extends State<MyApp> {
         'pedidos'               : (BuildContext)=>PedidosHomePage(),
         'plagas'                : (BuildContext)=>PlagasHomePage(),
         'ventas'                : (BuildContext)=>VentasHomePage(),
-
-
         'ajustes'               : (BuildContext)=>AjustesPage(),
         
       }

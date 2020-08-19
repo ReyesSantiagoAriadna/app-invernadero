@@ -16,7 +16,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   MenuController menuController;
   PageBloc _pageBloc; 
   SecureStorage _prefs = SecureStorage(); 
-
+  
   @override
   void initState() {
     super.initState();
