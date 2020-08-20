@@ -11,6 +11,7 @@ import 'package:app_invernadero_trabajador/src/utils/colors.dart';
 import 'package:app_invernadero_trabajador/src/utils/icon_string_util.dart';
 import 'package:app_invernadero_trabajador/src/utils/responsive.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:line_icons/line_icons.dart';
 
 class MenuDrawer extends StatefulWidget {
@@ -76,7 +77,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
 
   AppBar _appBar(){
     return AppBar(
-      elevation: 0.0,
+      elevation:0.0,
       backgroundColor: Colors.white,
       brightness: Brightness.light,
       // iconTheme: new IconThemeData(color: Colors.black),
@@ -89,7 +90,9 @@ class _MenuDrawerState extends State<MenuDrawer> {
               fontWeight: FontWeight.w700
               ),);
           }
-          return Text('Home');
+          return Text('Home', style: TextStyle(color:MyColors.GreyIcon,fontFamily: AppConfig.quicksand,
+              fontWeight: FontWeight.w700
+              ),);
         },
       ),
 
@@ -190,22 +193,24 @@ class _MenuDrawerState extends State<MenuDrawer> {
 
   _drawerHeader() {
     return DrawerHeader(
-        
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children:<Widget>[
-            Icon(
-              LineIcons.user,
-              color: Colors.white ,
-              size: 20,
-            ),
-            Text('User name',style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Quicksand',
-                  fontWeight: FontWeight.w700,
-                  fontSize: _responsive.ip(2)
-                ),),
+          SvgPicture.asset('assets/icons/user.svg',                  
+          height: _responsive.ip(10)),
+          Text('Bienvenido',style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Quicksand',
+                fontWeight: FontWeight.w700,
+                fontSize: _responsive.ip(2)
+              ),),
+          Text('User name',style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Quicksand',
+                fontWeight: FontWeight.w700,
+                fontSize: _responsive.ip(1.5)
+              ),),
           ]
         ),
         decoration: BoxDecoration(
