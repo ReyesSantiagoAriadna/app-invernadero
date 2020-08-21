@@ -14,6 +14,7 @@ import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/solar_cultiv
 import 'package:app_invernadero_trabajador/src/pages/ventas/ventas_home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 
 // enum Widget{MyHomePage,SolarCultivosHomePage,ActividadesHomePage,HerramientasHomePage,
 //   InsumosHomePage,OfertasHomePage,PedidosHomePage,PlagasHomePage,VentasHomePage
@@ -39,13 +40,18 @@ class PageBloc{
   final StreamController<String> _pageTitleController = 
       StreamController<String>.broadcast();
   
-
+  final _scrollController = BehaviorSubject<ScrollController>();
 
   Widget defaultPage=MyHomePage();
 
   Stream<Widget> get pageStream => _pageController.stream;
   Stream<String> get pageTitleStream => _pageTitleController.stream;
   
+  Stream<ScrollController> get scrollControllerStream => _scrollController.stream;
+
+  Function(ScrollController) get changeScrollController => _scrollController.sink.add;
+
+  ScrollController get scrollCont => _scrollController.value;
 
   void pickPage(String route,String pageTitle) {
     // indice = i;

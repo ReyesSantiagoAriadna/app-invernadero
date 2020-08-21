@@ -11,6 +11,7 @@ import 'package:app_invernadero_trabajador/src/utils/colors.dart';
 import 'package:app_invernadero_trabajador/src/utils/icon_string_util.dart';
 import 'package:app_invernadero_trabajador/src/utils/responsive.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:line_icons/line_icons.dart';
 
@@ -25,19 +26,64 @@ class _MenuDrawerState extends State<MenuDrawer> {
   Future<List<dynamic>> opts;
   PageBloc _pageBloc;
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
-  int _counter =0;
   bool open=false;
+
+  bool _showAppbar = true ; // esto es para mostrar la barra de aplicaciones 
+  ScrollController _scrollBottomBarController = new ScrollController (); // establece el controlador en desplazamiento 
+  bool isScrollingDown = false ; 
+  bool _show = true ; 
+
 
   SecureStorage _prefs = SecureStorage();
   _handleDrawer(){
-      _key.currentState.openDrawer();
- 
-        setState(() {
-          print("open");
-        });
-
-      
+    _key.currentState.openDrawer();
+    setState(() {
+      print("open");
+    });  
   }
+
+  @override
+  void initState() {
+     myScroll ();
+    super.initState();
+  } 
+  @override
+  void dispose() {
+    _scrollBottomBarController.removeListener (() {}); 
+    super.dispose();
+  }
+  void showBottomBar () { 
+  setState (() { 
+    _show = true ; 
+  }); 
+  } 
+
+void hideBottomBar () { 
+  setState (() { 
+    _show = false ; 
+  }); 
+}
+void myScroll() async {
+  _scrollBottomBarController.addListener(() {
+    if (_scrollBottomBarController.position.userScrollDirection ==
+        ScrollDirection.reverse) {
+      if (!isScrollingDown) {
+        isScrollingDown = true;
+        _showAppbar = false;
+        hideBottomBar();
+      }
+    }
+    if (_scrollBottomBarController.position.userScrollDirection ==
+        ScrollDirection.forward) {
+      if (isScrollingDown) {
+        isScrollingDown = false;
+        _showAppbar = true;
+        showBottomBar();
+      }
+    }
+  });
+} 
+
 
   @override
   void didChangeDependencies() {
@@ -46,19 +92,47 @@ class _MenuDrawerState extends State<MenuDrawer> {
     _pageBloc = PageBloc();
     opts =  menuProvider.loadData();
     _responsive = Responsive.of(context);
+    _pageBloc.changeScrollController(_scrollBottomBarController);
   }
 
   
   @override
   Widget build(BuildContext context) {
-    // _style = TextStyle(color:Colors.white,fontFamily:AppConfig.quicksand,
-    //   fontWeight: FontWeight.w700, fontSize:_responsive.ip(1.7)
-    // );
-
-     return Scaffold(
+    return Scaffold(
       backgroundColor: Colors.white,
         key: _key,
-      appBar: _appBar(),
+      appBar:_showAppbar
+        ?  AppBar(
+        brightness: Brightness.light,
+        elevation:0.0,
+        backgroundColor:Colors.white,
+       leading: new IconButton(icon: new Icon(
+          LineIcons.bars,color: MyColors.GreyIcon,
+        ),onPressed:_handleDrawer,), 
+        title: StreamBuilder(
+        stream: _pageBloc.pageTitleStream,
+        builder: (BuildContext context, AsyncSnapshot snapshot){
+          if(snapshot.hasData){
+            return Text(snapshot.data,
+              style: TextStyle(color:MyColors.GreyIcon,fontFamily: AppConfig.quicksand,
+              fontWeight: FontWeight.w700
+              ),);
+          }
+          return Text('Home', style: TextStyle(color:MyColors.GreyIcon,fontFamily: AppConfig.quicksand,
+              fontWeight: FontWeight.w700
+              ),);
+        },
+      ),
+        
+       
+      actions: <Widget>[
+          IconButton(icon: Icon(LineIcons.search,color:MyColors.GreyIcon), onPressed: (){})
+        ],
+      )
+        : PreferredSize(
+      child: Container(),
+      preferredSize: Size(0.0, 0.0),
+    ),
       body: StreamBuilder(
         stream: _pageBloc.pageStream ,
         builder: (BuildContext context, AsyncSnapshot snapshot){
@@ -75,39 +149,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
     );
   }
 
-  AppBar _appBar(){
-    return AppBar(
-      elevation:0.0,
-      backgroundColor: Colors.white,
-      brightness: Brightness.light,
-      // iconTheme: new IconThemeData(color: Colors.black),
-      title: StreamBuilder(
-        stream: _pageBloc.pageTitleStream,
-        builder: (BuildContext context, AsyncSnapshot snapshot){
-          if(snapshot.hasData){
-            return Text(snapshot.data,
-              style: TextStyle(color:MyColors.GreyIcon,fontFamily: AppConfig.quicksand,
-              fontWeight: FontWeight.w700
-              ),);
-          }
-          return Text('Home', style: TextStyle(color:MyColors.GreyIcon,fontFamily: AppConfig.quicksand,
-              fontWeight: FontWeight.w700
-              ),);
-        },
-      ),
-
-       leading: new IconButton(icon: new Icon(
-          Icons.menu,color: MyColors.GreyIcon,
-        ),onPressed:_handleDrawer,),
-    );
-
-    //  _key.currentState.openDrawer();
-    //         if (_key.currentState.isDrawerOpen) {
-    //           print("Drawer is Open");
-    //         } else {
-    //         print("object")
-    //         }
-  }
+  
   Widget _options(){
     return ListView(
       padding: EdgeInsets.zero,
@@ -176,9 +218,6 @@ class _MenuDrawerState extends State<MenuDrawer> {
       //leading: getIcon(opt['icon'],_responsive,opt['ruta']==rut?Colors.white:MyColors.GreyIcon),
       leading: getIcon(opt['icon'],_responsive,MyColors.GreyIcon),
       onTap: (){
-        // Navigator.pushNamed(context, opt['ruta']);
-        //Provider.of<MenuController>(context, listen: true).toggle();
-      //  _pageBloc.pickPage(opt['ruta'],opt['texto']);
        _pageBloc.pickPage(opt['ruta'],opt['texto']);
         rut = opt['ruta'];
         Navigator.pop(context);
