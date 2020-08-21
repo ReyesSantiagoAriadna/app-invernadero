@@ -361,7 +361,9 @@ _description(){
     return Container(
       margin: EdgeInsets.all(8),
       child: Column(
-        _createFlutterMap(0,0)
+        children: <Widget>[
+          _createFlutterMap(0,0)
+        ],
       ),
     );
   }
