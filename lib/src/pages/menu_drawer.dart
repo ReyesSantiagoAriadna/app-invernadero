@@ -93,6 +93,7 @@ void myScroll() async {
     opts =  menuProvider.loadData();
     _responsive = Responsive.of(context);
     _pageBloc.changeScrollController(_scrollBottomBarController);
+    _pageBloc.changeShowAppBar(true);
   }
 
   
@@ -101,7 +102,7 @@ void myScroll() async {
     return Scaffold(
       backgroundColor: Colors.white,
         key: _key,
-      appBar:_showAppbar
+      appBar: _showAppbar
         ?  AppBar(
         brightness: Brightness.light,
         elevation:0.0,
@@ -194,7 +195,6 @@ void myScroll() async {
   }
   String rut = 'solar_cultivos';
   List<Widget> _listItems(List<dynamic> data){
-    
     final List<Widget> opciones=[];
     data.forEach((opt){
       final widgetTemp = 
@@ -218,6 +218,8 @@ void myScroll() async {
       //leading: getIcon(opt['icon'],_responsive,opt['ruta']==rut?Colors.white:MyColors.GreyIcon),
       leading: getIcon(opt['icon'],_responsive,MyColors.GreyIcon),
       onTap: (){
+        // isScrollingDown =true;
+        // _pageBloc.changeShowAppBar(true);
        _pageBloc.pickPage(opt['ruta'],opt['texto']);
         rut = opt['ruta'];
         Navigator.pop(context);
@@ -258,6 +260,8 @@ void myScroll() async {
       );
   } 
 
+
+  
   
 
 }

@@ -14,6 +14,7 @@ import 'package:app_invernadero_trabajador/src/pages/ofertas/ofertas_home_page.d
 import 'package:app_invernadero_trabajador/src/pages/pedidos/pedidos_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/plagas/plagas_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/details_solar_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/solar_add_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/solar_cultivos_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/ventas/ventas_home_page.dart';
 import 'package:app_invernadero_trabajador/src/storage/secure_storage.dart';
@@ -86,7 +87,7 @@ class _MyAppState extends State<MyApp> {
         'home'                  : (BuildContext)=>MyHomePage(),
         'solar_cultivos'        : (BuildContext)=>SolarCultivosHomePage(),
         'details_solar'         : (BuildContext)=>DetailsSolarPage(),
-
+        'solar_add'             : (BuildContext)=>SolarAddPage(),
 
         'actividades'           : (BuildContext)=>ActividadesHomePage(),
         'herramientas'          : (BuildContext)=>HerramientasHomePage(),

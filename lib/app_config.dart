@@ -10,4 +10,20 @@ class AppConfig{
 
 //'Seleccione', 'Tunel' => 'Tunel','MacroTunel'=>'MacroTunel', 'MicroTunel' => 'MicroTunel', 'Campo Abierto' => 'Campo Abierto', 'Invernadero' => 'Invernadero', 'Hidroponia' => 'Hidroponia', 'Frutales' => 'Frutales'],null,['class'=>'form-control col-md-7 select2','required','id'=>'tipo'])!!}
   
+  static const   List<String> regiones = ["Cañada","Costa","Istmo","Mixteca",
+    "Papaloapan","Sierra Norte","Sierra Sur","Valles Centrales"
+  ];
+
+  static const String caniada = "Cañada";
+  static const String costa = "Costa";
+  static const String istmo = "Istmo";
+  static const String mixteca = "Mixteca";
+  static const String papaloapan = "Papaloapan";
+  static const String sierran = "Sierra Norte";
+  static const String sierras = "Sierra Sur";
+  static const String valles = "Valles Centrales";
+
+
+  static const String uniMedidaCaja = "Caja";
+
 }

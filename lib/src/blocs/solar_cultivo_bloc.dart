@@ -13,11 +13,34 @@ class SolarCultivoBloc{
 
   List<Solar> solaresList = new List();
   final _solaresController = new BehaviorSubject<List<Solar>>();
+  final _regionController = new BehaviorSubject<String>();
+  final _distritoController = new BehaviorSubject<String>();
+  final _municipioController = new BehaviorSubject<String>();
+  
+  
+
+
   Stream<List<Solar>> get solaresStream => _solaresController.stream;
 
+  Stream<String> get regionStream => _regionController.stream;
+  Stream<String> get distritoStream => _distritoController.stream;
+  Stream<String> get municipioStream => _municipioController.stream;
+
+
+  Function(String) get changeRegion => _regionController.sink.add;
+  Function(String) get changeDistrito => _distritoController.sink.add;
+  Function(String) get changeMunicipio => _municipioController.sink.add;
+
+
+
+  String get region => _regionController.value;
+  String get distrito => _distritoController.value;
+  String get municipio => _municipioController.value;
+  
 
   dispose(){
     _solaresController.close();
+    _regionController.close();
   }
   
   void solares()async{

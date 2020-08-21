@@ -41,18 +41,21 @@ class PageBloc{
       StreamController<String>.broadcast();
   
   final _scrollController = BehaviorSubject<ScrollController>();
-
+  final _showAppBarController = BehaviorSubject<bool>();
   Widget defaultPage=MyHomePage();
 
   Stream<Widget> get pageStream => _pageController.stream;
   Stream<String> get pageTitleStream => _pageTitleController.stream;
   
   Stream<ScrollController> get scrollControllerStream => _scrollController.stream;
+  Stream<bool> get showAppBarStream => _showAppBarController.stream;
 
   Function(ScrollController) get changeScrollController => _scrollController.sink.add;
-
+  Function(bool) get changeShowAppBar => _showAppBarController.sink.add;
   ScrollController get scrollCont => _scrollController.value;
-
+  bool get showAppBar => _showAppBarController.value;
+  
+  
   void pickPage(String route,String pageTitle) {
     // indice = i;
     _pageTitleController.sink.add(pageTitle);

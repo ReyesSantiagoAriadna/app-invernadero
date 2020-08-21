@@ -2,7 +2,9 @@ import 'package:app_invernadero_trabajador/src/blocs/page_bloc.dart';
 import 'package:app_invernadero_trabajador/src/blocs/solar_cultivo_bloc.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/solar.dart';
 import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/solar_widget.dart';
+import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icons.dart';
 class SolarCultivosHomePage extends StatefulWidget {
   SolarCultivosHomePage({Key key}) : super(key: key);
 
@@ -48,7 +50,13 @@ class _SolarCultivosHomePageState extends State<SolarCultivosHomePage> {
           },
         ),
       ),
-      
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, 'solar_add');
+        },
+        child: Icon(LineIcons.plus),
+        backgroundColor: miTema.accentColor,
+      ),
     );
   }
 }
