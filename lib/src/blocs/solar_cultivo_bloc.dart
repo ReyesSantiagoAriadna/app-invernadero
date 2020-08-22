@@ -26,7 +26,7 @@ class SolarCultivoBloc with Validators{
 
   final _solarActiveController = new BehaviorSubject<Solar>();
   final _cultivoActiveController = new BehaviorSubject<Cultivo>();
-
+  final _cultivoLiActivController = new BehaviorSubject<List<Cultivo>>();
 
   Stream<List<Solar>> get solaresStream => _solaresController.stream;
   Stream<String> get regionStream => _regionController.stream;
@@ -40,6 +40,7 @@ class SolarCultivoBloc with Validators{
   Stream<String> get solarDescripStream => _solarDescripController.stream.transform(validateSolarDescripcion);
 
   Stream<Solar> get solarActiveStream => _solarActiveController.stream;
+  Stream<List<Cultivo>> get cultivosLiActive => _cultivoLiActivController.stream;
   Stream<Cultivo> get cultivoActiveStream => _cultivoActiveController.stream;
 
 
@@ -54,7 +55,7 @@ class SolarCultivoBloc with Validators{
 
   Function(Solar) get changeSolarActive => _solarActiveController.sink.add;
   Function(Cultivo) get changeCultivoActive => _cultivoActiveController.sink.add;
-
+  Function(List<Cultivo>) get changeCultivoLiActiv => _cultivoLiActivController.sink.add;
 
   List<Solar> get solaresLi => _solaresController.value;
   String get region => _regionController.value;
@@ -64,6 +65,8 @@ class SolarCultivoBloc with Validators{
   String get solarLargo => _solarLargoController.value;
   String get solarAncho => _solarAnchoController.value;
   String get solarDescrip => _solarDescripController.value;
+  
+  List<Cultivo> get cultivoLi => _cultivoLiActivController.value;
 
   Solar get solarActive => _solarActiveController.value;
   Cultivo get cultivoActive => _cultivoActiveController.value;

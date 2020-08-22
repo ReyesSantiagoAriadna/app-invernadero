@@ -4,6 +4,7 @@ import 'package:app_invernadero_trabajador/src/models/solares_cultivos/solar.dar
 import 'package:app_invernadero_trabajador/src/services/solares_services.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 
 class DialogListCultivo extends StatefulWidget {
@@ -60,7 +61,7 @@ class _DialogListCultivoState extends State<DialogListCultivo> {
   _cultivos(){
     return AlertDialog(
       elevation: 0.0,
-      title: new Text("Cultivo",
+      title: new Text("Cultivos",
         style: TextStyle(fontFamily: 'Quicksand',fontWeight: FontWeight.w900),),
       content: Container(
         height: 150,
@@ -92,11 +93,13 @@ class _DialogListCultivoState extends State<DialogListCultivo> {
     );
   }
   _options(){
+    
+    
     List<Widget> list = [];
     int value = 0;
     cultivosList.forEach((r){
     
-      final solar =  ListTile(
+      final cultivo =  ListTile(
         onTap: (){
          
         },
@@ -110,8 +113,16 @@ class _DialogListCultivoState extends State<DialogListCultivo> {
         title: Text(r.nombre),
       );
       value++;
-      list.add(solar);
+      list.add(cultivo);
     });
+    if(list.isEmpty){
+      final empty = ListTile(
+        dense: false,
+        leading: Icon(LineIcons.close),
+        title: Text("No hay cultivos"),
+      );
+      list.add(empty);
+    }
     return list;
   }
 }

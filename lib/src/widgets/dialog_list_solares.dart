@@ -1,4 +1,5 @@
 import 'package:app_invernadero_trabajador/src/blocs/solar_cultivo_bloc.dart';
+import 'package:app_invernadero_trabajador/src/models/solares_cultivos/cultivo.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/solar.dart';
 import 'package:app_invernadero_trabajador/src/services/solares_services.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
@@ -73,6 +74,13 @@ class _DialogListState extends State<DialogList> {
           onPressed: () {
             Solar solarActive = solaresList[_radioValue];
             widget.solarCultivoBloc.changeSolarActive(solarActive);
+            final cultivos = solarActive.cultivos;
+           if(cultivos!=null && cultivos.isNotEmpty)
+              widget.solarCultivoBloc.changeCultivoActive(cultivos[0]);
+            else
+              widget.solarCultivoBloc.changeCultivoActive(null);
+
+            // widget.solarCultivoBloc.changeCultivoLiActiv(solarActive.cultivos);
             Navigator.of(context).pop();
           },
         ),
