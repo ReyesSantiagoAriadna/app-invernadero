@@ -161,10 +161,11 @@ class _LoginPhonePageState extends State<LoginPhonePage> {
           placeholder: 'Teléfono',
           validator: (String text){
           },
+          
           inputType: TextInputType.phone,
           icon: LineIcons.mobile_phone,
           onChange: bloc.changeTelefono,
-          errorText: snapshot.error,
+         // errorText: snapshot.error,
           inputFormatters: [maskTextInputFormatter], 
                         autocorrect: false, 
         );

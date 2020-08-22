@@ -29,7 +29,7 @@ class LoginBloc with Validators{
 
   final _loadingController = BehaviorSubject<bool>();
   final _pinCodeController = BehaviorSubject<String>();
-
+  
   Stream<bool> get loadingStream => _loadingController.stream;
   Stream<String> get phoneStream => _phoneController.stream.transform(validarTelefono);
   Stream<String> get passwordStream => _passwordController.stream.transform(validarPassword);

@@ -16,11 +16,14 @@ import 'package:app_invernadero_trabajador/src/pages/plagas/plagas_home_page.dar
 import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/details_solar_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/solar_add_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/solar_cultivos_home_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/solar_edit_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/ventas/ventas_home_page.dart';
+import 'package:app_invernadero_trabajador/src/services/solares_services.dart';
 import 'package:app_invernadero_trabajador/src/storage/secure_storage.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
+import 'package:provider/provider.dart';
 
 void main() async{
   //var path = await getApplicationDocumentsDirectory();
@@ -68,38 +71,45 @@ class _MyAppState extends State<MyApp> {
   }
   @override
   Widget build(BuildContext context) {
-     return new MaterialApp(
-      title: 'SS Invernadero',
-      theme: miTema,
-      initialRoute: prefs.route,
-      debugShowCheckedModeBanner: false,
-      routes: {
-        'main'                  : (BuildContext)=>MainPage(),
-        'menu'                  : (BuildContext)=>MenuDrawer(),
-        'register_code'         : (BuildContext)=>CodeRegisterPage(),
-        'login_phone'           : (BuildContext)=>LoginPhonePage(),
-        'login_password'        : (BuildContext)=>LoginPasswordPage(),
-        'pin_code'              : (BuildContext)=>PinCodePage(),
-        'config_password'       : (BuildContext)=>ConfigPasswordPage(),
-        
-        'menu_drawer'           : (BuildContext)=>MenuDrawer(),
+     return MultiProvider(
+        providers: [
+            //ChangeNotifierProvider(create: (_)=> new LocalService()),
+            ChangeNotifierProvider(create: (_)=> new SolarCultivoService(),),
+          ],
+            child: new MaterialApp(
+        title: 'SS Invernadero',
+        theme: miTema,
+        initialRoute: prefs.route,
+        debugShowCheckedModeBanner: false,
+        routes: {
+          'main'                  : (BuildContext)=>MainPage(),
+          'menu'                  : (BuildContext)=>MenuDrawer(),
+          'register_code'         : (BuildContext)=>CodeRegisterPage(),
+          'login_phone'           : (BuildContext)=>LoginPhonePage(),
+          'login_password'        : (BuildContext)=>LoginPasswordPage(),
+          'pin_code'              : (BuildContext)=>PinCodePage(),
+          'config_password'       : (BuildContext)=>ConfigPasswordPage(),
+          
+          'menu_drawer'           : (BuildContext)=>MenuDrawer(),
 
-        'home'                  : (BuildContext)=>MyHomePage(),
-        'solar_cultivos'        : (BuildContext)=>SolarCultivosHomePage(),
-        'details_solar'         : (BuildContext)=>DetailsSolarPage(),
-        'solar_add'             : (BuildContext)=>SolarAddPage(),
+          'home'                  : (BuildContext)=>MyHomePage(),
+          'solar_cultivos'        : (BuildContext)=>SolarCultivosHomePage(),
+          'details_solar'         : (BuildContext)=>DetailsSolarPage(),
+          'solar_add'             : (BuildContext)=>SolarAddPage(),
+          'solar_edit'            : (BuildContext)=>SolarEditPAge(),
 
-        'actividades'           : (BuildContext)=>ActividadesHomePage(),
-        'herramientas'          : (BuildContext)=>HerramientasHomePage(),
-        'insumos'               : (BuildContext)=>InsumosHomePage(),
-        'ofertas'               : (BuildContext)=>OfertasHomePage(),
-        'pedidos'               : (BuildContext)=>PedidosHomePage(),
-        'plagas'                : (BuildContext)=>PlagasHomePage(),
-        'ventas'                : (BuildContext)=>VentasHomePage(),
-        'ajustes'               : (BuildContext)=>AjustesPage(),
-        
-      }
-    );
+          'actividades'           : (BuildContext)=>ActividadesHomePage(),
+          'herramientas'          : (BuildContext)=>HerramientasHomePage(),
+          'insumos'               : (BuildContext)=>InsumosHomePage(),
+          'ofertas'               : (BuildContext)=>OfertasHomePage(),
+          'pedidos'               : (BuildContext)=>PedidosHomePage(),
+          'plagas'                : (BuildContext)=>PlagasHomePage(),
+          'ventas'                : (BuildContext)=>VentasHomePage(),
+          'ajustes'               : (BuildContext)=>AjustesPage(),
+          
+        }
+    ),
+     );
   }
 }
 

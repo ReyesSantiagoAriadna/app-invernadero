@@ -81,4 +81,48 @@ class Validators{
       (t.length>1)?sink.add(t):sink.addError("Ingrese este campo");
     }
   );
+
+
+
+  //Solares-Cultivos
+   final validateSolarNombre=StreamTransformer<String,String>.fromHandlers(
+    handleData: (nombre,sink){
+      (nombre.length>5)?sink.add(nombre):sink.addError("");
+    }
+  );
+
+
+  final validateSolarLargo=StreamTransformer<String,String>.fromHandlers(
+    handleData: (largo,sink){
+      bool valid = 
+      RegExp(r"[0-9]+(\.[0-9][0-9]?)?").hasMatch(largo);
+       if(valid){
+        sink.add(largo);
+      }else{
+        sink.addError('');
+      }
+    }
+  );
+
+  final validateSolarAncho=StreamTransformer<String,String>.fromHandlers(
+    handleData: (ancho,sink){
+      bool valid = 
+      RegExp(r"[0-9]+(\.[0-9][0-9]?)?").hasMatch(ancho);
+       if(valid){
+        sink.add(ancho);
+      }else{
+        sink.addError('');
+      }
+    }
+  );
+  
+  final validateSolarDescripcion=StreamTransformer<String,String>.fromHandlers(
+    handleData: (descripcion,sink){
+       if(descripcion.length>0){
+        sink.add(descripcion);
+      }else{
+        sink.addError('');
+      }
+    }
+  );
 }

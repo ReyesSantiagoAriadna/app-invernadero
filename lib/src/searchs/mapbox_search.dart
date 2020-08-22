@@ -2,6 +2,7 @@ import 'package:app_invernadero_trabajador/src/blocs/map_box_bloc.dart';
 import 'package:app_invernadero_trabajador/src/models/feature/feature_model.dart';
 import 'package:app_invernadero_trabajador/src/providers/mapbox_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:line_icons/line_icons.dart';
 
 class PlacesSearch extends SearchDelegate{
@@ -62,10 +63,10 @@ class PlacesSearch extends SearchDelegate{
                   title: Text(p.placeName),
                     subtitle: Text("${p.placeName}"),
                     onTap: (){
-                      // Position position = Position(
-                      //     latitude: p.geometry.coordinates[1],
-                      //     longitude: p.geometry.coordinates[0],
-                      // );
+                      Position position = Position(
+                          latitude: p.geometry.coordinates[1],
+                          longitude: p.geometry.coordinates[0],
+                      );
                       // //_featureBloc.addCoordinate(p.geometry.coordinates);
                       // _featureBloc.addPosition(position);
                       
@@ -73,10 +74,10 @@ class PlacesSearch extends SearchDelegate{
                       // _featureBloc.features();
 
                       mapBoxBloc.changeFeature(feature);
-
+                      mapBoxBloc.changePosition(position);
                       print("To json ${p.toJson()}");
                       
-                      print("Tratendo de agregar");
+                      print("FEATURE");
                       print(feature.toJson());
                       // AddressModel _address = AddressModel.fromJson(p.toJson());
                       // _clientBloc.insertAddress(_address);

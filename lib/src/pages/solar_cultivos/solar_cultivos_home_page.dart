@@ -2,9 +2,12 @@ import 'package:app_invernadero_trabajador/src/blocs/page_bloc.dart';
 import 'package:app_invernadero_trabajador/src/blocs/solar_cultivo_bloc.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/solar.dart';
 import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/solar_widget.dart';
+import 'package:app_invernadero_trabajador/src/services/solares_services.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:provider/provider.dart';
 class SolarCultivosHomePage extends StatefulWidget {
   SolarCultivosHomePage({Key key}) : super(key: key);
 
@@ -13,15 +16,38 @@ class SolarCultivosHomePage extends StatefulWidget {
 }
 
 class _SolarCultivosHomePageState extends State<SolarCultivosHomePage> {
-  SolarCultivoBloc _solarCultivoBloc;
   PageBloc _pageBloc;
+  Stream<List<Solar>> solaresStream;
+  ScrollController _hideButtonController;
+  bool _isVisible;
+
+
   @override
   void didChangeDependencies() {
-    _solarCultivoBloc = SolarCultivoBloc();
-    _solarCultivoBloc.solares();
+    // _solarCultivoBloc = SolarCultivoBloc();
+    // _solarCultivoBloc.solares();
     
     _pageBloc = PageBloc();
+    _hideButtonController  = _pageBloc.scrollCont;
+    solaresStream = Provider.of<SolarCultivoService>(context).solarStream;
     super.didChangeDependencies();
+     _isVisible = true;
+    _hideButtonController.addListener((){
+      if(_hideButtonController.position.userScrollDirection == ScrollDirection.reverse){
+        if(_isVisible == true) {
+            setState((){
+              _isVisible = false;
+            });
+        }
+      } else {
+        if(_hideButtonController.position.userScrollDirection == ScrollDirection.forward){
+          if(_isVisible == false) {
+               setState((){
+                 _isVisible = true;
+               });
+           }
+        }
+    }});
   }
   
   @override
@@ -31,11 +57,10 @@ class _SolarCultivosHomePageState extends State<SolarCultivosHomePage> {
       body: Container(
         margin:EdgeInsets.only(left:8,right: 8),
         child: StreamBuilder(
-          stream: _solarCultivoBloc.solaresStream ,
+          stream: solaresStream ,
           builder: (BuildContext context, AsyncSnapshot snapshot){
             if(snapshot.hasData){
               List<Solar> solares = snapshot.data;
-             /// print("solares lengt: ${solares.length}");
               return ListView.builder(
                 controller: _pageBloc.scrollCont,
                  physics: BouncingScrollPhysics(),
@@ -50,12 +75,15 @@ class _SolarCultivosHomePageState extends State<SolarCultivosHomePage> {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, 'solar_add');
-        },
-        child: Icon(LineIcons.plus),
-        backgroundColor: miTema.accentColor,
+      floatingActionButton: Visibility(
+        visible: _isVisible,
+              child: FloatingActionButton(
+          onPressed: () {
+            Navigator.pushNamed(context, 'solar_add');
+          },
+          child: Icon(LineIcons.plus),
+          backgroundColor: miTema.accentColor,
+        ),
       ),
     );
   }

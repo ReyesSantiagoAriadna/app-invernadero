@@ -28,7 +28,6 @@ class SolaresCultivosProvider{
     
     final url = "${AppConfig.base_url}/api/personal/solares?page=$_page"; 
     final token = await _storage.read('token');
-    print("TOKEN: $token");
     Map<String, String> headers = {
       HttpHeaders.authorizationHeader: "Bearer $token",
       "Accept": "application/json",};
@@ -52,8 +51,103 @@ class SolaresCultivosProvider{
     }
     return [];
   }
+
+  //  Route::post('add_solar','Api\trabajador\SolarCultivosController@addSolar');
+  //       Route::put('update_solar','Api\trabajador\SolarCultivosController@updateSolar');
+  //       Route::delete('delete_solar','Api\trabajador\SolarCultivosController@deleteSolar');
   
+  Future<Solar> addSolar(Solar solar)async{
+    final url = "${AppConfig.base_url}/api/personal/add_solar"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",};
 
+    final response = await http.post(
+      url, 
+      headers: headers,
+      body: json.encode( 
+        {
+          "nombre"  :solar.nombre ,
+          "largo":solar.largo,
+          "ancho":solar.ancho, 
+          "region"     :  solar.region,
+          "distrito"   :  solar.distrito ,
+          "municipio"  :  solar.municipio,
+          "latitud":solar.latitud,
+          "longitud":solar.longitud,
+          "descripcion":solar.descripcion,
+        }
+        )
+      );
 
+    print("SOLARES RESPUESTA ADD----------------");
+    print(response.body);
+    if(response.body.contains("solar") && response.body.contains("id")){
+      Solar solar = Solar.fromJson(json.decode(response.body));
+      return solar;
+    }
+    return null;
+  }
+
+  Future<Solar> updateSolar(Solar solar)async{
+    final url = "${AppConfig.base_url}/api/personal/update_solar"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",};
+
+    final response = await http.put(
+      url, 
+      headers: headers,
+      body: json.encode( 
+        {
+          "nombre"  :solar.nombre ,
+          "largo":solar.largo,
+          "ancho":solar.ancho, 
+          "region"     :  solar.region,
+          "distrito"   :  solar.distrito ,
+          "municipio"  :  solar.municipio,
+          "latitud":solar.latitud,
+          "longitud":solar.longitud,
+          "descripcion":solar.descripcion,
+        }
+        )
+      );
+
+    print("SOLARES RESPUESTA UPDATE----------------");
+    print(response.body);
+    if(response.body.contains("solar") && response.body.contains("id")){
+      Solar solar = Solar.fromJson(json.decode(response.body));
+      return solar;
+    }
+    return null;
+  }
+
+  
+  Future<bool> deleteSolar(String idSolar)async{
+    final url = "${AppConfig.base_url}/api/personal/delete_solar?id_solar=$idSolar"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",};
+
+    final response = await http.delete(
+      url, 
+      headers: headers,
+      );
+    print("SOLARES RESPUESTA DELETE----------------");
+    print(response.body);
+    
+    if(response.body.contains("message") && response.body.contains("success")){
+      print("eliminando");
+      return true;
+    }
+    if(response.statusCode==200)
+      return true;
+
+    print("Error al eliminar");
+    return false;
+  }
 
 }

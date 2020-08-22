@@ -1,12 +1,15 @@
 import 'package:app_invernadero_trabajador/app_config.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/solar.dart';
+import 'package:app_invernadero_trabajador/src/services/solares_services.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:app_invernadero_trabajador/src/utils/colors.dart';
 import 'package:app_invernadero_trabajador/src/utils/responsive.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:provider/provider.dart';
 
 
 class SolarWidget extends StatefulWidget {
@@ -35,9 +38,69 @@ class _SolarWidgetState extends State<SolarWidget> {
     super.didChangeDependencies();
   }
   @override
-  Widget build(BuildContext context) {
-    _style = TextStyle(color:Colors.black,fontFamily: AppConfig.quicksand,fontSize: _responsive.ip(2.2));
+  Widget build(BuildContext context) {  
+    _style = TextStyle(color:Colors.black,fontWeight: FontWeight.w500,fontFamily: AppConfig.quicksand,fontSize: _responsive.ip(2.2));
     _styleSub = TextStyle(color:Colors.black,fontFamily: AppConfig.quicksand,fontSize:_responsive.ip(1.5));
+    
+    return GestureDetector(
+      onTap: ()=>Navigator.pushNamed(context, 'details_solar',arguments: widget.solar),
+      child: new Container(
+        margin: EdgeInsets.only(top:2,bottom:15),
+        child:Column(
+          children:<Widget>[
+            _createFlutterMap(widget.solar.latitud, widget.solar.longitud),
+            Container(
+              padding: EdgeInsets.all(4),
+              width: double.infinity,
+              child: Row(
+                children: <Widget>[
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children:<Widget>[
+                      Icon(LineIcons.sun_o,color: miTema.accentColor,),
+                      Text('${widget.solar.nombre } - ${widget.solar.region}',style: _style,),
+                      Text('${widget.solar.region} , ${widget.solar.municipio}',style: _styleSub,)
+                    ]
+                  ),
+                  Expanded(child: Container()),
+                  IconButton(icon:  Icon(LineIcons.ellipsis_v,color: MyColors.GreyIcon,), 
+                  onPressed: ()=>_deleteModalBottomSheet(context))
+                ],
+              ),
+            ),
+            // ListTile(
+            //   dense: false,
+            //   title: Text('${widget.solar.nombre } - ${widget.solar.region}',style: _style,),
+            //   subtitle: Text('${widget.solar.region} , ${widget.solar.municipio}',style: _style,),
+            //   //onTap: ()=>Navigator.pushNamed(context, 'producto',arguments: producto),
+            //   ),
+
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.end,
+            //   children:<Widget>[
+            //     Icon(LineIcons.trash_o,color: MyColors.GreyIcon,)
+            //   ]
+            // ),
+            
+          ]
+        ) ,
+        decoration: BoxDecoration(
+                color : Colors.white,
+                borderRadius: BorderRadius.circular(5.0),
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                  
+                    color:Colors.black26,
+                    blurRadius: 3.0,
+                    offset : Offset(0.0,3),
+                    spreadRadius: 3.0
+                  )
+                ]
+              ),
+      ),
+    );
+  
     return GestureDetector(
       onTap: ()=>Navigator.pushNamed(context, 'details_solar',arguments: widget.solar),
           child: Container(
@@ -45,6 +108,7 @@ class _SolarWidgetState extends State<SolarWidget> {
         height: _responsive.ip(27),
         width: double.infinity,
         child:Card(
+          elevation: 5.0,
           // color: miTema.accentColor.withOpacity(0.2),
           child: Column(
             children:<Widget>[
@@ -143,4 +207,40 @@ class _SolarWidgetState extends State<SolarWidget> {
       ]
     );
   }
+
+
+  void _deleteModalBottomSheet(context)async{
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc){
+        return Container(
+          child: new Wrap(
+          children: <Widget>[ 
+            new ListTile(
+              leading: new Icon(LineIcons.trash_o),
+              title: new Text('Eliminar',style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w400),),
+              onTap: () { 
+                //_procesarImagen(user);  
+                Provider.of<SolarCultivoService>(context,listen: false)
+                .deleteSolar(widget.solar.id)
+                .then((r){
+                  // if(r){
+                  //   Navigator.pop(context);
+                  // }
+                  
+                  Flushbar(
+                    message:  Provider.of<SolarCultivoService>(context,listen: false).response,
+                    duration:  Duration(seconds: 2),              
+                  )..show(context).then((r){
+                    Navigator.pop(context);
+                  });
+                });
+              },
+            ),
+            ],
+           ),
+        );
+      }
+    );
+  } 
 }

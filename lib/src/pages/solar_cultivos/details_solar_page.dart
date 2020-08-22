@@ -92,7 +92,9 @@ Widget build(BuildContext context) {
               fontWeight: FontWeight.w700
               ),),
         actions: <Widget>[
-          IconButton(icon: Icon(LineIcons.pencil,color:Colors.white), onPressed: (){})
+          IconButton(
+            icon: Icon(LineIcons.pencil,color:Colors.white), 
+            onPressed: ()=>Navigator.pushNamed(context, 'solar_edit'))
         ],
       )
         : PreferredSize(
