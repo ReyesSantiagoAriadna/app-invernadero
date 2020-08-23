@@ -44,12 +44,12 @@ class Solar {
         latitud: json["latitud"]==null?0.0:json["latitud"].toDouble(),
         longitud: json["longitud"]==null?0.0:json["longitud"].toDouble(),
         descripcion: json["descripcion"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
+        createdAt:json["created_at"]==null?null: DateTime.parse(json["created_at"]),
+        updatedAt:json["updated_at"]==null?null: DateTime.parse(json["updated_at"]),
         deletedAt: json["deleted_at"] == null ? null : DateTime.parse(json["deleted_at"]),
-        cultivos: List<Cultivo>.from(json["cultivos"].map((x) => Cultivo.fromJson(x))),
+        cultivos:json["cultivos"]==null?null: List<Cultivo>.from(json["cultivos"].map((x) => Cultivo.fromJson(x))),
     );
-
+    
     Map<String, dynamic> toJson() => {
         "id": id,
         "nombre": nombre,

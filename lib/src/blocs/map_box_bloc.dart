@@ -23,6 +23,7 @@ class MapBoxBloc{
   Stream<Feature> get featureStream => _featureController.stream;
   Stream<Position> get positionStream => _positionController.stream;
 
+  
 
   Function(Feature) get changeFeature => _featureController.sink.add;
   Function(Position) get changePosition => _positionController.sink.add;

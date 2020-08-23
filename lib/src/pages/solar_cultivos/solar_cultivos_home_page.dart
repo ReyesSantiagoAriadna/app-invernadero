@@ -26,7 +26,6 @@ class _SolarCultivosHomePageState extends State<SolarCultivosHomePage> {
   void didChangeDependencies() {
     // _solarCultivoBloc = SolarCultivoBloc();
     // _solarCultivoBloc.solares();
-    
     _pageBloc = PageBloc();
     _hideButtonController  = _pageBloc.scrollCont;
     solaresStream = Provider.of<SolarCultivoService>(context).solarStream;
@@ -57,7 +56,7 @@ class _SolarCultivosHomePageState extends State<SolarCultivosHomePage> {
       body: Container(
         margin:EdgeInsets.only(left:8,right: 8),
         child: StreamBuilder(
-          stream: solaresStream ,
+          stream: Provider.of<SolarCultivoService>(context).solarStream,
           builder: (BuildContext context, AsyncSnapshot snapshot){
             if(snapshot.hasData){
               List<Solar> solares = snapshot.data;
@@ -66,6 +65,7 @@ class _SolarCultivosHomePageState extends State<SolarCultivosHomePage> {
                  physics: BouncingScrollPhysics(),
                 itemCount: solares.length,
                 itemBuilder: (BuildContext context, int index) {
+                  print("Solares=>>> ${solares[index].nombre}");
                 return SolarWidget(solar:solares[index]);
                },
               );

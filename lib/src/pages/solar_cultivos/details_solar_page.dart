@@ -94,7 +94,7 @@ Widget build(BuildContext context) {
         actions: <Widget>[
           IconButton(
             icon: Icon(LineIcons.pencil,color:Colors.white), 
-            onPressed: ()=>Navigator.pushNamed(context, 'solar_edit'))
+            onPressed: ()=>Navigator.pushNamed(context, 'solar_edit',arguments: solar))
         ],
       )
         : PreferredSize(
@@ -233,28 +233,28 @@ Widget build(BuildContext context) {
 
   _body(){
     return Container(
-      height:double.infinity,
-      width:_responsive.widht, 
-      child: Stack(
-        children: <Widget>[
-          Positioned(
-            child: _background(),),
-          Positioned(
-            child: Container(
-               height: double.infinity,
-                width: double.infinity,
-              child: SingleChildScrollView(
-                controller: _scrollBottomBarController,
-                physics: BouncingScrollPhysics(),
-                              child: Column(
-                  children:_cultivos()
-                ),
-              ),
-            ),
-          ),
-        ],
+        height:double.infinity,
+        width:_responsive.widht, 
+        child: Stack(
+      children: <Widget>[
+        Positioned(
+        child: _background(),),
+        Positioned(
+        child: Container(
+     height: double.infinity,
+      width: double.infinity,
+    child: SingleChildScrollView(
+      controller: _scrollBottomBarController,
+      physics: BouncingScrollPhysics(),
+                    child: Column(
+        children:_cultivos()
       ),
-    );
+    ),
+        ),
+        ),
+      ],
+    ),
+      );
   }
   
  

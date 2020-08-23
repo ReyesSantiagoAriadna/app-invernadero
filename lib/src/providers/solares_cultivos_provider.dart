@@ -57,6 +57,8 @@ class SolaresCultivosProvider{
   //       Route::delete('delete_solar','Api\trabajador\SolarCultivosController@deleteSolar');
   
   Future<Solar> addSolar(Solar solar)async{
+    print("EN provider solar ${solar.nombre}");
+
     final url = "${AppConfig.base_url}/api/personal/add_solar"; 
     final token = await _storage.read('token');
     Map<String, String> headers = {
@@ -66,27 +68,29 @@ class SolaresCultivosProvider{
     final response = await http.post(
       url, 
       headers: headers,
-      body: json.encode( 
+      body:  
         {
-          "nombre"  :solar.nombre ,
-          "largo":solar.largo,
-          "ancho":solar.ancho, 
+          "nombre"  : solar.nombre,
+          "largo"   : solar.largo.toString(),
+          "ancho"   : solar.ancho.toString(), 
           "region"     :  solar.region,
           "distrito"   :  solar.distrito ,
           "municipio"  :  solar.municipio,
-          "latitud":solar.latitud,
-          "longitud":solar.longitud,
+          "latitud":solar.latitud.toString(),
+          "longitud":solar.longitud.toString(),
           "descripcion":solar.descripcion,
         }
-        )
+        
       );
 
     print("SOLARES RESPUESTA ADD----------------");
     print(response.body);
     if(response.body.contains("solar") && response.body.contains("id")){
-      Solar solar = Solar.fromJson(json.decode(response.body));
+      print("TODO BIEN EN LA RESPUESTA");
+      Solar solar = Solar.fromJson(json.decode(response.body)['solar']);
       return solar;
     }
+    print("ALGO SALIO MAL");
     return null;
   }
 
@@ -100,7 +104,7 @@ class SolaresCultivosProvider{
     final response = await http.put(
       url, 
       headers: headers,
-      body: json.encode( 
+      body: 
         {
           "nombre"  :solar.nombre ,
           "largo":solar.largo,
@@ -112,13 +116,13 @@ class SolaresCultivosProvider{
           "longitud":solar.longitud,
           "descripcion":solar.descripcion,
         }
-        )
+        
       );
 
     print("SOLARES RESPUESTA UPDATE----------------");
     print(response.body);
     if(response.body.contains("solar") && response.body.contains("id")){
-      Solar solar = Solar.fromJson(json.decode(response.body));
+      Solar solar = Solar.fromJson(json.decode(response.body)['solar']);
       return solar;
     }
     return null;

@@ -118,7 +118,7 @@ class Validators{
   
   final validateSolarDescripcion=StreamTransformer<String,String>.fromHandlers(
     handleData: (descripcion,sink){
-       if(descripcion.length>0){
+       if(descripcion.length>5){
         sink.add(descripcion);
       }else{
         sink.addError('');

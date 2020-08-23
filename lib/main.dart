@@ -1,3 +1,4 @@
+import 'package:app_invernadero_trabajador/src/blocs/solar_cultivo_bloc.dart';
 import 'package:app_invernadero_trabajador/src/pages/actividades/actividades_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/ajustes/ajustes_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/herramientas/herramientas_home_page.dart';
@@ -75,6 +76,8 @@ class _MyAppState extends State<MyApp> {
         providers: [
             //ChangeNotifierProvider(create: (_)=> new LocalService()),
             ChangeNotifierProvider(create: (_)=> new SolarCultivoService(),),
+            
+
           ],
             child: new MaterialApp(
         title: 'SS Invernadero',

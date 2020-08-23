@@ -1,184 +1,11 @@
 {
-    "Regiones"     : [
-        "Cañada",  {
-            "distritos": [
-                "Teotitlán" ,{
-                   "municipios": [
-                    "Eloxochitlán de Flores Magón",
-                    "Huautepec",
-                    "Huautla de Jiménez",
-                    "Mazatlán Villa de Flores",
-                    "San Antonio Nanahuatipam",
-                    "San Bartolomé Ayautla",
-                    "San Francisco Huehuetlán",
-                    "San Jerónimo Tecóatl",
-                    "San José Tenango",
-                    "San Juan Coatzóspam",
-                    "San Juan de los Cués",
-                    "San Lorenzo Cuaunecuiltitla",
-                    "San Lucas Zoquiápam",
-                    "San Martín Toxpalam",
-                    "San Mateo Yoloxochitlán",
-                    "San Pedro Ocopetatillo",
-                    "Santa Anna Ateixtlahuaca",
-                    "Santa Cruz Acatepec",
-                    "Santa María La Asunción",
-                    "Santa María Chilchotla",
-                    "Santa María Ixcatlán",
-                    "Santa María Tecomavaca",
-                    "Santa María Teopoxco",
-                    "Santiago Texcalcingo",
-                    "Teotitlán de Flores Magón"
-                    ]
-                },
-                "Cuicatlán",{
-                    "municipios":[
-                        "Concepción Pápalo",
-                        "Cuyamecalco Villa de Zaragoza",
-                        "Chiquihuitlán de Benito Juárez",
-                        "San Andrés Teotilálpam",
-                        "San Francisco Chapulapa",
-                        "San Juan Bautista Cuicatlán",
-                        "San Juan Bautista Tlacoatzintepec",
-                        "San Juan Tepeuxila",
-                        "San Miguel Santa Flor",
-                        "San Pedro Jaltepetongo",
-                        "San Pedro Jocotipac",
-                        "San Pedro Sochiapam",
-                        "San Pedro Teutila",
-                        "Santa Ana Cuauhtémoc",
-                        "Santa María Pápalo",
-                        "Santa María Texcatitlán",
-                        "Santa María Tlalixtac",
-                        "Santiago Nacaltepec",
-                        "Santos Reyes Pápalo",
-                        "Valerio Trujano"
-                    ]
-                }
-            ] 
-        },
-        "Costa",  {
-            "distritos"      : [
-                "Jamiltepec",{
-                    "municipios":[
-                        "Mártires de Tacubaya",
-                        "Pinotepa de Don Luis",
-                        "San Agustín Chayuco",
-                        "San Andrés Huaxpaltepec",
-                        "San Antonio Tepetlapa",
-                        "San José Estancia Grande",
-                        "San Juan Bautista Lo de Soto",
-                        "San Juan Cacahuatepec",
-                        "San Juan Colorado",
-                        "San Lorenzo",
-                        "San Miguel Tlacamama",
-                        "San Pedro Atoyac",
-                        "San Pedro Jicayán",
-                        "San Sebastián Ixcapa",
-                        "Santa Catarina Mechoacán",
-                        "Santa María Cortijo",
-                        "Santa María Huazolotitlán",
-                        "Santiago Ixtayutla",
-                        "Santiago Jamiltepec",
-                        "Santiago Llano Grande",
-                        "Santiago Pinotepa Nacional",
-                        "Santiago Tapextla",
-                        "Santiago Tetepec",
-                        "Santo Domingo Armenta"
-                    ]
-                },
-                "Juquila",{
-                    "municipios":[
-                        "San Gabriel Mixtepec",
-                        "San Juan Lachao",
-                        "San Juan Quiahije",
-                        "San Miguel Panixtlahuaca",
-                        "San Pedro Juchatengo",
-                        "San Pedro Mixtepec -Distrito 22-",
-                        "Villa de Tututepec de Melchor Ocampo",
-                        "Santa Catarina Juquila",
-                        "Santa María Temaxcltepec",
-                        "Santiago Yaitepec",
-                        "Santos Reyes Nopala",
-                        "Tataltepec de Valdés"
-                    ]
-                },
-                "Pochutla",{
-                    "municipios":[
-                        "Candelaria Loxicha",
-                        "Pluma Hidalgo",
-                        "San Agustín Loxicha",
-                        "San Baltazar Loxicha",
-                        "San Bartolomé Loxicha",
-                        "San Mateo Piñas",
-                        "San Miguel del Puerto",
-                        "San Pedro el Alto",
-                        "San Pedro Pochutla",
-                        "Santa Catarina Loxicha",
-                        "Santa María Colotepec",
-                        "Santa María Huatulco",
-                        "Santa María Tonameca",
-                        "Santo Domingo de Morelos"
-                    ]
-                }
-            ]
-        },
-        "Istmo",{
-            "distritos" : [
-                "Juchitán",{
-                    "municipios":[   
-                        "Asunción Ixtaltepec",
-                        "El Barrio de la Soledad",
-                        "Ciudad Ixtepec",
-                        "Chahuites",
-                        "El Espinal",
-                        "Heroica Ciudad de Juchitán de Zaragoza",
-                        "Matías Romero Avendaño",
-                        "Santiago Niltepec",
-                        "Reforma de Pineda",
-                        "San Dionisio del Mar",
-                        "San Francisco del Mar",
-                        "San Francisco Ixhuatán",
-                        "San Juan Guichicovi",
-                        "San Miguel Chimalapa",
-                        "San Pedro Tapanatepec",
-                        "Santa María Chimalapa",
-                        "Santa María Petapa",
-                        "Santa María Xadani",
-                        "Santo Domingo Ingenio",
-                        "Santo Domingo Petapa",
-                        "Santo Domingo Zanatepec",
-                        "Unión Hidalgo"
-                    ]
-                },
-                "Tehuantepec",{
-                    "municipios":[
-                        "Guevea de Humboldt",
-                        "Magdalena Tequisistlán",
-                        "Magdalena Tlacotepec",
-                        "Salina Cruz",
-                        "San Blas Atempa",
-                        "San Mateo del Mar",
-                        "San Miguel Tenango",
-                        "San Pedro Comitancillo",
-                        "San Pedro Huamelula",
-                        "San Pedro Huilotepec",
-                        "Santa María Guienagati",
-                        "Santa María Jalapa del Marqués",
-                        "Santa María Mixtequilla",
-                        "Santa María Totolapilla",
-                        "Santiago Astata",
-                        "Santiago Lachiguiri",
-                        "Santiago Laollaga",
-                        "Santo Domingo Chihuitán",
-                        "Santo Domingo Tehuantepec"
-                    ]
-                }
-            ]
-        },
-        "Mixteca",{
+    "regiones"     : [
+        {
+            "region": "Mixteca",
             "distritos" :[
-                "Silacayoapam",{
+                {
+                    "region": "Mixteca",
+                    "distrito": "Silacayoapam",
                     "municipios":[
                         "Calihualá",
                         "Guadalupe de Ramírez",
@@ -201,7 +28,9 @@
                         "Zapotitlán Lagunas"
                     ]
                 },
-                "Huajuapan",{
+                {
+                    "region": "Mixteca",
+                    "distrito": "Huajuapan",
                     "municipios":[
                         "Asunción Cuyotepeji",
                         "Cosoltepec",
@@ -233,7 +62,9 @@
                         "Zapotitlán Palmas"
                     ]
                 },
-                "Juxtlahuaca",{
+                {
+                    "region": "Mixteca",
+                    "distrito": "Juxtlahuaca",
                     "municipios":[
                         "Coicoyán de las Flores",
                         "San Juan Mixtepec -Distrito 08-",
@@ -244,7 +75,9 @@
                         "Santos Reyes Tepejillo"
                     ]   
                 },
-                "Teposcolula",{
+                {
+                    "region": "Mixteca",
+                    "distrito":"Teposcolula",
                     "municipios":[
                         "San Andrés Lagunas",
                         "San Antonino Monteverde",
@@ -269,7 +102,9 @@
                         "La Trinidad Vista Hermosa"
                     ]
                 },
-                "Nochixtlán",{
+                {
+                    "region": "Mixteca",
+                    "distrito":"Nochixtlán",
                     "municipios":[
                         "Asunción Nochixtlán",
                         "Magdalena Jaltepec",
@@ -305,7 +140,9 @@
                         "Santa Inés de Zaragoza"
                     ]
                 },
-                "Tlaxiaco",{
+                {
+                    "region": "Mixteca",
+                    "distrito":"Tlaxiaco",
                     "municipios":[
                         "Chalcatongo de Hidalgo",
                         "Magdalena Peñasco",
@@ -346,9 +183,12 @@
                 }
             ]
         },
-        "Papaloapan",{
+        {
+            "region": "Papaloapan",
             "distritos" :[
-                "Tuxtepec",{
+                {
+                    "region": "Papaloapan",
+                    "distrito":"Tuxtepec",
                     "municipios":[
                         "Acatlán de Pérez Figueroa",
                         "Ayotzintepec",
@@ -366,24 +206,59 @@
                         "San Juan Bautista Valle Nacional"
                     ]
                 },
-                "Choapan"
+                {
+                    "region": "Papaloapan",
+                    "distrito":"Tuxtepec"
+                }
             ]
         },
-
-        "Sierra Norte",{
+        {
+            "region": "Sierra Norte",
             "distritos" :[
-                "Ixtlán",
-                "Villa Alta",
-                "Mixe"
+                {
+                    "region": "Sierra Norte",
+                    "distrito":"Ixtlán",
+                    "municipios":[]
+                },
+                {
+                    "region": "Sierra Norte",
+                    "distrito":"Villa Alta",
+                    "municipios":[]
+                },
+                {
+                    "region": "Sierra Norte",
+                    "distrito":"Mixe",
+                    "municipios":[]
+                }
             ]
         },
-        "Sierra Sur",{
+        {
+            "region":"Sierra Sur",
             "distritos" :[
-                "Putla",
-                "Sola de Vega",
-                "Miahuatlán",
-                "Yautepec"
+                {
+                    "region": "Sierra Sur",
+                    "distrito":"Putla",
+                    "municipios":[]
+                },
+                {
+                    "region": "Sierra Sur",
+                    "distrito":"Sola de Vega",
+                    "municipios":[]
+                },
+                {
+                    "region": "Sierra Sur",
+                    "distrito":"Miahuatlán",
+                    "municipios":[]
+                },
+                {
+                    "region": "Sierra Sur",
+                    "distrito":"Yautepec",
+                    "municipios":[]
+                }
             ]
         }
     ]
 }
+
+
+

@@ -60,6 +60,7 @@ flutter:
     - assets/icons/
     - assets/images/
     - data/menu_opts.json
+    - data/regionalizacion.json
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
 

@@ -1,19 +1,28 @@
 import 'dart:ui';
 
 import 'package:app_invernadero_trabajador/app_config.dart';
+import 'package:app_invernadero_trabajador/src/blocs/map_box_bloc.dart';
 import 'package:app_invernadero_trabajador/src/blocs/solar_cultivo_bloc.dart';
+import 'package:app_invernadero_trabajador/src/models/solares_cultivos/regiones.dart';
+import 'package:app_invernadero_trabajador/src/models/solares_cultivos/solar.dart';
 import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/map_widget.dart';
 import 'package:app_invernadero_trabajador/src/searchs/mapbox_search.dart';
+import 'package:app_invernadero_trabajador/src/services/solares_services.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:app_invernadero_trabajador/src/utils/colors.dart';
 import 'package:app_invernadero_trabajador/src/utils/responsive.dart';
 import 'package:app_invernadero_trabajador/src/widgets/alert_dialog_select.dart';
+import 'package:app_invernadero_trabajador/src/widgets/dialog_list_distrito.dart';
+import 'package:app_invernadero_trabajador/src/widgets/dialog_list_mun.dart';
+import 'package:app_invernadero_trabajador/src/widgets/dialog_list_region.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:latlong/latlong.dart';
+import 'package:provider/provider.dart';
 
 
 class SolarAddPage extends StatefulWidget {
@@ -29,10 +38,12 @@ class _SolarAddPageState extends State<SolarAddPage> {
   TextStyle _style;
   TextStyle _secundaryStyle;
   MapController  map;
-
+  final _nombre = TextEditingController();
+  bool _isLoading=false;
   @override
   void initState() {
     map = new MapController();
+
     super.initState();
   }
   
@@ -41,10 +52,7 @@ class _SolarAddPageState extends State<SolarAddPage> {
     super.didChangeDependencies();
     _responsive = Responsive.of(context);
     solarCultivoBloc = SolarCultivoBloc();
-
-
-    if(solarCultivoBloc.region==null)
-    solarCultivoBloc.changeRegion("Costa");
+ 
 
     _style = TextStyle(
       color: MyColors.GreyIcon,
@@ -61,34 +69,47 @@ class _SolarAddPageState extends State<SolarAddPage> {
   }
   @override
   void dispose() {
-    //  solarCultivoBloc.dispose();
-    // solarCultivoBloc.changeSolarNombre("******");
+    print("cerrando...");
+    solarCultivoBloc.dispose();
+    solarCultivoBloc.reset();
     super.dispose();
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0.0,
-        brightness: Brightness.light,
-        backgroundColor: Colors.white,
-        title:Text("Nuevo Solar",style:TextStyle(color: MyColors.GreyIcon,
-          fontFamily: AppConfig.quicksand,fontWeight: FontWeight.w800
-        )),
-        leading: IconButton(
-          icon: Icon(LineIcons.angle_left,color:MyColors.GreyIcon), 
-          onPressed:()=> Navigator.pop(context)),
-        actions: <Widget>[
-          // IconButton(
-          //   icon: Icon(LineIcons.save,color: MyColors.GreyIcon,), onPressed: ()=>_addSolar())
-          _createButton()
-        ],
-      ),
-      body:GestureDetector(
-        onTap: ()=>FocusScope.of(context).unfocus(),
-        child: _body()
-      ),
+    return Stack(
+      children: <Widget>[
+        Positioned(
+          child:Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            elevation: 0.0,
+            brightness: Brightness.light,
+            backgroundColor: Colors.white,
+            title:Text("Nuevo Solar",style:TextStyle(color: MyColors.GreyIcon,
+              fontFamily: AppConfig.quicksand,fontWeight: FontWeight.w800
+            )),
+            leading: IconButton(
+              icon: Icon(LineIcons.angle_left,color:MyColors.GreyIcon), 
+              onPressed:()=> Navigator.pop(context)),
+            actions: <Widget>[
+              // IconButton(
+              //   icon: Icon(LineIcons.save,color: MyColors.GreyIcon,), onPressed: ()=>_addSolar())
+              _createButton()
+            ],
+          ),
+          body:GestureDetector(
+            onTap: ()=>FocusScope.of(context).unfocus(),
+            child: _body()
+          ),
+        ),  
+        ),
+        _isLoading? Positioned.fill(child:  Container(
+                  color:Colors.black45,
+                  child: Center(
+                    child:SpinKitCircle(color: miTema.accentColor),
+                  ),
+                ),):Container()
+      ],
     );
   }
 
@@ -122,8 +143,11 @@ class _SolarAddPageState extends State<SolarAddPage> {
             SizedBox(height:_responsive.ip(2)),
             _description(),
             SizedBox(height:_responsive.ip(2)),
-
-            
+            _region(),
+            SizedBox(height:_responsive.ip(2)),
+            _distrito(),            
+            SizedBox(height:_responsive.ip(2)),
+            _municipio(),
             MapWidget(responsive: _responsive,),
             // Row(
             //   children:<Widget>[
@@ -145,13 +169,13 @@ class _SolarAddPageState extends State<SolarAddPage> {
         stream: solarCultivoBloc.solarNombreStream ,
         builder: (BuildContext context, AsyncSnapshot snapshot){
           return  TextFormField(
+             controller: _nombre,
             decoration: InputDecoration(
               focusedBorder:  UnderlineInputBorder(      
                         borderSide: BorderSide(color:miTema.accentColor)),
               icon: Icon(LineIcons.sun_o),
-              labelText: 'Nombre',
-              
-              errorText: snapshot.error,
+              labelText: 'Nombre', 
+              errorText: snapshot.error =='*' ? null:snapshot.error,
             ),
             onChanged: solarCultivoBloc.changeSolarNombre,
             
@@ -188,7 +212,7 @@ class _SolarAddPageState extends State<SolarAddPage> {
                           focusedBorder:  UnderlineInputBorder(      
                                 borderSide: BorderSide(color:miTema.accentColor)),
                           labelText: 'Largo',
-                          errorText: snapshot.error
+                          errorText: snapshot.error =='*' ? null:snapshot.error,
                           ),
                           onChanged: solarCultivoBloc.changeSolarLargo,
                           );
@@ -210,7 +234,7 @@ class _SolarAddPageState extends State<SolarAddPage> {
                           focusedBorder:  UnderlineInputBorder(      
                                   borderSide: BorderSide(color:miTema.accentColor)),
                           labelText: 'Ancho',
-                          errorText: snapshot.error
+                          errorText: snapshot.error =='*' ? null:snapshot.error,
                   ),
                   onChanged: solarCultivoBloc.changeSolarAncho,
                   );
@@ -225,155 +249,10 @@ class _SolarAddPageState extends State<SolarAddPage> {
       )
     );
   }
-  _region(){
-  return Column(
-    children: <Widget>[
-     Row(
-              children: <Widget>[
-                //SvgPicture.asset('assets/icons/ruler_icon.svg',color:MyColors.GreyIcon,height: 20,),
-                Icon(LineIcons.globe,color: MyColors.GreyIcon,),
-                SizedBox(width:15),
-                
-                Text("Región",style: _style,),
-              ],
-            ),
-            SizedBox(height:_responsive.ip(2)),
-            GestureDetector(
-              onTap: (){
-                showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialogSelect();
-                });
-              },
-              child: StreamBuilder(
-                stream: solarCultivoBloc.regionStream ,
-                builder: (BuildContext context, AsyncSnapshot snapshot){
-                  if(snapshot.hasData){
-                    return Container(
-                      padding: const EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(
-                        width: 1,
-                        color: MyColors.GreyIcon)  
-                      
-                      ),
-                      margin: EdgeInsets.only(left:40),
-                      child: Text(
-                      snapshot.data,style:_secundaryStyle,
-                  ),
-                    );
-                  }
-                },
-              ),
-            ),
-  ],);
-  }
 
-  
-  
-  _distrito(){
-  return Column(
-    children: <Widget>[
-     Row(
-              children: <Widget>[
-                //SvgPicture.asset('assets/icons/ruler_icon.svg',color:MyColors.GreyIcon,height: 20,),
-                Icon(LineIcons.globe,color: MyColors.GreyIcon,),
-                SizedBox(width:15),
-                
-                Text("Distrito",style: _style,),
-              ],
-            ),
-            SizedBox(height:_responsive.ip(2)),
-            GestureDetector(
-              onTap: (){
-                showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialogSelect();
-                });
-              },
-              child: StreamBuilder(
-                stream: solarCultivoBloc.regionStream ,
-                builder: (BuildContext context, AsyncSnapshot snapshot){
-                  if(snapshot.hasData){
-                    return Container(
-                      padding: const EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(
-                        width: 1,
-                        color: MyColors.GreyIcon)  
-                      
-                      ),
-                      margin: EdgeInsets.only(left:40),
-                      child: Text(
-                      snapshot.data,style:_secundaryStyle,
-                  ),
-                    );
-                  }
-                },
-              ),
-            ),
-  ],);
-}
 
-  
-_municipio(){
-  return Container(
-     margin: EdgeInsets.only(left:40),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-       Row(
-                children: <Widget>[
-                  //SvgPicture.asset('assets/icons/ruler_icon.svg',color:MyColors.GreyIcon,height: 20,),
-                  Icon(LineIcons.globe,color: MyColors.GreyIcon,),
-                  SizedBox(width:15),
-                  
-                  Text("Municipio",style: _style,),
-                ],
-              ),
-              SizedBox(height:_responsive.ip(2)),
-              GestureDetector(
-                onTap: (){
-                  showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialogSelect();
-                  });
-                },
-                child: StreamBuilder(
-                  stream: solarCultivoBloc.regionStream ,
-                  builder: (BuildContext context, AsyncSnapshot snapshot){
-                    if(snapshot.hasData){
-                      return Container(
-                        padding: const EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(
-                          width: 1,
-                          color: MyColors.GreyIcon)  
-                        
-                        ),
-                       
-                        child: Text(
-                        snapshot.data,style:_secundaryStyle,
-                    ),
-                      );
-                    }
-                  },
-                ),
-              ),
-    ],),
-  );
-}
-
-_description(){
+  _description(){
     return Container(
-      
-     
       child: Column(
         children:<Widget>[
           Row(
@@ -407,7 +286,7 @@ _description(){
                          focusedBorder:  OutlineInputBorder(      
                               borderSide: BorderSide(color:miTema.accentColor)),
                         //labelText: 'Largo'
-                        errorText: snapshot.error
+                      errorText: snapshot.error =='*' ? null:snapshot.error,
                       ),
                   // decoration: InputDecoration.collapsed(
                     onChanged: solarCultivoBloc.changeSolarDescrip,
@@ -458,84 +337,134 @@ _description(){
       ),
     );
   }
-  _location(){
-    return Container(
-      //margin: EdgeInsets.all(8),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Icon(LineIcons.map_marker,color: MyColors.GreyIcon,),
-              SizedBox(width:18),
-              Text("Ubicación",style: _style,),
-            ],
-            ),
-           SizedBox(height:_responsive.ip(2)),
-          _findLocation(),
-          _createFlutterMap(0,0)
-        ],
-      ),
-    );
-  }
-   _createFlutterMap(double lat,double long) {
-      
-    var mapa =   FlutterMap(
-     // mapController: map,
-      options: MapOptions(
-        
-        center: new LatLng(lat,long),
-        zoom: 15,
-       
-      ),
-      
-      layers: [
-        _createMap(),
-        _createMarkers(lat,long),
-      ],
-    );
 
-      if (map.ready) {
-    map.move(LatLng(lat,long) , 15);
-    }
-    
-
-    return Container(
-      height: _responsive.ip(18),
-      width: double.infinity,
-      child: mapa);
-  }
-  _createMap() {
-     return TileLayerOptions(
-      urlTemplate:  'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',
-      additionalOptions: {
-        'accessToken':  AppConfig.mapbox_api_token, 
-        'id': 'mapbox/streets-v11' 
-        //streets, dark, light, outdoors, satellite
-      }
-    );
-  }
-
-  _createMarkers(double lat,double long) {
-    return MarkerLayerOptions(
-      markers: <Marker>[
-        Marker(
-          width: 100.0,
-          height: 100.0,
-          point:  new LatLng(lat,long),
-          builder: (context)=>Container(
-            child:Icon(
-              Icons.location_on,
-              size:45.0,
-              color:Theme.of(context).primaryColor
-              )
-          )
-        ),
-      ]
-    );
-  }
   
+  _region(){
+    return Container(
+      child: Column(
+        children:<Widget>[
+          Row(
+              children: <Widget>[
+                Icon(LineIcons.globe,color: MyColors.GreyIcon,),
+                SizedBox(width:18),
+                Text("Región",style: _style,),
+              ],
+            ),
+          SizedBox(height:5),
+          StreamBuilder(
+              stream: solarCultivoBloc.regionActiveStream ,
+              builder: (BuildContext context, AsyncSnapshot snapshot){
+                Region region = snapshot.data;
+                return GestureDetector(
+                  onTap: (){
+                    showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return DialogListRegion(solarCultivoBloc: solarCultivoBloc,);
+                    });
+                  },
+                  child:snapshot.hasData?
+                  _select(region.region):
+                  _select("Elije la región"),
+                );
+              },
+            ),
+        ]
+      ),
+    );
+  }
+
+   _distrito(){
+    return Container(
+      child: Column(
+        children:<Widget>[
+          Row(
+              children: <Widget>[
+                Icon(LineIcons.globe,color: Colors.white,),
+                SizedBox(width:18),
+                Text("Distrito",style: _style,),
+              ],
+            ),
+          SizedBox(height:5),
+          StreamBuilder(
+            stream: solarCultivoBloc.distritoActiveStream ,
+            builder: (BuildContext context, AsyncSnapshot snapshot){
+              Distrito distrito = snapshot.data;
+              return GestureDetector(
+                onTap: (){
+                  showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return DialogListDistrito(solarCultivoBloc: solarCultivoBloc,);
+                  });
+                },
+                child:snapshot.hasData?
+                 _select(distrito.distrito):
+                 _select("Elije el distrito"),
+              );
+            },
+          ),
+        ]
+      ),
+    );
+  }
+
+  _municipio(){
+    return Container(
+      child: Column(
+        children:<Widget>[
+          Row(
+              children: <Widget>[
+                Icon(LineIcons.globe,color: Colors.white,),
+                SizedBox(width:18),
+                Text("Municipio",style: _style,),
+              ],
+            ),
+          SizedBox(height:5),
+          StreamBuilder(
+            stream: solarCultivoBloc.municipioActiveStream ,
+            builder: (BuildContext context, AsyncSnapshot snapshot){
+              return GestureDetector(
+                onTap: (){
+                  showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return DialogListMunicipio(solarCultivoBloc: solarCultivoBloc,);
+                  });
+                },
+                child:snapshot.hasData?
+                 _select(snapshot.data):
+                 _select("Elije el distrito"),
+              );
+            },
+          ),
+        ]
+      ),
+    );
+  }
+   _select(String data){
+    return Container(
+      height: 40,
+      margin: EdgeInsets.only(left:40,right:10),
+      padding: const EdgeInsets.all(5.0),
+      decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(5),
+      border: Border.all(
+        width: 1,
+        color: MyColors.GreyIcon)  
+      ),
+      child: Row(
+        children:<Widget>[
+         Text(data,style: TextStyle(color:MyColors.GreyIcon,fontFamily: AppConfig.quicksand,
+          fontSize: _responsive.ip(1.5),fontWeight: FontWeight.w700
+        ),),
+        Expanded(child:Container()),
+        Icon(Icons.expand_more,color: MyColors.GreyIcon,)
+        ]
+      )
+    );
+  }
+
   _createButton(){
     return StreamBuilder(
       stream: solarCultivoBloc.formValidStream ,
@@ -547,14 +476,51 @@ _description(){
       },
     );
   }
-  _addSolar(){
+  _addSolar()async{
+    
+    MapBoxBloc mapBoxBloc = MapBoxBloc();
+    if(mapBoxBloc.position==null)
+      return;
+    
+    if(_isLoading)return;
+    
+    setState(() {
+      _isLoading=true;
+    });
+
+    Solar solar= Solar(
+      nombre: solarCultivoBloc.solarNombre,
+      largo: double.parse(solarCultivoBloc.solarLargo),
+      ancho: double.parse(solarCultivoBloc.solarAncho),
+      descripcion: solarCultivoBloc.solarDescrip,
+      region: solarCultivoBloc.regionActive.region,
+      distrito: solarCultivoBloc.distritoActive.distrito,
+      municipio: solarCultivoBloc.municipioActive,
+      latitud:mapBoxBloc.position.latitude,
+      longitud: mapBoxBloc.position.longitude,
+    );
+    
+    // print("Solar data ${solar.nombre}");
+    // setState(() {
+    //   _isLoading=false;
+    // });
+    await Provider.of<SolarCultivoService>(context,listen: false)
+      .addSolar(solar);
+      // .then((r){ 
+        setState(() {
+          _isLoading=true;
+        });     
     Flushbar(
-      message:  "Agregado correctamente",
+      message:  Provider.of<SolarCultivoService>(context,listen: false).response,
       duration:  Duration(seconds: 2),              
     )..show(context).then((r){
       Navigator.pop(context);
     });
+    // });
   }
+
+
+
 
 }
 

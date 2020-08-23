@@ -168,10 +168,8 @@ class _MapWidgetState extends State<MapWidget> {
       }
     );
   }
-
+  
   _createMarkers(double lat,double long) {
-    
-
     return MarkerLayerOptions(
       markers: <Marker>[
         Marker(

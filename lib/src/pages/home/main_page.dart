@@ -17,16 +17,16 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    // return Container(
-    //   height: double.infinity,
-    //   width: double.infinity,
-    //   child: Center(
-    //     child:Container(
-    //         height: 100,
-    //         width: 100,
-    //         child: DialogList(solarCultivoBloc:solarCultivoBloc),
-    //     )
-    //   ),
-    // );
+    return Container(
+      height: double.infinity,
+      width: double.infinity,
+      child: Center(
+        child:Container(
+            height: 100,
+            width: 100,
+            //child: DialogList(solarCultivoBloc:solarCultivoBloc),
+        )
+      ),
+    );
   }
 }

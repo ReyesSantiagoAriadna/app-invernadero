@@ -1,10 +1,15 @@
 import 'package:app_invernadero_trabajador/app_config.dart';
 import 'package:app_invernadero_trabajador/src/blocs/solar_cultivo_bloc.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/cultivo.dart';
+import 'package:app_invernadero_trabajador/src/models/solares_cultivos/regiones.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/solar.dart';
+import 'package:app_invernadero_trabajador/src/providers/regions_provider.dart';
 import 'package:app_invernadero_trabajador/src/utils/colors.dart';
 import 'package:app_invernadero_trabajador/src/utils/responsive.dart';
 import 'package:app_invernadero_trabajador/src/widgets/dialog_list_cultivos.dart';
+import 'package:app_invernadero_trabajador/src/widgets/dialog_list_distrito.dart';
+import 'package:app_invernadero_trabajador/src/widgets/dialog_list_mun.dart';
+import 'package:app_invernadero_trabajador/src/widgets/dialog_list_region.dart';
 import 'package:app_invernadero_trabajador/src/widgets/dialog_list_solares.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
@@ -18,10 +23,13 @@ class ActividadesHomePage extends StatefulWidget {
 class _ActividadesHomePageState extends State<ActividadesHomePage> {
   SolarCultivoBloc solarCultivoBloc;
   Responsive responsive;
+  Future<List<dynamic>> data;
   @override
   void didChangeDependencies() {
     solarCultivoBloc  = SolarCultivoBloc();
+
     responsive = Responsive.of(context);
+    data =  regionsProvider.loadData();
     super.didChangeDependencies();
   }
   @override
@@ -77,6 +85,73 @@ class _ActividadesHomePageState extends State<ActividadesHomePage> {
               );
             },
           ),
+
+          SizedBox(height:responsive.ip(2)),
+          Text("Región"),
+          SizedBox(height:responsive.ip(2)),
+           StreamBuilder(
+            stream: solarCultivoBloc.regionActiveStream ,
+            builder: (BuildContext context, AsyncSnapshot snapshot){
+              Region region = snapshot.data;
+              return GestureDetector(
+                onTap: (){
+                  showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return DialogListRegion(solarCultivoBloc: solarCultivoBloc,);
+                  });
+                },
+                child:snapshot.hasData?
+                 _select(region.region):
+                 _select("Elije la región"),
+              );
+            },
+          ),
+
+
+          SizedBox(height:responsive.ip(2)),
+          Text("Distrito"),
+          SizedBox(height:responsive.ip(2)),
+           StreamBuilder(
+            stream: solarCultivoBloc.distritoActiveStream ,
+            builder: (BuildContext context, AsyncSnapshot snapshot){
+              Distrito distrito = snapshot.data;
+              return GestureDetector(
+                onTap: (){
+                  showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return DialogListDistrito(solarCultivoBloc: solarCultivoBloc,);
+                  });
+                },
+                child:snapshot.hasData?
+                 _select(distrito.distrito):
+                 _select("Elije el distrito"),
+              );
+            },
+          ),
+
+
+          SizedBox(height:responsive.ip(2)),
+          Text("Municipio"),
+          SizedBox(height:responsive.ip(2)),
+           StreamBuilder(
+            stream: solarCultivoBloc.municipioActiveStream ,
+            builder: (BuildContext context, AsyncSnapshot snapshot){
+              return GestureDetector(
+                onTap: (){
+                  showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return DialogListMunicipio(solarCultivoBloc: solarCultivoBloc,);
+                  });
+                },
+                child:snapshot.hasData?
+                 _select(snapshot.data):
+                 _select("Elije el distrito"),
+              );
+            },
+          ),
         ],
       )
       ),
@@ -105,4 +180,6 @@ class _ActividadesHomePageState extends State<ActividadesHomePage> {
       )
     );
   }
+
+
 }
