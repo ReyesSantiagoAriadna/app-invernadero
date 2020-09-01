@@ -1,5 +1,13 @@
-import 'package:app_invernadero_trabajador/src/blocs/solar_cultivo_bloc.dart';
 import 'package:app_invernadero_trabajador/src/pages/actividades/actividades_home_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/actividades/gastos/gasto_add_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/actividades/gastos/gasto_edit_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/actividades/productos/producto_add_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/actividades/productos/producto_edit_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/actividades/sobrantes/sobrante_add_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/actividades/sobrantes/sobrante_edit_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/actividades/tareas/tarea_add_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/actividades/tareas/tarea_edit_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/actividades/tareas/tarea_herramientas.dart';
 import 'package:app_invernadero_trabajador/src/pages/ajustes/ajustes_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/herramientas/herramientas_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/home/home_page.dart';
@@ -14,15 +22,23 @@ import 'package:app_invernadero_trabajador/src/pages/menu_drawer.dart';
 import 'package:app_invernadero_trabajador/src/pages/ofertas/ofertas_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/pedidos/pedidos_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/plagas/plagas_home_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/cultivo_add_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/cultivo_edit_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/cultivo_etapas_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/details_solar_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/solar_add_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/solar_cultivos_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/solar_edit_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/ventas/ventas_home_page.dart';
+import 'package:app_invernadero_trabajador/src/services/actividades/gastos_services.dart';
+import 'package:app_invernadero_trabajador/src/services/actividades/productos_services.dart';
+import 'package:app_invernadero_trabajador/src/services/actividades/sobrantes_services.dart';
+import 'package:app_invernadero_trabajador/src/services/actividades/tareas_services.dart';
 import 'package:app_invernadero_trabajador/src/services/solares_services.dart';
 import 'package:app_invernadero_trabajador/src/storage/secure_storage.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:provider/provider.dart';
 
@@ -76,10 +92,22 @@ class _MyAppState extends State<MyApp> {
         providers: [
             //ChangeNotifierProvider(create: (_)=> new LocalService()),
             ChangeNotifierProvider(create: (_)=> new SolarCultivoService(),),
-            
+            ChangeNotifierProvider(create: (_)=> new TareasService(),),
+            ChangeNotifierProvider(create: (_)=> new ProductosService(),),
+            ChangeNotifierProvider(create: (_)=> new GastosService(),),
+            ChangeNotifierProvider(create: (_)=> new SobrantesService(),),
 
           ],
             child: new MaterialApp(
+              localizationsDelegates: [ 
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: [
+              const Locale('en'), // English
+              const Locale('es'), // Español
+            ],
         title: 'SS Invernadero',
         theme: miTema,
         initialRoute: prefs.route,
@@ -100,18 +128,31 @@ class _MyAppState extends State<MyApp> {
           'details_solar'         : (BuildContext)=>DetailsSolarPage(),
           'solar_add'             : (BuildContext)=>SolarAddPage(),
           'solar_edit'            : (BuildContext)=>SolarEditPAge(),
+          'cultivo_add'           : (BuildContext)=>CultivoAddPage(),
+          'cultivo_edit'          : (BuildContext)=>CultivoEditPage(),
+          'cultivo_etapas'        : (BuildContext)=>CultivoEtapasPage(),
 
           'actividades'           : (BuildContext)=>ActividadesHomePage(),
+          
+          'tarea_add'             :(BuildContext)=>TareaAddPage(),
+          'tarea_edit'             :(BuildContext)=>TareaEditPage(),
+          'tarea_herramientas'    : (BuildContext)=>TareaHerramientasPage(),
+          'producto_add'          : (BuildContext)=>ProductoAddPage(),
+          'producto_edit'         : (BuildContext)=>ProductoEditPage(),
+          'gasto_add'             : (BuildContext)=>GastoAddPage(),
+          'gasto_edit'            : (BuildContext)=>GastoEditPage(),
+          'sobrante_add'          : (BuildContext)=>SobranteAddPage(),
+          'sobrante_edit'         : (BuildContext)=>SobranteEditPage(),
           'herramientas'          : (BuildContext)=>HerramientasHomePage(),
           'insumos'               : (BuildContext)=>InsumosHomePage(),
+
           'ofertas'               : (BuildContext)=>OfertasHomePage(),
           'pedidos'               : (BuildContext)=>PedidosHomePage(),
           'plagas'                : (BuildContext)=>PlagasHomePage(),
           'ventas'                : (BuildContext)=>VentasHomePage(),
           'ajustes'               : (BuildContext)=>AjustesPage(),
-          
         }
-    ),
+      ),
      );
   }
 }

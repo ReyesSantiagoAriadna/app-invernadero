@@ -5,6 +5,7 @@ import 'package:app_invernadero_trabajador/src/blocs/page_bloc.dart';
 import 'package:app_invernadero_trabajador/src/pages/home/home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/home/main_page.dart';
 import 'package:app_invernadero_trabajador/src/providers/menu_provider.dart';
+import 'package:app_invernadero_trabajador/src/services/solares_services.dart';
 import 'package:app_invernadero_trabajador/src/storage/secure_storage.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:app_invernadero_trabajador/src/utils/colors.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:provider/provider.dart';
 
 class MenuDrawer extends StatefulWidget {
   @override
@@ -32,7 +34,8 @@ class _MenuDrawerState extends State<MenuDrawer> {
   ScrollController _scrollBottomBarController = new ScrollController (); // establece el controlador en desplazamiento 
   bool isScrollingDown = false ; 
   bool _show = true ; 
-
+  
+  bool fetch=false;
 
   SecureStorage _prefs = SecureStorage();
   _handleDrawer(){
@@ -41,12 +44,43 @@ class _MenuDrawerState extends State<MenuDrawer> {
       print("open");
     });  
   }
+  bool _checkConfiguration() => true;
 
   @override
   void initState() {
-     myScroll ();
+    _pageBloc = PageBloc();
+    _pageBloc.onChangePageTitle('Home');
+    myScroll ();
+
+    if (_checkConfiguration()) {
+      print("LLAMANDO UNA VEZ");
+      Future.delayed(Duration.zero,() async{
+        context;
+        await Provider
+        .of<SolarCultivoService>(context,listen: false)
+        .fetchSolares();
+        // showDialog(context: context, builder: (context) => AlertDialog(
+        //   content: Column(
+        //     children: <Widget>[
+        //       Text('@todo')
+        //     ],
+        //   ),
+        //   actions: <Widget>[
+        //     FlatButton(onPressed: (){
+        //       Navigator.pop(context);
+        //     }, child: Text('OK')),
+        //   ],
+        // ));
+      });
+    }
+
     super.initState();
   } 
+
+
+
+ 
+
   @override
   void dispose() {
     _scrollBottomBarController.removeListener (() {}); 
@@ -89,7 +123,6 @@ void myScroll() async {
   void didChangeDependencies() {
     _prefs.route = 'menu_drawer';
     super.didChangeDependencies();
-    _pageBloc = PageBloc();
     opts =  menuProvider.loadData();
     _responsive = Responsive.of(context);
     _pageBloc.changeScrollController(_scrollBottomBarController);
@@ -112,16 +145,17 @@ void myScroll() async {
         ),onPressed:_handleDrawer,), 
         title: StreamBuilder(
         stream: _pageBloc.pageTitleStream,
+        initialData: _pageBloc.pageTitle,
         builder: (BuildContext context, AsyncSnapshot snapshot){
-          if(snapshot.hasData){
-            return Text(snapshot.data,
+          //if(snapshot.hasData){
+            return Text(snapshot.hasData?snapshot.data:'Home',
               style: TextStyle(color:MyColors.GreyIcon,fontFamily: AppConfig.quicksand,
               fontWeight: FontWeight.w700
               ),);
-          }
-          return Text('Home', style: TextStyle(color:MyColors.GreyIcon,fontFamily: AppConfig.quicksand,
-              fontWeight: FontWeight.w700
-              ),);
+          //}
+          // return Text('Home', style: TextStyle(color:MyColors.GreyIcon,fontFamily: AppConfig.quicksand,
+          //     fontWeight: FontWeight.w700
+          //     ),);
         },
       ),
         

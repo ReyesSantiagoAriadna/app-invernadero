@@ -70,8 +70,9 @@ class _SolarAddPageState extends State<SolarAddPage> {
   @override
   void dispose() {
     print("cerrando...");
+     solarCultivoBloc.reset();
     solarCultivoBloc.dispose();
-    solarCultivoBloc.reset();
+   
     super.dispose();
   }
   @override
@@ -115,7 +116,6 @@ class _SolarAddPageState extends State<SolarAddPage> {
 
   _body(){
     
-
     return Container(
       // color: Colors.red,
       margin: EdgeInsets.only(left:8,right:12,top: 10),
@@ -250,7 +250,7 @@ class _SolarAddPageState extends State<SolarAddPage> {
     );
   }
 
-
+  
   _description(){
     return Container(
       child: Column(
@@ -389,17 +389,17 @@ class _SolarAddPageState extends State<SolarAddPage> {
           StreamBuilder(
             stream: solarCultivoBloc.distritoActiveStream ,
             builder: (BuildContext context, AsyncSnapshot snapshot){
-              Distrito distrito = snapshot.data;
+             
               return GestureDetector(
-                onTap: (){
+                onTap: snapshot.hasData ? () {
                   showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return DialogListDistrito(solarCultivoBloc: solarCultivoBloc,);
                   });
-                },
+                }:null,
                 child:snapshot.hasData?
-                 _select(distrito.distrito):
+                 _select(snapshot.data.distrito):
                  _select("Elije el distrito"),
               );
             },
@@ -425,13 +425,15 @@ class _SolarAddPageState extends State<SolarAddPage> {
             stream: solarCultivoBloc.municipioActiveStream ,
             builder: (BuildContext context, AsyncSnapshot snapshot){
               return GestureDetector(
-                onTap: (){
+                onTap:snapshot.hasData? (){
                   showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return DialogListMunicipio(solarCultivoBloc: solarCultivoBloc,);
                   });
-                },
+                }
+                :
+                null,
                 child:snapshot.hasData?
                  _select(snapshot.data):
                  _select("Elije el distrito"),
@@ -487,7 +489,7 @@ class _SolarAddPageState extends State<SolarAddPage> {
     setState(() {
       _isLoading=true;
     });
-
+      
     Solar solar= Solar(
       nombre: solarCultivoBloc.solarNombre,
       largo: double.parse(solarCultivoBloc.solarLargo),

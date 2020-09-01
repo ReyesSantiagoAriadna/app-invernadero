@@ -73,7 +73,7 @@ class SecureStorage{
     _prefs.setString('notification_id', notificationId);
   }
   get route{
-    return _prefs.getString('route')??'register_code';
+    return _prefs.getString('route')?? 'login_phone' ;//'register_code';
   }
   set route(String route){
     _prefs.setString('route', route);

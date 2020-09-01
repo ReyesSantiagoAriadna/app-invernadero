@@ -1,7 +1,13 @@
 import 'dart:async';
 
+import 'package:app_invernadero_trabajador/src/blocs/solar_cultivo_bloc.dart';
+import 'package:app_invernadero_trabajador/src/models/actividades/gastos_model.dart';
+import 'package:app_invernadero_trabajador/src/models/actividades/herramienta_model.dart';
+import 'package:app_invernadero_trabajador/src/models/actividades/producto_model.dart';
+import 'package:app_invernadero_trabajador/src/models/solares_cultivos/cultivo.dart';
+import 'package:app_invernadero_trabajador/src/models/solares_cultivos/etapa_cultivo.dart';
+
 class Validators{
-  
   final validarTelefono=StreamTransformer<String,String>.fromHandlers(
     handleData: (telefono,sink){
       if(telefono.length>0){
@@ -87,7 +93,14 @@ class Validators{
   //Solares-Cultivos
    final validateSolarNombre=StreamTransformer<String,String>.fromHandlers(
     handleData: (nombre,sink){
-      (nombre.length>5)?sink.add(nombre):sink.addError("");
+      //print("data valid-> $nombre");
+      if(nombre.length>0){
+        print("Agrenado valorrr $nombre");
+        sink.add(nombre);
+      }else{
+        print("hay error");
+        sink.addError("");
+      }
     }
   );
 
@@ -95,7 +108,8 @@ class Validators{
   final validateSolarLargo=StreamTransformer<String,String>.fromHandlers(
     handleData: (largo,sink){
       bool valid = 
-      RegExp(r"[0-9]+(\.[0-9][0-9]?)?").hasMatch(largo);
+      RegExp(r'(^\-?\d*\.?\d*)$').hasMatch(largo);
+      // RegExp(r"[0-9]+(\.[0-9][0-9]?)?").hasMatch(largo);
        if(valid){
         sink.add(largo);
       }else{
@@ -118,8 +132,76 @@ class Validators{
   
   final validateSolarDescripcion=StreamTransformer<String,String>.fromHandlers(
     handleData: (descripcion,sink){
-       if(descripcion.length>5){
+       if(descripcion.length>0){
         sink.add(descripcion);
+      }else{
+        sink.addError('');
+      }
+    }
+  );
+
+  final validateDecimal=StreamTransformer<String,String>.fromHandlers(
+    handleData: (d,sink){
+      bool valid = 
+      RegExp(r'(^\-?\d*\.?\d*)$').hasMatch(d);
+       if(valid){
+        sink.add(d);
+      }else{
+        sink.addError('');
+      }
+    }
+  );
+
+  final validateInteger=StreamTransformer<String,String>.fromHandlers(
+    handleData: (i,sink){
+      bool isInteger = RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(i);
+      isInteger?sink.add(i):sink.addError('');
+    }
+  );
+
+  final validateEtapa=StreamTransformer<Etapa,Etapa>.fromHandlers(
+    handleData: (e,sink){
+     if(e!=null && e.nombre!=""){
+        sink.add(e);
+      }else{
+        sink.addError('');
+      }
+    }
+  );
+
+  final validateCultivo=StreamTransformer<Cultivo,Cultivo>.fromHandlers(
+    handleData: (e,sink){
+     if(e!=null && e.nombre!=""){
+        sink.add(e);
+      }else{
+        sink.addError('');
+      }
+    }
+  );
+
+  final validateHerramienta=StreamTransformer<Herramienta,Herramienta>.fromHandlers(
+    handleData: (e,sink){
+     if(e!=null && e.nombre!=""){
+        sink.add(e);
+      }else{
+        sink.addError('');
+      }
+    }
+  );
+  final validatePersonal=StreamTransformer<Personal,Personal>.fromHandlers(
+    handleData: (e,sink){
+     if(e!=null && e.nombre!=""){
+        sink.add(e);
+      }else{
+        sink.addError('');
+      }
+    }
+  );
+  
+  final validateProducto=StreamTransformer<Producto,Producto>.fromHandlers(
+    handleData: (e,sink){
+     if(e!=null && e.nombre!=""){
+        sink.add(e);
       }else{
         sink.addError('');
       }

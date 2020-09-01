@@ -26,4 +26,12 @@ class AppConfig{
 
   static const String uniMedidaCaja = "Caja";
 
+
+  static const String taskType1 = "Diario";
+  static const String taskType2 = "Semanal";
+  static const String taskType3 = "Ocasional";
+  static const String taskType4 = "Solo una vez";
+
+
+
 }

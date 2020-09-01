@@ -1,4 +1,5 @@
 import 'package:app_invernadero_trabajador/app_config.dart';
+import 'package:app_invernadero_trabajador/src/blocs/solar_cultivo_bloc.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/solar.dart';
 import 'package:app_invernadero_trabajador/src/services/solares_services.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
@@ -14,8 +15,8 @@ import 'package:provider/provider.dart';
 
 class SolarWidget extends StatefulWidget {
   final Solar solar;
-
-  const SolarWidget({Key key, this.solar}) : super(key: key);
+  final SolarCultivoBloc solarCultivoBloc;
+  const SolarWidget({Key key, this.solar, this.solarCultivoBloc}) : super(key: key);
 
  
   @override
@@ -43,7 +44,10 @@ class _SolarWidgetState extends State<SolarWidget> {
     _styleSub = TextStyle(color:Colors.black,fontFamily: AppConfig.quicksand,fontSize:_responsive.ip(1.5));
     
     return GestureDetector(
-      onTap: ()=>Navigator.pushNamed(context, 'details_solar',arguments: widget.solar),
+      onTap: (){
+        widget.solarCultivoBloc.onChangeSolar(widget.solar);
+        Navigator.pushNamed(context, 'details_solar',arguments: widget.solar);
+      },
       child: new Container(
         margin: EdgeInsets.only(top:2,bottom:15),
         child:Column(

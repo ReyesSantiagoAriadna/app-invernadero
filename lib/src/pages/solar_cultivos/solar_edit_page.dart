@@ -11,6 +11,7 @@ import 'package:app_invernadero_trabajador/src/utils/responsive.dart';
 import 'package:app_invernadero_trabajador/src/widgets/dialog_list_distrito.dart';
 import 'package:app_invernadero_trabajador/src/widgets/dialog_list_mun.dart';
 import 'package:app_invernadero_trabajador/src/widgets/dialog_list_region.dart';
+import 'package:app_invernadero_trabajador/src/widgets/input_nombre.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -33,23 +34,16 @@ class _SolarEditPAgeState extends State<SolarEditPAge> {
   Solar solar;
   bool _isLoading = false;
   Region region;
+
   @override
   void initState() {
     super.initState();
-  }
-  @override
-  void didChangeDependencies() {
     solarCultivoBloc = SolarCultivoBloc();
-    solar = ModalRoute.of(context).settings.arguments as Solar;
-    print("SOLAR ${solar.nombre}");
-    _responsive = Responsive.of(context);
-
+    solar = solarCultivoBloc.solar;
     solarCultivoBloc.changeSolarNombre(solar.nombre);
     solarCultivoBloc.changeSolarLargo(solar.largo.toString());
     solarCultivoBloc.changeSolarAncho(solar.ancho.toString());
     solarCultivoBloc.changeSolarDescrip(solar.descripcion);
-
-
     List<Region> regions = Provider.of<SolarCultivoService>(context,listen: false).regionList;
 
     region = regions.firstWhere((r)=>r.region==solar.region);
@@ -61,8 +55,17 @@ class _SolarEditPAgeState extends State<SolarEditPAge> {
 
     solarCultivoBloc.changeDistritoActive(distrito);
     solarCultivoBloc.changeMunicipioActive(solar.municipio);
-    
+
     solarCultivoBloc.init();
+
+  }
+  @override
+  void didChangeDependencies() {
+   
+  // solar = ModalRoute.of(context).settings.arguments as Solar;
+   
+    _responsive = Responsive.of(context);
+
 
      _style = TextStyle(
       color: MyColors.GreyIcon,
@@ -108,7 +111,11 @@ class _SolarEditPAgeState extends State<SolarEditPAge> {
             ],
           ),
 
-          body: _body(),)
+              body:GestureDetector(
+            onTap: ()=>FocusScope.of(context).unfocus(),
+            child: _body()
+          ),
+         )
         ),
          _isLoading? Positioned.fill(child:  Container(
                     color:Colors.black45,
@@ -144,6 +151,7 @@ class _SolarEditPAgeState extends State<SolarEditPAge> {
           SizedBox(height:5),
 
           _inputNombre(),
+         // field(_controllerName),
           SizedBox(height:_responsive.ip(2)),
           Row(
             children: <Widget>[
@@ -166,6 +174,7 @@ class _SolarEditPAgeState extends State<SolarEditPAge> {
                     stream: solarCultivoBloc.solarLargoStream,
                     initialData: solarCultivoBloc.solarLargo,
                     builder: (context, snapshot) {
+                      print("DATA STRB ${snapshot.data}");
                       return TextFormField(
                           initialValue: solarCultivoBloc.solarLargo,
                          keyboardType: TextInputType.number,
@@ -222,21 +231,76 @@ class _SolarEditPAgeState extends State<SolarEditPAge> {
     );
   }
 
+//   Widget field(TextEditingController _txtController) {
+//     return StreamBuilder(
+//    stream: solarCultivoBloc.solarNombreStream ,
+//    initialData: solarCultivoBloc.solarNombre,
+//     builder: (context, snapshot) {
+//       // _txtController.value =
+//       //     _txtController.value.copyWith(text: snapshot.data);
+//       return InputName(
+//           onChange: (s){
+//             solarCultivoBloc.onChangeNombre(s);
+//           } ,
+//           initialData: snapshot.data,
+//            error: snapshot.error =='*' ? null:snapshot.error,
+//         );
+//       }
+//     );
+// }
+
   _inputNombre(){
+    // print("llamandose....");
+    // return StreamBuilder(
+    //  stream: solarCultivoBloc.solarNombreStream ,
+    //  initialData:solarCultivoBloc.solarNombre ,
+    //   builder: (BuildContext context, AsyncSnapshot snapshot){
+    //     print("=>>>>mostrnaod valor bloc ${solarCultivoBloc.solarNombre}");
+    //     // if(!snapshot.hasError && snapshot.hasData)
+    //     //   solarCultivoBloc.changeSolarNombre(snapshot.data);
+    //     return InputName(
+    //       onChange: (text)=> solarCultivoBloc.changeSolarNombre(text),
+    //       initialData: snapshot.data,
+    //        error: snapshot.error =='*' ? null:snapshot.error,
+    //     );
+    //   },
+    // );
+
+    //  return StreamBuilder(
+    //     stream: solarCultivoBloc.solarNombreStream ,
+    //     builder: (BuildContext context, AsyncSnapshot snapshot){
+    //       print("MOSTRANDO DATA ${snapshot.data}");
+    //       return  TextFormField(
+    //         //  controller: _nombre,
+    //         decoration: InputDecoration(
+    //           focusedBorder:  UnderlineInputBorder(      
+    //                     borderSide: BorderSide(color:miTema.accentColor)),
+    //           icon: Icon(LineIcons.sun_o),
+    //           labelText: 'Nombre', 
+    //           errorText: snapshot.error =='*' ? null:snapshot.error,
+    //         ),
+    //         onChanged: solarCultivoBloc.changeSolarNombre,
+            
+    //       );
+    //       }
+    //   );
+
     return StreamBuilder(
       stream: solarCultivoBloc.solarNombreStream,
       initialData: solarCultivoBloc.solarNombre,
       builder: (BuildContext context, AsyncSnapshot snapshot){
+       
+      //  return Container();
         return TextFormField(
-          initialValue: snapshot.data,
-              decoration: InputDecoration(
-                 focusedBorder:  UnderlineInputBorder(
-                          borderSide: BorderSide(color:miTema.accentColor)),
-                icon: Icon(LineIcons.sun_o),
-                labelText: 'Nombre',
-                errorText: snapshot.error
-              ),
-              onChanged: solarCultivoBloc.changeSolarNombre,
+          initialValue: snapshot.hasData ? snapshot.data:'',
+          decoration: InputDecoration(
+              focusedBorder:  UnderlineInputBorder(
+                      borderSide: BorderSide(color:miTema.accentColor)),
+            icon: Icon(LineIcons.sun_o),
+            labelText: 'Nombre',
+            errorText: snapshot.error
+          ),
+          onChanged: solarCultivoBloc.changeSolarNombre,
             );
       },
     );
@@ -263,6 +327,7 @@ _description(){
               initialData: solarCultivoBloc.solarDescrip,
               builder: (context, snapshot) {
                 return TextFormField(
+                  initialValue: solarCultivoBloc.solarDescrip,
                   maxLines: 4,
                   decoration: InputDecoration(
                    hintText: "Ingresa una descripción..",
@@ -413,11 +478,11 @@ _description(){
   _createActionSave(){
     return StreamBuilder(
       stream: solarCultivoBloc.formValidStream ,
+      initialData: false,
       builder: (BuildContext context, AsyncSnapshot snapshot){
-         print("DATA BOOL: ${snapshot.data}");
         return IconButton(
           icon: Icon(LineIcons.save,color: MyColors.GreyIcon,),
-          onPressed: ()=>snapshot.hasData? _saveSolar():print("no se que ostia"),
+          onPressed: ()=>snapshot.hasData? _saveSolar():null,
         );
       },
     );
@@ -428,12 +493,14 @@ _description(){
       return;
 
     if(_isLoading)return;
-
+    
     setState(() {
       _isLoading=true;
-    });
+    }); 
 
-    Solar solar= Solar(
+
+    Solar s= Solar(
+      id: solar.id,
       nombre: solarCultivoBloc.solarNombre,
       largo: double.parse(solarCultivoBloc.solarLargo),
       ancho: double.parse(solarCultivoBloc.solarAncho),
@@ -445,24 +512,24 @@ _description(){
       longitud: mapBoxBloc.position.longitude,
     );
 
-    // await Provider.of<SolarCultivoService>(context,listen: false)
-    //   .updateSolar(solar);
-    //     setState(() {
-    //       _isLoading=true;
-    //     });
-    //   Flushbar(
-    //     message:  Provider.of<SolarCultivoService>(context,listen: false).response,
-    //     duration:  Duration(seconds: 2),
-    //   )..show(context).then((r){
-    //     Navigator.pop(context);
-    //   });
-
-
-     Flushbar(
+    await Provider.of<SolarCultivoService>(context,listen: false)
+      .updateSolar(s);
+        setState(() {
+          _isLoading=true;  
+        });
+      Flushbar(
         message:  Provider.of<SolarCultivoService>(context,listen: false).response,
         duration:  Duration(seconds: 2),
       )..show(context).then((r){
         Navigator.pop(context);
       });
+
+
+    //  Flushbar(
+    //     message: solar.nombre ,//Provider.of<SolarCultivoService>(context,listen: false).response,
+    //     duration:  Duration(seconds: 2),
+    //   )..show(context).then((r){
+    //     Navigator.pop(context);
+    //   });
   }
 }

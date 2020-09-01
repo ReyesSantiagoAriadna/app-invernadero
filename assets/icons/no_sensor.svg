@@ -1,0 +1,20 @@
+<svg width="1630" height="1770" xmlns="http://www.w3.org/2000/svg" clip-rule="evenodd">
+
+ <g>
+  <title>background</title>
+  <rect fill="none" id="canvas_background" height="1772" width="1632" y="-1" x="-1"/>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <g id="Capa_x0020_1">
+   <metadata transform="translate(-5685.744140625,-714.2894287109375) " id="CorelCorpID_0Corel-Layer"/>
+   <g id="_1241367407232">
+    <path id="svg_1" d="m1109.25586,1235.71057c-157,205 -570,141 -737,-47c-151,-170 -206,-552 2,-690c76,22 710,659 735,737zm-165,-358c44,-87 151,-125 47,-253c-96,-118 -178,-29 -263,41l-351,-353c-374,144 -340,905 140,1113c220,96 484,69 677,-77c207,-156 -129,-315 -250,-471z" fill="black"/>
+    <path id="svg_2" d="m891.25586,66.71057c9,215 142,13 381,249c51,50 102,126 129,199c57,152 -14,187 120,200c175,-219 -365,-756 -630,-648z" fill="black"/>
+    <path id="svg_3" d="m1299.25586,713.71057c11,-235 -170,-416 -402,-416c-23,195 68,67 204,190c146,134 2,226 198,226z" fill="black"/>
+   </g>
+   <line id="svg_4" y2="82.71057" x2="1450.25586" y1="1428.71057" x1="232.25586" stroke-linejoin="bevel" stroke-linecap="round" stroke-width="196.85" stroke="white" fill="none"/>
+   <line id="svg_5" y2="129.71057" x2="1407.25586" y1="1475.71057" x1="189.25586" stroke-linejoin="bevel" stroke-linecap="square" stroke-width="118.11" stroke="black" fill="none"/>
+  </g>
+ </g>
+</svg>

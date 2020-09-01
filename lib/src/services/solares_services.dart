@@ -1,6 +1,8 @@
 
 import 'dart:convert';
 
+import 'package:app_invernadero_trabajador/src/blocs/solar_cultivo_bloc.dart';
+import 'package:app_invernadero_trabajador/src/models/solares_cultivos/cultivo.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/regiones.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/solar.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/solar_model.dart';
@@ -12,7 +14,7 @@ import 'package:rxdart/rxdart.dart';
 class SolarCultivoService with ChangeNotifier{
   
   SolaresCultivosProvider solaresCultivosProvider = SolaresCultivosProvider();
-  
+  SolarCultivoBloc solarCultivoBloc = SolarCultivoBloc();
   List<Solar> solarList= List();
   List<Region> regionList = List();
 
@@ -52,8 +54,6 @@ class SolarCultivoService with ChangeNotifier{
     final resp = await rootBundle.loadString('data/regionalizacion.json');
     RegionesModel regiones = RegionesModel.fromJson(json.decode(resp));
     regionList = regiones.regiones.cast();
-
-    
     notifyListeners();
   }
 
@@ -66,6 +66,18 @@ class SolarCultivoService with ChangeNotifier{
       _solaresController.sink.add(solarList);
     }
     notifyListeners();
+  }
+
+  Future<bool> fetchSolares()async{
+    print(">>>>>>>>>>>>>cargando Solares>>>>>>>>>>>>>");
+    final list =  await solaresCultivosProvider.loadSolares();
+    if(list!=[] && list.isNotEmpty){
+      this.solarList.addAll(list);
+      _solaresController.sink.add(solarList);
+      return true;
+    }
+    return false;
+    // notifyListeners();
   }
 
   Future<bool> addSolar(Solar solar)async{
@@ -84,10 +96,11 @@ class SolarCultivoService with ChangeNotifier{
   Future<bool> updateSolar(Solar solar)async{
     final resp = await solaresCultivosProvider.updateSolar(solar);
     if(resp!=null){
-      int index = this.solarList.indexWhere((item)=>item.id==solar.id);   
+      int index = this.solarList.indexWhere((item)=>item.id==solar.id);  
+      print("index de elemento $index"); 
       this.solarList[index]=resp;
-      this.solarList.add(resp);
       _solaresController.sink.add(solarList);
+      solarCultivoBloc.onChangeSolar(resp);
       changeResponse("Registro actualizado");
       return true;
     }else{
@@ -109,7 +122,58 @@ class SolarCultivoService with ChangeNotifier{
       return false;
     }
   }
+  
+  Future<bool> addCultivo(Cultivo cultivo,int etapas)async{
+    final Cultivo resp = await solaresCultivosProvider.addCultivo(cultivo,etapas);
+    if(resp!=null){
+      int index = this.solarList.indexWhere((item)=>item.id==cultivo.idFksolar);  
+      Solar s = solarList[index];
+      s.cultivos.add(resp);
+      solarList[index] = s; 
+      _solaresController.sink.add(solarList);
+      solarCultivoBloc.onChangeSolar(s);
+      changeResponse("Cultivo Agregado");
+      return true;
+    }else{
+      changeResponse("Algo ha salido mal");
+      return true;
+    }
+  }
 
+  Future<bool> updateCultivo(Cultivo cultivo,int etapas)async{
+    final Cultivo resp = await solaresCultivosProvider.updateCultivo(cultivo,etapas);
+    if(resp!=null){
+      int index = this.solarList.indexWhere((item)=>item.id==cultivo.idFksolar);  
+      Solar s = solarList[index];
+      
+      int indexcultivo = s.cultivos.indexWhere((item)=>item.id==cultivo.id);  
+      s.cultivos[indexcultivo] = resp;
 
+      solarList[index] = s; 
+      _solaresController.sink.add(solarList);
+      solarCultivoBloc.onChangeSolar(s);
+      changeResponse("Cultivo editado");
+      return true;
+    }else{
+      changeResponse("Algo ha salido mal");
+      return true;
+    }
+  }
 
+   Future<bool> deleteCultivo(int idSolar,int  idCultivo)async{
+    final resp = await solaresCultivosProvider.deleteCultivo(idCultivo.toString());
+    if(resp){
+      int index = this.solarList.indexWhere((item)=>item.id==idSolar);  
+      Solar s = solarList[index];
+      s.cultivos.removeWhere((item)=>item.id==idCultivo); 
+      solarList[index] = s; 
+      _solaresController.sink.add(solarList);
+      solarCultivoBloc.onChangeSolar(s);
+      changeResponse("cultivo eliminado");
+      return true;
+    }else{
+      changeResponse("Algo ha salido mal");
+      return false;
+    }
+  }
 }

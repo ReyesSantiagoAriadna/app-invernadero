@@ -37,8 +37,8 @@ class PageBloc{
   final StreamController<Widget> _pageController =
       StreamController<Widget>.broadcast();
   
-  final StreamController<String> _pageTitleController = 
-      StreamController<String>.broadcast();
+  final  _pageTitleController = 
+      BehaviorSubject<String>();
   
   final _scrollController = BehaviorSubject<ScrollController>();
   final _showAppBarController = BehaviorSubject<bool>();
@@ -52,13 +52,21 @@ class PageBloc{
 
   Function(ScrollController) get changeScrollController => _scrollController.sink.add;
   Function(bool) get changeShowAppBar => _showAppBarController.sink.add;
+  
+  Function(String) get onChangePageTitle => _pageTitleController.sink.add;
+
+
   ScrollController get scrollCont => _scrollController.value;
+
+
   bool get showAppBar => _showAppBarController.value;
   
+  String get pageTitle => _pageTitleController.value;
   
   void pickPage(String route,String pageTitle) {
     // indice = i;
-    _pageTitleController.sink.add(pageTitle);
+    // _pageTitleController.sink.add(pageTitle);
+    onChangePageTitle(pageTitle);
     switch (route) {
       case 'main':
         _pageController.sink.add(MainPage());

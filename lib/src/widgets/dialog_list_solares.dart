@@ -6,16 +6,16 @@ import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class DialogList extends StatefulWidget {
+class DialogListSolares extends StatefulWidget {
   final SolarCultivoBloc solarCultivoBloc;
 
-  const DialogList({Key key,@required this.solarCultivoBloc}) : super(key: key);
+  const DialogListSolares({Key key,@required this.solarCultivoBloc}) : super(key: key);
   
   @override
-  _DialogListState createState() => _DialogListState();
+  _DialogListSolaresState createState() => _DialogListSolaresState();
 }
 
-class _DialogListState extends State<DialogList> {
+class _DialogListSolaresState extends State<DialogListSolares> {
   int _radioValue=-1;
   List<Solar> solaresList;
   
