@@ -80,7 +80,14 @@ class SolarCultivoBloc with Validators{
     _solarNombreController.close();
     _solarLargoController.close();
     _solarAnchoController.close();
-    _solarDescripController.close();
+    _solarDescripController.close(); 
+
+    
+  }
+
+  void reset(){
+    _solarActiveController.sink.addError('*');
+    _cultivoActiveController.sink.addError('*');
   }
   
 
