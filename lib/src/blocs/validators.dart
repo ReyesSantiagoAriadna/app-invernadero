@@ -207,4 +207,108 @@ class Validators{
       }
     }
   );
+  final validarNombrePlaga=StreamTransformer<String,String>.fromHandlers(
+    handleData: (nombre,sink){
+      (nombre.length>3)?sink.add(nombre):sink.addError("Ingrese este campo");
+    }
+  );
+
+  final validarFechaPlaga=StreamTransformer<String,String>.fromHandlers(
+    handleData: (nombre,sink){
+      (nombre != null)?sink.add(nombre):sink.addError("Ingrese este campo");
+    }
+  );
+
+  final validarTratamientoPlaga=StreamTransformer<String,String>.fromHandlers(
+    handleData: (tratamiento,sink){
+      (tratamiento.length>5)?sink.add(tratamiento):sink.addError("Ingrese este campo");
+    }
+  );
+
+  final validarObservacionPlaga=StreamTransformer<String,String>.fromHandlers(
+    handleData: (observacion,sink){
+      (observacion.length>5)?sink.add(observacion):sink.addError("Ingrese este campo");
+    }
+  );
+
+  final validarNombreHerramienta=StreamTransformer<String,String>.fromHandlers(
+    handleData: (nombre,sink){
+      (nombre.length>2)?sink.add(nombre):sink.addError("Ingrese este campo");
+    }
+  );
+
+  final validarDescripcionHerramienta=StreamTransformer<String,String>.fromHandlers(
+    handleData: (descripcion,sink){
+      (descripcion.length>5)?sink.add(descripcion):sink.addError("Ingrese este campo");
+    }
+  );
+
+  final validarCantidadHerramienta=StreamTransformer<int,int>.fromHandlers(
+    handleData: (cantidad,sink){
+      if(cantidad >0 && cantidad <=100){
+        sink.add(cantidad);
+      }else{
+        sink.addError('Cantidad incorrecto');
+      }
+    }
+  );
+
+  final validarDescripcionOferta=StreamTransformer<String,String>.fromHandlers(
+    handleData: (descripcion,sink){
+      (descripcion.length>5)?sink.add(descripcion):sink.addError("Ingrese este campo");
+    }
+  );
+
+  //insumos
+  final validarNombreInsumo=StreamTransformer<String,String>.fromHandlers(
+    handleData: (nombre,sink){
+      (nombre.length>3)?sink.add(nombre):sink.addError("Ingrese este campo");
+    }
+  ); 
+
+  final validarTipoInsumo=StreamTransformer<String,String>.fromHandlers(
+    handleData: (tipo,sink){
+      print("tipo");
+      (tipo.length>0)?sink.add(tipo):sink.addError("Ingrese este campo");
+    }
+  ); 
+
+  final validarUnidadInsumo=StreamTransformer<String,String>.fromHandlers(
+    handleData: (unidad,sink){
+      print("unidad");
+      (unidad.length>0)?sink.add(unidad):sink.addError("Ingrese este campo");
+    }
+  );
+  
+  final validarCantidadInsumo=StreamTransformer<String,String>.fromHandlers(
+     handleData: (cantidad,sink){
+      bool valid = 
+      RegExp(r"^[0-9]{1,10}$").hasMatch(cantidad);
+      print("cantidad");
+       if(valid){
+        sink.add(cantidad);
+      }else{ 
+          sink.addError('Solo digitos y menos de 10 digitos'); 
+      }
+    }
+  );
+
+  final validarComposicionInsumo=StreamTransformer<String,String>.fromHandlers(
+    handleData: (composicion,sink){
+      (composicion.length>3)?sink.add(composicion):sink.addError("Ingrese este campo");
+    }
+  );
+
+  final validarObservacionInsumo=StreamTransformer<String,String>.fromHandlers(
+    handleData: (observacion,sink){
+      (observacion.length>5)?sink.add(observacion):sink.addError("Ingrese este campo");
+    }
+  );
+
+  final validarImagenInsumo=StreamTransformer<String,String>.fromHandlers(
+     handleData: (imagen,sink){
+       print("imagen");
+      (imagen.length>0)?sink.add(imagen):sink.addError("Ingrese este campo");
+    }
+  );
 }

@@ -209,9 +209,15 @@ class SolarCultivoBloc with Validators{
     // _solarAnchoController.close();
     // _solarDescripController.close();
     // _municipioActiveController.close();
-
+    // _regionController.close();
     // _solarNombreController.close();
+    // _solarLargoController.close();
+    // _solarAnchoController.close();
+    // _solarDescripController.close(); 
+
+    
   }
+ 
   
   void reset(){
     _solarNombreController.sink.addError('*');

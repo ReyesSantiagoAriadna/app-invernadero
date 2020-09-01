@@ -9,9 +9,13 @@ import 'package:app_invernadero_trabajador/src/pages/actividades/tareas/tarea_ad
 import 'package:app_invernadero_trabajador/src/pages/actividades/tareas/tarea_edit_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/actividades/tareas/tarea_herramientas.dart';
 import 'package:app_invernadero_trabajador/src/pages/ajustes/ajustes_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/herramientas/add_herramienta_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/herramientas/edit_herramienta_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/herramientas/herramientas_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/home/home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/home/main_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/insumos/add_insumo_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/insumos/edit_insumo_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/insumos/insumos_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/login/config_password_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/login/login_password_page.dart';
@@ -19,8 +23,11 @@ import 'package:app_invernadero_trabajador/src/pages/login/login_phone_page.dart
 import 'package:app_invernadero_trabajador/src/pages/login/pin_code_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/login/register_code_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/menu_drawer.dart';
+import 'package:app_invernadero_trabajador/src/pages/ofertas/add_oferta_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/ofertas/ofertas_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/pedidos/pedidos_home_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/plagas/add_plaga_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/plagas/edit_plaga_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/plagas/plagas_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/cultivo_add_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/cultivo_edit_page.dart';
@@ -34,7 +41,12 @@ import 'package:app_invernadero_trabajador/src/services/actividades/gastos_servi
 import 'package:app_invernadero_trabajador/src/services/actividades/productos_services.dart';
 import 'package:app_invernadero_trabajador/src/services/actividades/sobrantes_services.dart';
 import 'package:app_invernadero_trabajador/src/services/actividades/tareas_services.dart';
+import 'package:app_invernadero_trabajador/src/services/insumosService/insumos_service.dart';
+import 'package:app_invernadero_trabajador/src/services/ofertaService/ofertas_service.dart';
+import 'package:app_invernadero_trabajador/src/services/plagasService/plaga_services.dart';
+// import 'package:app_invernadero_trabajador/src/services/productoService/produtos_service.dart';
 import 'package:app_invernadero_trabajador/src/services/solares_services.dart';
+import 'package:app_invernadero_trabajador/src/services/inventarioService/inventario_service.dart';
 import 'package:app_invernadero_trabajador/src/storage/secure_storage.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -97,9 +109,15 @@ class _MyAppState extends State<MyApp> {
             ChangeNotifierProvider(create: (_)=> new GastosService(),),
             ChangeNotifierProvider(create: (_)=> new SobrantesService(),),
 
+            ChangeNotifierProvider(create: (_)=> new PlagaService(),),
+            ChangeNotifierProvider(create: (_)=>new InventarioService(),),
+            ChangeNotifierProvider(create: (_)=>new OfertaService(),),
+            // ChangeNotifierProvider(create: (_)=>new ProductosService(),),
+            ChangeNotifierProvider(create: (_)=>new InsumoService(),)
           ],
             child: new MaterialApp(
-              localizationsDelegates: [ 
+              
+            localizationsDelegates: [ 
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
@@ -108,6 +126,7 @@ class _MyAppState extends State<MyApp> {
               const Locale('en'), // English
               const Locale('es'), // Español
             ],
+
         title: 'SS Invernadero',
         theme: miTema,
         initialRoute: prefs.route,
@@ -144,16 +163,28 @@ class _MyAppState extends State<MyApp> {
           'sobrante_add'          : (BuildContext)=>SobranteAddPage(),
           'sobrante_edit'         : (BuildContext)=>SobranteEditPage(),
           'herramientas'          : (BuildContext)=>HerramientasHomePage(),
+          'herramienta_add'       : (BuildContext)=>AddHerramientaPage(),
+          'herramienta_edit'      : (BuildContext)=>EditHerramientaPage(),
+          
           'insumos'               : (BuildContext)=>InsumosHomePage(),
 
+          'insumos_edit'          : (BuildContext)=>EditInsumoPage(),
+          'insumos_add'           : (BuildContext)=>AddInsumoPage(),
+          
           'ofertas'               : (BuildContext)=>OfertasHomePage(),
+          'oferta_add'            : (BuildContext)=>AddOfertaPage(),
+          
           'pedidos'               : (BuildContext)=>PedidosHomePage(),
+          
           'plagas'                : (BuildContext)=>PlagasHomePage(),
+          'plaga_add'             : (BuildContext)=>AddPlagaPage(),
+          'plaga_edit'            : (BuildContext)=>PlagaEditPage(),
+
           'ventas'                : (BuildContext)=>VentasHomePage(),
           'ajustes'               : (BuildContext)=>AjustesPage(),
         }
       ),
-     );
+    );
   }
 }
 

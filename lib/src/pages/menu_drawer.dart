@@ -2,9 +2,14 @@
 
 import 'package:app_invernadero_trabajador/app_config.dart';
 import 'package:app_invernadero_trabajador/src/blocs/page_bloc.dart';
+import 'package:app_invernadero_trabajador/src/models/ofertas/ofertaTipo.dart';
+import 'package:app_invernadero_trabajador/src/models/productos/producto.dart';
+import 'package:app_invernadero_trabajador/src/models/solares_cultivos/solar.dart';
 import 'package:app_invernadero_trabajador/src/pages/home/home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/home/main_page.dart';
 import 'package:app_invernadero_trabajador/src/providers/menu_provider.dart';
+import 'package:app_invernadero_trabajador/src/services/ofertaService/ofertas_service.dart';
+import 'package:app_invernadero_trabajador/src/services/productoService/produtos_service.dart';
 import 'package:app_invernadero_trabajador/src/services/solares_services.dart';
 import 'package:app_invernadero_trabajador/src/storage/secure_storage.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
@@ -36,6 +41,10 @@ class _MenuDrawerState extends State<MenuDrawer> {
   bool _show = true ; 
   
   bool fetch=false;
+
+  Stream<List<Solar>> solaresStream;
+  Stream<List<OfertaTipo>> ofertaTipoStream;
+  Stream<List<Producto>> productoStream;
 
   SecureStorage _prefs = SecureStorage();
   _handleDrawer(){
@@ -127,6 +136,10 @@ void myScroll() async {
     _responsive = Responsive.of(context);
     _pageBloc.changeScrollController(_scrollBottomBarController);
     _pageBloc.changeShowAppBar(true);
+    
+    solaresStream = Provider.of<SolarCultivoService>(context).solarStream;
+    ofertaTipoStream = Provider.of<OfertaService>(context).ofertaTipoStream;
+   /// productoStream = Provider.of<ProductosService>(context).productoStream;
   }
 
   

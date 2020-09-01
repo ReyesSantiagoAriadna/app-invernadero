@@ -40,27 +40,17 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
-    // return ChangeNotifierProvider(
-    //   builder: (context) => menuController,
-    //   child: ZoomScaffold(
-    //     menuScreen: MenuScreen(),
-    //     contentScreen: Layout(
-    //       contentBuilder: (cc) => Container(
-    //             color: Colors.white,
-    //             child: StreamBuilder(
-    //               // initialData: MyHomePage(),
-    //               stream: _pageBloc.pageStream,
-    //               builder: (BuildContext context, AsyncSnapshot snapshot){
-    //                 if(snapshot.hasData){
-    //                   return snapshot.data;
-    //                 }else{
-    //                   return Container(color:Colors.pink);
-    //                 }
-    //               },
-    //             ),
-    //           )),
-    //   ),
-    // );
+    return Container(
+       height: double.infinity,
+       width: double.infinity,
+       child: Center(
+         child:Container(
+             height: 100,
+             width: 100,
+             //child: DialogList(solarCultivoBloc:solarCultivoBloc),
+         )
+       ),
+     );
+     
   }
 }

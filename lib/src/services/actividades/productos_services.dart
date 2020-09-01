@@ -11,7 +11,7 @@ import 'package:rxdart/rxdart.dart';
 class ProductosService with ChangeNotifier{
   
   ProductosProvider productosProvider = ProductosProvider();
-
+  
   // SolarCultivoBloc solarCultivoBloc = SolarCultivoBloc();
   
   List<Producto> productoList = List();
