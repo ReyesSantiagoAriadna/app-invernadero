@@ -181,7 +181,8 @@ class _ProductoWidgetState extends State<ProductoWidget> {
                 ),
             ]
           );
-    customBottomSheet(myWidget, 0.15);
+     
+    customBottomSheet(myWidget, 0.18);
   }
 
 
@@ -222,7 +223,11 @@ class _ProductoWidgetState extends State<ProductoWidget> {
         //  _element(LineIcons.clipboard, widget.tarea.detalle),
       ],
     );
-    customBottomSheet(myWidget, 0.25);
+
+     final single = SingleChildScrollView(
+        child: myWidget,
+      );
+    customBottomSheet(myWidget, 0.30);
   }
 
   _element(Widget icon,String texto){

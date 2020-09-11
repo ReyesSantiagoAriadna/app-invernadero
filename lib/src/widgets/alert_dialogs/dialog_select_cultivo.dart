@@ -66,8 +66,9 @@ class DialogSelectCultivo extends StatelessWidget {
 
 class DialogListCultivo extends StatefulWidget {
   final SolarCultivoBloc solarCultivoBloc;
-
-  const DialogListCultivo({Key key,@required this.solarCultivoBloc}) : super(key: key);
+  final int type; // 0->normal 1->homeSlect
+  
+  const DialogListCultivo({Key key,@required this.solarCultivoBloc, this.type=0}) : super(key: key);
   
   @override
   _DialogListCultivoState createState() => _DialogListCultivoState();
@@ -80,13 +81,25 @@ class _DialogListCultivoState extends State<DialogListCultivo> {
   @override
   void initState() {
     
-    if(widget.solarCultivoBloc.solarActive!=null){
+    if(widget.type==0){
+      if(widget.solarCultivoBloc.solarActive!=null){
       cultivosList = widget.solarCultivoBloc.solarActive.cultivos;
       Cultivo cultivo = widget.solarCultivoBloc.cultivoActive;
       if(cultivo!=null  && cultivosList.contains(cultivo)){
         _radioValue = cultivosList.indexWhere((c)=>c==cultivo);
       }else{
         _radioValue = 0;
+      }
+      }
+    }else{
+      if(widget.solarCultivoBloc.solarHome!=null){
+      cultivosList = widget.solarCultivoBloc.solarHome.cultivos;
+      Cultivo cultivo = widget.solarCultivoBloc.cultivoHome;
+      if(cultivo!=null  && cultivosList.contains(cultivo)){
+        _radioValue = cultivosList.indexWhere((c)=>c==cultivo);
+      }else{
+        _radioValue = 0;
+      }
       }
     }
     super.initState();
@@ -132,7 +145,8 @@ class _DialogListCultivoState extends State<DialogListCultivo> {
           child: new Text("Aceptar",style: TextStyle(color:miTema.accentColor),),
           onPressed: () {
             if(cultivosList.isNotEmpty){
-              Cultivo cultivo = cultivosList[_radioValue];
+              if(widget.type==0){
+                 Cultivo cultivo = cultivosList[_radioValue];
               widget.solarCultivoBloc.changeCultivoActive(cultivo);
 
               final etapas = cultivo.etapas;
@@ -140,6 +154,10 @@ class _DialogListCultivoState extends State<DialogListCultivo> {
                 widget.solarCultivoBloc.changeEtapaActive(etapas[0]);
               else
                 widget.solarCultivoBloc.changeEtapaActive(null);
+              }else if(widget.type==1){
+                 Cultivo cultivo = cultivosList[_radioValue];
+                widget.solarCultivoBloc.changeCultivoHome(cultivo);
+              }
             }
             Navigator.of(context).pop();
           },

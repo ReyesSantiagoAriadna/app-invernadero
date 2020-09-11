@@ -1,5 +1,6 @@
 import 'package:app_invernadero_trabajador/app_config.dart';
 import 'package:app_invernadero_trabajador/src/blocs/solar_cultivo_bloc.dart';
+import 'package:app_invernadero_trabajador/src/models/actividades/tareas_model.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/solar.dart';
 import 'package:app_invernadero_trabajador/src/services/solares_services.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
@@ -68,8 +69,8 @@ class DialogSelectSolar extends StatelessWidget {
 
 class DialogListSolares extends StatefulWidget {
   final SolarCultivoBloc solarCultivoBloc;
-
-  const DialogListSolares({Key key,@required this.solarCultivoBloc}) : super(key: key);
+  final int type; // 0->normal 1->homeSlect
+  const DialogListSolares({Key key,@required this.solarCultivoBloc, this.type=0}) : super(key: key);
   
   @override
   _DialogListSolaresState createState() => _DialogListSolaresState();
@@ -87,7 +88,10 @@ class _DialogListSolaresState extends State<DialogListSolares> {
       Solar s = widget.solarCultivoBloc.solarActive;
       _radioValue = solaresList.indexWhere((solar)=>solar==s);
     // }
-
+      if(widget.type==1){
+        Solar sol = widget.solarCultivoBloc.solarHome;
+        _radioValue = solaresList.indexWhere((solar)=>solar==sol);
+      }
    
     super.initState();
   }
@@ -133,6 +137,7 @@ class _DialogListSolaresState extends State<DialogListSolares> {
           child: new Text("Aceptar",style: TextStyle(color:miTema.accentColor),),
           onPressed: () {
            
+           if(widget.type==0){
             Solar solarActive = solaresList[_radioValue];
             widget.solarCultivoBloc.changeSolarActive(solarActive);
             final cultivos = solarActive.cultivos;
@@ -148,6 +153,18 @@ class _DialogListSolaresState extends State<DialogListSolares> {
               widget.solarCultivoBloc.changeCultivoActive(null);
               widget.solarCultivoBloc.changeEtapaActive(null);
             }
+
+            print("normal");
+           }else if(widget.type==1){
+            print("solar de home");
+
+              Solar solarHome = solaresList[_radioValue];
+              widget.solarCultivoBloc.changeSolarHome(solarHome);
+              if(solarHome.cultivos.isNotEmpty){
+                widget.solarCultivoBloc.changeCultivoHome(solarHome.cultivos[0]);
+              }
+
+           }
              
            
             // widget.solarCultivoBloc.changeCultivoLiActiv(solarActive.cultivos);

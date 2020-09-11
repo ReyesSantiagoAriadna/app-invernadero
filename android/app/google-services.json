@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "333308280567",
+    "firebase_url": "https://ssinvernadero.firebaseio.com",
+    "project_id": "ssinvernadero",
+    "storage_bucket": "ssinvernadero.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:333308280567:android:2e8d6ac2b04d704ef69df2",
+        "android_client_info": {
+          "package_name": "com.itoaxaca.ssinvernadero"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "333308280567-5ve5snd7t5orttsnqfa2d0980241bsmh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.itoaxaca.ssinvernadero",
+            "certificate_hash": "e463da9efd058a38d868765a966388f4332d8073"
+          }
+        },
+        {
+          "client_id": "333308280567-gecpdfdh8l5sab1e22ekvk5tli604dl5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABt2nZqIQ5kMwi67Ai-qF-a6abBEPhOKk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "333308280567-gecpdfdh8l5sab1e22ekvk5tli604dl5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

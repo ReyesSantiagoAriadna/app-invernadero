@@ -49,6 +49,8 @@ class Producto {
         this.solar
     });
 
+    bool isSelect=false;
+
     int id;
     int idCultivo;
     String nombre;

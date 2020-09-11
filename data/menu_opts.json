@@ -2,6 +2,12 @@
     "nombreApp" : "App Invernadero",
     "rutas"     : [
         {
+            "ruta"      :   "home",
+            "icon"      :   "home",
+            "texto"     :   "Inicio",
+            "subtitulo" :   "Inicio"
+        },
+        {
             "ruta"      :   "solar_cultivos",
             "icon"      :   "sun_o",
             "texto"     :   "Solares",
@@ -13,10 +19,10 @@
             "texto"     :   "Plagas",
             "subtitulo" :   "Plagas y enfermedades."
         },
-        
+      
         {
             "ruta"      :   "insumos",
-            "icon"      :   "insumo_icon.svg",
+            "icon"      :   "bottle_icon.svg",
             "texto"     :   "Insumos",
             "subtitulo" :   "Insumos."
         },

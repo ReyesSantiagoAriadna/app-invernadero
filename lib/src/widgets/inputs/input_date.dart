@@ -8,10 +8,11 @@ class InputDate extends StatelessWidget {
   final String title;
   final Stream stream;
   final Function(String) onChange;
-  final dynamic initialData;
+  final String initialDate;
   final String firstDate;
 
-  const InputDate({Key key, this.title, this.stream, this.onChange, this.initialData, this.firstDate}) : super(key: key);
+  const InputDate({Key key, this.title, this.stream, this.onChange, this.initialDate, this.firstDate}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +30,11 @@ class InputDate extends StatelessWidget {
         SizedBox(height:10),
         StreamBuilder<Object>(
           stream: stream,
-           initialData: initialData!=null?initialData:null,
           builder: (context, snapshot) {
+            print("fecha en el text ${snapshot.data}");
             return GestureDetector(
-              onTap: ()=>_selectDate(context,onChange,initialData),
+              onTap: ()=>_selectDate(context,onChange,snapshot.hasData?snapshot.data: initialDate,
+              firstDate,snapshot.hasData?0:1),
               child: Container(
                 padding: const EdgeInsets.all(5.0),
                 decoration: BoxDecoration(
@@ -56,18 +58,33 @@ class InputDate extends StatelessWidget {
   
          
 
-  _selectDate(BuildContext context,Function(String) onChange,String firstDate) async{
-    print("initial date :  $firstDate");
-    DateTime parsedDate;
-    if(firstDate!=null)
-      parsedDate = DateTime.parse(firstDate);
-
-      new DateFormat("yyyy-MM-dd");
-       DateTime picked = await showDatePicker(
+  _selectDate(BuildContext context,Function(String) onChange,String initialDate,String firstDate,int sumar) async{
+    
+    DateTime _firstDate,_initialDate;
+    // if(firstDate!=null)
+    //   _firstDate = DateTime.parse(firstDate);
+    // if(initialDate!=null)
+    //   _initialDate = DateTime.parse(initialDate);
+      
+    if(firstDate!=null){
+       var d1 =  DateTime.parse(firstDate);
+      _firstDate = new DateTime(d1.year, d1.month, d1.day + 1);
+    }
+      // _firstDate = DateTime.parse(firstDate);
+    if(initialDate!=null && sumar==1){
+        var d1 =  DateTime.parse(initialDate);
+      _initialDate = new DateTime(d1.year, d1.month, d1.day + 1);
+    }else if(initialDate!=null && sumar==0){
+       _initialDate =  DateTime.parse(initialDate);
+    }
+      // _initialDate = DateTime.parse(initialDate);
+    new DateFormat("yyyy-MM-dd");
+      
+      DateTime picked = await showDatePicker(
         context: context, 
-        initialDate: new DateTime.now(), 
-        firstDate:  firstDate !=null?parsedDate: new DateTime(2020), 
-        lastDate: new DateTime(2021), 
+        initialDate: _initialDate!=null?_initialDate: new DateTime.now(), 
+        firstDate: _firstDate !=null?_firstDate: new DateTime(2020), 
+        lastDate: new DateTime(2030), 
         locale: Locale('es'),
       );
 
@@ -76,6 +93,8 @@ class InputDate extends StatelessWidget {
           var formatter = new DateFormat("yyyy-MM-dd");
           _fecha = formatter.format(picked);
           onChange(_fecha);
+
+          // print("FEcha seleecionada $_fe");
       }
   }
 }

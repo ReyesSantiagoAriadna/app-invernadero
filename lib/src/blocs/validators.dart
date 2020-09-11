@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:app_invernadero_trabajador/src/blocs/solar_cultivo_bloc.dart';
-import 'package:app_invernadero_trabajador/src/models/actividades/gastos_model.dart';
+import 'package:app_invernadero_trabajador/src/models/actividades/gastos_model.dart' as gasto;
 import 'package:app_invernadero_trabajador/src/models/actividades/herramienta_model.dart';
 import 'package:app_invernadero_trabajador/src/models/actividades/producto_model.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/cultivo.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/etapa_cultivo.dart';
+import 'package:app_invernadero_trabajador/src/models/task/tarea_date_mode.dart' ;
 
 class Validators{
   final validarTelefono=StreamTransformer<String,String>.fromHandlers(
@@ -188,7 +189,7 @@ class Validators{
       }
     }
   );
-  final validatePersonal=StreamTransformer<Personal,Personal>.fromHandlers(
+  final validatePersonal=StreamTransformer<gasto.Personal,gasto.Personal>.fromHandlers(
     handleData: (e,sink){
      if(e!=null && e.nombre!=""){
         sink.add(e);
@@ -309,6 +310,44 @@ class Validators{
      handleData: (imagen,sink){
        print("imagen");
       (imagen.length>0)?sink.add(imagen):sink.addError("Ingrese este campo");
+    }
+  );
+
+
+
+   final validateProductsList=StreamTransformer<List<Producto>,List<Producto>>.fromHandlers(
+    handleData: (list,sink){
+      // (nombre.length>2)?sink.add(nombre):sink.addError("Ingrese este campo");
+      if(list!=null&&list.isNotEmpty){
+        sink.add(list);
+      }else{
+        sink.addError('');
+      }
+
+    }
+  );
+
+  final validateTarea=StreamTransformer<Tarea,Tarea>.fromHandlers(
+    handleData: (obj,sink){
+      // (nombre.length>2)?sink.add(nombre):sink.addError("Ingrese este campo");
+      if(obj!=null){
+        sink.add(obj);
+      }else{
+        sink.addError('');
+      }
+
+    }
+  );
+
+  final validateTrabajador=StreamTransformer<Personal,Personal>.fromHandlers(
+    handleData: (obj,sink){
+      // (nombre.length>2)?sink.add(nombre):sink.addError("Ingrese este campo");
+      if(obj!=null){
+        sink.add(obj);
+      }else{
+        sink.addError('');
+      }
+
     }
   );
 }

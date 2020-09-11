@@ -41,15 +41,26 @@ dependencies:
   flushbar: 1.9.1  
   flutter_map: ^0.8.2
   geolocator: ^5.3.1
+  permission_handler: ^5.0.0+hotfix.8
   lite_rolling_switch: ^0.1.1
   mime_type: ^0.3.0
   image_picker: ^0.6.6+1  
-  
+  table_calendar: ^2.2.3
+  flutter_speed_dial: ^1.2.5
+  time_range: ^0.4.0
+  firebase_messaging: ^7.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  flutter_launcher_icons: ^0.7.4
 
+flutter_icons:
+  android: "launcher_icon" 
+  ios: true
+  image_path: "assets/icon/logo_app.png"
+  adaptive_icon_background: "assets/icon/logo_app.png"
+  
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_invernadero_trabajador/app_config.dart';
+import 'package:app_invernadero_trabajador/src/models/server/date.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/cultivo.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/solar.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/solar_model.dart';
@@ -231,8 +232,8 @@ class SolaresCultivosProvider{
           "nombre":cultivo.nombre,
           "largo":cultivo.largo,
           "ancho":cultivo.ancho,
-          "fecha" : formatter.format(cultivo.fechaFinal).toString(),
-          "fechaFinal" : formatter.format(cultivo.fecha).toString(),
+          "fecha" : formatter.format(cultivo.fecha).toString(),
+          "fechaFinal" : formatter.format(cultivo.fechaFinal).toString(),
           "moniSensor":cultivo.moniSensor,
           "observacion":cultivo.observacion,
           "tempMin":cultivo.tempMin,
@@ -288,4 +289,27 @@ class SolaresCultivosProvider{
   //     "id_cultivo":66,
   //     "orden" : 2
   // }
+
+  Future<Date> getDate()async{  
+    final url = "${AppConfig.base_url}/api/personal/date"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",};
+    
+    final response = await http.get(
+      url, 
+      headers: headers,);
+
+    print(response.body);
+    if(response.body.contains('error') || response.body.contains("message")){
+      return null;
+    } 
+    
+    if(response.body.contains("date") ){
+      Date date = Date.fromJson(json.decode(response.body));
+      return date;
+    }
+    return null;
+  }
 }

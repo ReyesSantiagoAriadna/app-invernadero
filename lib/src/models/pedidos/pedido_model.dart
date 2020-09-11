@@ -37,6 +37,7 @@ class Pedido {
         this.totalPagado,
         this.tipoEntrega,
         this.detalles,
+        this.cliente
     });
 
     int id;
@@ -50,21 +51,24 @@ class Pedido {
     double totalPagado;
     String tipoEntrega;
     List<Detalle> detalles;
+    Cliente cliente;
 
     factory Pedido.fromJson(Map<String, dynamic> json) => Pedido(
         id: json["id"],
         idCliente: json["id_cliente"],
         fechaSolicitud: DateTime.parse(json["fechaSolicitud"]),
         estatus: json["estatus"],
-        total: json["total"],
+        total:json["total"]==null?null: json["total"],
         createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
         updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
         idVenta: json["idVenta"] == null ? null : json["idVenta"],
-        totalPagado: json["totalPagado"].toDouble(),
+        totalPagado:json["totalPagado"]==null?null: json["totalPagado"].toDouble(),
         tipoEntrega: json["tipo_entrega"],
-        detalles: List<Detalle>.from(json["detalles"].map((x) => Detalle.fromJson(x))),
+        detalles: json["detalles"]==null?null: List<Detalle>.from(json["detalles"].map((x) => Detalle.fromJson(x))),
+        cliente: json["cliente"]==null?null: Cliente.fromJson(json["cliente"]),
     );
 
+    
     Map<String, dynamic> toJson() => {
         "id": id,
         "id_cliente": idCliente,
@@ -77,6 +81,67 @@ class Pedido {
         "totalPagado": totalPagado,
         "tipo_entrega": tipoEntrega,
         "detalles": List<dynamic>.from(detalles.map((x) => x.toJson())),
+        "cliente": cliente.toJson(),
+    };
+}
+
+class Cliente {
+    Cliente({
+        this.id,
+        this.nombre,
+        this.ap,
+        this.am,
+        this.direccion,
+        this.telefono,
+        this.celular,
+        this.rfc,
+        this.urlImagen,
+        this.lat,
+        this.lng,
+        this.correo,
+    });
+
+    int id;
+    String nombre;
+    String ap;
+    String am;
+    String direccion;
+    String telefono;
+    String celular;
+    String rfc;
+    String urlImagen;
+    double lat;
+    double lng;
+    String correo;
+
+    factory Cliente.fromJson(Map<String, dynamic> json) => Cliente(
+        id: json["id"],
+        nombre: json["nombre"],
+        ap: json["ap"],
+        am: json["am"],
+        direccion: json["direccion"],
+        telefono: json["telefono"] == null ? null : json["telefono"],
+        celular: json["celular"],
+        rfc: json["rfc"] == null ? null : json["rfc"],
+        urlImagen: json["url_imagen"] == null ? null : json["url_imagen"],
+        lat: json["lat"]==null?null: json["lat"].toDouble(),
+        lng: json["lng"]==null?null:json["lng"].toDouble(),
+        correo: json["correo"] == null ? null : json["correo"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "nombre": nombre,
+        "ap": ap,
+        "am": am,
+        "direccion": direccion,
+        "telefono": telefono == null ? null : telefono,
+        "celular": celular,
+        "rfc": rfc == null ? null : rfc,
+        "url_imagen": urlImagen == null ? null : urlImagen,
+        "lat": lat,
+        "lng": lng,
+        "correo": correo == null ? null : correo,
     };
 }
 

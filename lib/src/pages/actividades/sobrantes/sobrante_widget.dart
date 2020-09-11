@@ -160,7 +160,7 @@ class _SobranteWidgetState extends State<SobranteWidget> {
                 ),
             ]
           );
-    customBottomSheet(myWidget, 0.15);
+    customBottomSheet(myWidget, 0.18);
   }
 
 

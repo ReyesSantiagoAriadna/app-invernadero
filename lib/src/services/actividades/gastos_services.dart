@@ -90,8 +90,8 @@ class GastosService with ChangeNotifier{
       changeResponse("Algo ha salido mal");
       return true;
     }
-  }
-
+  } 
+  
   Future<bool> updateGasto(Gasto gasto)async{
     final resp = await gastosProvider.updateGasto(gasto);
     if(resp!=null){

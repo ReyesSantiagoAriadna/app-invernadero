@@ -1,10 +1,13 @@
 
 
 import 'package:app_invernadero_trabajador/app_config.dart';
+import 'package:app_invernadero_trabajador/src/blocs/map_box_bloc.dart';
 import 'package:app_invernadero_trabajador/src/blocs/page_bloc.dart';
+import 'package:app_invernadero_trabajador/src/blocs/solar_cultivo_bloc.dart';
 import 'package:app_invernadero_trabajador/src/models/ofertas/ofertaTipo.dart';
 import 'package:app_invernadero_trabajador/src/models/productos/producto.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/solar.dart';
+import 'package:app_invernadero_trabajador/src/pages/default_actions_app_bar.dart';
 import 'package:app_invernadero_trabajador/src/pages/home/home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/home/main_page.dart';
 import 'package:app_invernadero_trabajador/src/providers/menu_provider.dart';
@@ -16,9 +19,11 @@ import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:app_invernadero_trabajador/src/utils/colors.dart';
 import 'package:app_invernadero_trabajador/src/utils/icon_string_util.dart';
 import 'package:app_invernadero_trabajador/src/utils/responsive.dart';
+import 'package:app_invernadero_trabajador/src/widgets/badge_bottom_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 
@@ -46,6 +51,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
   Stream<List<OfertaTipo>> ofertaTipoStream;
   Stream<List<Producto>> productoStream;
 
+  int init =-1;
   SecureStorage _prefs = SecureStorage();
   _handleDrawer(){
     _key.currentState.openDrawer();
@@ -57,8 +63,19 @@ class _MenuDrawerState extends State<MenuDrawer> {
 
   @override
   void initState() {
+    MapBoxBloc mbBloc = MapBoxBloc();
+    if(mbBloc.position==null){
+      Position p = new Position(latitude: AppConfig.default_lat,longitude: AppConfig.default_long);
+      mbBloc.changePosition(p);
+    }
+    //mbBloc.getClima();
+    mbBloc.getWeatherBit();
+
+
     _pageBloc = PageBloc();
-    _pageBloc.onChangePageTitle('Home');
+    _pageBloc.onChangePageTitle('Inicio');
+    _pageBloc.onChangeListActionsAppBar(defaulActionsAppBar());
+    //_pageBloc.onChangePage(MyHomePage());
     myScroll ();
 
     if (_checkConfiguration()) {
@@ -68,19 +85,11 @@ class _MenuDrawerState extends State<MenuDrawer> {
         await Provider
         .of<SolarCultivoService>(context,listen: false)
         .fetchSolares();
-        // showDialog(context: context, builder: (context) => AlertDialog(
-        //   content: Column(
-        //     children: <Widget>[
-        //       Text('@todo')
-        //     ],
-        //   ),
-        //   actions: <Widget>[
-        //     FlatButton(onPressed: (){
-        //       Navigator.pop(context);
-        //     }, child: Text('OK')),
-        //   ],
-        // ));
       });
+
+      
+
+      
     }
 
     super.initState();
@@ -140,60 +149,45 @@ void myScroll() async {
     solaresStream = Provider.of<SolarCultivoService>(context).solarStream;
     ofertaTipoStream = Provider.of<OfertaService>(context).ofertaTipoStream;
    /// productoStream = Provider.of<ProductosService>(context).productoStream;
+   
+    if(init==-1){
+      if( Provider.of<SolarCultivoService>(context).solarList.isNotEmpty){
+        SolarCultivoBloc solarBloc = SolarCultivoBloc();
+        solarBloc.changeSolarHome(Provider.of<SolarCultivoService>(context).solarList[0]);
+      }
+    }
   }
 
   
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-        key: _key,
-      appBar: _showAppbar
-        ?  AppBar(
-        brightness: Brightness.light,
-        elevation:0.0,
-        backgroundColor:Colors.white,
-       leading: new IconButton(icon: new Icon(
-          LineIcons.bars,color: MyColors.GreyIcon,
-        ),onPressed:_handleDrawer,), 
-        title: StreamBuilder(
-        stream: _pageBloc.pageTitleStream,
-        initialData: _pageBloc.pageTitle,
-        builder: (BuildContext context, AsyncSnapshot snapshot){
-          //if(snapshot.hasData){
-            return Text(snapshot.hasData?snapshot.data:'Home',
-              style: TextStyle(color:MyColors.GreyIcon,fontFamily: AppConfig.quicksand,
-              fontWeight: FontWeight.w700
-              ),);
-          //}
-          // return Text('Home', style: TextStyle(color:MyColors.GreyIcon,fontFamily: AppConfig.quicksand,
-          //     fontWeight: FontWeight.w700
-          //     ),);
-        },
-      ),
-        
-       
-      actions: <Widget>[
-          IconButton(icon: Icon(LineIcons.search,color:MyColors.GreyIcon), onPressed: (){})
-        ],
-      )
-        : PreferredSize(
-      child: Container(),
-      preferredSize: Size(0.0, 0.0),
-    ),
-      body: StreamBuilder(
-        stream: _pageBloc.pageStream ,
-        builder: (BuildContext context, AsyncSnapshot snapshot){
-          if(snapshot.hasData){
-            return snapshot.data;
-          }
-          return MainPage();
-        },
-      ),
-      drawer: Drawer(
-        
-        child: _options(),
-      ),
+    return StreamBuilder(
+      stream: _pageBloc.actionsAppBarStream ,
+      builder: (BuildContext context, AsyncSnapshot snapshot){
+        return Scaffold(
+          backgroundColor: Colors.white,
+          key: _key,
+          appBar: _showAppbar
+            ?  myAppBar(snapshot.data)
+          : PreferredSize(
+            child: Container(),
+            preferredSize: Size(0.0, 0.0),
+          ),
+          body: StreamBuilder(
+            stream: _pageBloc.pageStream ,
+            builder: (BuildContext context, AsyncSnapshot snapshot){
+              if(snapshot.hasData){
+                return snapshot.data;
+              }
+              return MyHomePage();
+            },
+          ),
+          drawer: Drawer(
+            child: _options(),
+          ),
+    );
+
+      },
     );
   }
 
@@ -240,7 +234,7 @@ void myScroll() async {
     ],
     );
   }
-  String rut = 'solar_cultivos';
+  String rut = 'home';
   List<Widget> _listItems(List<dynamic> data){
     final List<Widget> opciones=[];
     data.forEach((opt){
@@ -309,6 +303,37 @@ void myScroll() async {
 
 
   
-  
+  AppBar myAppBar(List<Widget> actions){
+    return AppBar(
+        brightness: Brightness.light,
+        elevation:0.0,
+        backgroundColor:Colors.white,
+       leading: new IconButton(icon: new Icon(
+          LineIcons.bars,color: MyColors.GreyIcon,
+        ),onPressed:_handleDrawer,), 
+        title: StreamBuilder(
+        stream: _pageBloc.pageTitleStream,
+        initialData: _pageBloc.pageTitle,
+        builder: (BuildContext context, AsyncSnapshot snapshot){
+          return Text(snapshot.hasData?snapshot.data:'Inicio',
+            style: TextStyle(color:MyColors.GreyIcon,fontFamily: AppConfig.quicksand,
+            fontWeight: FontWeight.w700
+            ),);
+        },
+      ),
+     actions: actions,
+      // actions: <Widget>[
+      //     IconButton(icon: Icon(LineIcons.search,color:MyColors.GreyIcon), onPressed: (){}),
+      //     GestureDetector(
+      //       onTap: ()=>"abrir notificaciones",
+      //         child: Container(
+      //         margin: EdgeInsets.only(top:15),
+      //         child:BadgeBottomIcon(icon:Icon(LineIcons.bell,color:MyColors.GreyIcon),number: 5,)
+      //       ),
+      //     )
+      //   ],
+      );
+  }
 
+ 
 }

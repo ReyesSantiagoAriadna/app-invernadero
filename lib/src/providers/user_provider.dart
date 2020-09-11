@@ -92,7 +92,8 @@ class UserProvider{
       print(response.body);
       if(decodedResp.containsKey('access_token')){ //access_token,token_type,expires_at
         await _storage.write('token',decodedResp['access_token']);
-        
+        //  await fcm.subscribeToTopic(celular);
+        // await fcm.subscribeToTopic(AppConfig.all_topic);
       return {'ok':true, 'celular' : decodedResp};
       }else{
         return {'ok':false, 'mensaje' : decodedResp['message']};
@@ -183,7 +184,7 @@ class UserProvider{
 
         await _storage.delete('token'); 
         _storage.sesion = false;
-
+      // fcm.deleteToken();
         return {'ok':true, 'celular' : decodedResp};
       }else{
         return {'ok':false, 'mensaje' : decodedResp['message']};

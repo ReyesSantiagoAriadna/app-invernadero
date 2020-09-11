@@ -232,7 +232,7 @@ class _TareaWidgetState extends State<TareaWidget> {
                 ),
             ]
           );
-    customBottomSheet(myWidget, 0.15);
+    customBottomSheet(myWidget, 0.18);
   }
 
 

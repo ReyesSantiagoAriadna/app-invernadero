@@ -18,7 +18,7 @@ import 'package:provider/provider.dart';
 class DialogSelectPersonal extends StatelessWidget {
   final ActividadGastoBloc gastoBloc;
   final Responsive responsive;
-
+  
   const DialogSelectPersonal({Key key, this.gastoBloc, this.responsive}) : super(key: key);
 
 
@@ -115,10 +115,10 @@ class _DialogListPersonalState extends State<DialogListPersonal> {
 
   @override
   Widget build(BuildContext context) {
-    return _solares();
+    return _body();
   }
 
-  _solares(){
+  _body(){
     return AlertDialog(
       elevation: 0.0,
       title: new Text("Personal",
@@ -141,24 +141,6 @@ class _DialogListPersonalState extends State<DialogListPersonal> {
                 Personal item = personalList[_radioValue];
                 widget.gastoBloc.onChangePersonalActive(item);
               }
-            // Solar solarActive = solaresList[_radioValue];
-            // widget.solarCultivoBloc.changeSolarActive(solarActive);
-            // final cultivos = solarActive.cultivos;
-            
-            // if(cultivos!=null && cultivos.isNotEmpty){
-            //   widget.solarCultivoBloc.changeCultivoActive(cultivos[0]);
-            //   final etapas = cultivos[0].etapas;
-            //   if(etapas!=null&& etapas.isNotEmpty){
-            //     widget.solarCultivoBloc.changeEtapaActive(etapas[0]);
-            //   }
-            // }
-            // else{
-            //   widget.solarCultivoBloc.changeCultivoActive(null);
-            //   widget.solarCultivoBloc.changeEtapaActive(null);
-            // }
-             
-           
-            // widget.solarCultivoBloc.changeCultivoLiActiv(solarActive.cultivos);
             Navigator.of(context).pop();
           },
         ),

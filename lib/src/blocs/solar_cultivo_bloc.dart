@@ -26,6 +26,9 @@ class SolarCultivoBloc with Validators{
   final _solarLargoController = new BehaviorSubject<String>();
   final _solarAnchoController = new BehaviorSubject<String>();
   final _solarDescripController = new BehaviorSubject<String>();
+  
+  final _solarHomeController = new BehaviorSubject<Solar>();
+  final _cultivoHomeController = new BehaviorSubject<Cultivo>();
 
   final _solarActiveController = new BehaviorSubject<Solar>();
   final _cultivoActiveController = new BehaviorSubject<Cultivo>();
@@ -60,12 +63,14 @@ class SolarCultivoBloc with Validators{
   Stream<List<Solar>> get solaresStream => _solaresController.stream;
 
 
-
+  
   Stream<String> get solarNombreStream => _solarNombreController.stream.transform(validateSolarNombre);
   Stream<String> get solarLargoStream => _solarLargoController.stream.transform(validateDecimal);
   Stream<String> get solarAnchoStream => _solarAnchoController.stream.transform(validateDecimal);
   Stream<String> get solarDescripStream => _solarDescripController.stream.transform(validateSolarDescripcion);
-
+  Stream<Solar> get solarHomeStream => _solarHomeController.stream;
+  Stream<Cultivo> get cultivoHomeStream => _cultivoHomeController.stream;
+  
   Stream<Solar> get solarActiveStream => _solarActiveController.stream;
   Stream<Cultivo> get cultivoActiveStream => _cultivoActiveController.stream.transform(validateCultivo);
   Stream<Etapa> get etapaActiveStream => _etapaActiveController.stream.transform(validateEtapa);
@@ -99,8 +104,8 @@ class SolarCultivoBloc with Validators{
 
 
   Function(String) get changeSolarNombre => _solarNombreController.sink.add;
-  
- 
+  Function(Solar) get changeSolarHome => _solarHomeController.sink.add;
+  Function(Cultivo) get changeCultivoHome => _cultivoHomeController.sink.add;
 
 
   Function(String) get changeSolarLargo => _solarLargoController.sink.add;
@@ -160,7 +165,7 @@ class SolarCultivoBloc with Validators{
   String get humMax => _humMaxController.value;
   String get humSMin => _humSMinController.value;
   String get humSMax => _humSMaxController.value;
-
+  
   String get fechaInicio => _fechaInicioController.value;
   String get fechaTerminacion => _fechaTerminacionController.value;
 
@@ -168,6 +173,8 @@ class SolarCultivoBloc with Validators{
   String get etapaNombre => _etapaNombreController.value;
   String get etapaDias => _etapaDiasController.value;
   bool get stage => _stageController.value;
+  Solar get solarHome => _solarHomeController.value;
+  Cultivo get cultivoHome => _cultivoHomeController.value;
 
   Stream<bool> get formValidStream => 
     CombineLatestStream.combine7(solarNombreStream, solarLargoStream,

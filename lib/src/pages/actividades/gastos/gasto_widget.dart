@@ -182,7 +182,7 @@ class _GastoWidgetState extends State<GastoWidget> {
                 ),
             ]
           );
-    customBottomSheet(myWidget, 0.15);
+    customBottomSheet(myWidget, 0.18);
   }
 
 

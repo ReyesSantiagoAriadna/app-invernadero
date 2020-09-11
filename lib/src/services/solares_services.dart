@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:app_invernadero_trabajador/src/blocs/solar_cultivo_bloc.dart';
+import 'package:app_invernadero_trabajador/src/models/server/date.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/cultivo.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/regiones.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/solar.dart';
@@ -18,30 +19,32 @@ class SolarCultivoService with ChangeNotifier{
   List<Solar> solarList= List();
   List<Region> regionList = List();
 
+
  
 
   final _solaresController = new BehaviorSubject<List<Solar>>();
   final _responseController = new BehaviorSubject<String>(); 
 
   final _regionesController = new BehaviorSubject<List<dynamic>>();
+  final _dateController = new BehaviorSubject<Date>();
 
   Stream<List<Solar>> get solarStream =>_solaresController.stream;
   Stream<List<dynamic>> get regionesStream =>_regionesController.stream;
-  
+  Stream<Date> get dateStream => _dateController.stream;
 
   Function(String) get changeResponse => _responseController.sink.add;
   //Function(String) get changeResponse => _responseController.sink.add;
-
-
+  Function(Date) get changeDate => _dateController.sink.add;
   String get response => _responseController.value;
 
   
   List<Solar> get solares => solarList;
-  
+  Date get date => _dateController.value;
   
   SolarCultivoService(){
     this.getSolares();
     this.regiones();
+    this.getDate();
   }
   
   
@@ -140,6 +143,13 @@ class SolarCultivoService with ChangeNotifier{
     }
   }
 
+  void getDate()async{
+    final date =await solaresCultivosProvider.getDate();
+    if(date!=null){
+      changeDate(date);
+    }
+  }
+  
   Future<bool> updateCultivo(Cultivo cultivo,int etapas)async{
     final Cultivo resp = await solaresCultivosProvider.updateCultivo(cultivo,etapas);
     if(resp!=null){

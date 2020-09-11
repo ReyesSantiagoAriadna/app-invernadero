@@ -18,6 +18,7 @@ import 'package:app_invernadero_trabajador/src/widgets/dialog_list_cultivo_tipo.
 import 'package:app_invernadero_trabajador/src/widgets/dialog_list_distrito.dart';
 import 'package:app_invernadero_trabajador/src/widgets/dialog_list_mun.dart';
 import 'package:app_invernadero_trabajador/src/widgets/dialog_list_region.dart';
+import 'package:app_invernadero_trabajador/src/widgets/inputs/input_date.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -182,9 +183,36 @@ class _CultivoEditPageState extends State<CultivoEditPage> {
             SizedBox(height:_responsive.ip(2)),
             _medidas(),
             SizedBox(height:_responsive.ip(2)),
-            _observacion(),
+          
+            // _fechas(),
+            InputDate(title:"Fecha de inicio",
+              initialDate: solarCultivoBloc.fechaInicio,
+              stream:solarCultivoBloc.fechaInicioStream,                     
+              onChange:solarCultivoBloc.onChangeFechaInicio,
+            ),
+
+          
+            StreamBuilder(
+              stream: solarCultivoBloc.fechaInicioStream,
+              initialData: solarCultivoBloc.fechaInicio,
+              builder: (BuildContext context, AsyncSnapshot snapshot){
+                print("Data de fecha inicio ${snapshot.data}");
+                if(snapshot.hasData){
+                  DateTime date = DateTime.parse(snapshot.data);
+                  date.add(new Duration(days: 1));
+                  solarCultivoBloc.onChangeFechaTerminacion(DateFormat('yyyy-MM-dd').format(date));
+                }
+                return  InputDate(title:"Fecha de Finalización",
+                  stream:solarCultivoBloc.fechaTerminacionStream,                     
+                  onChange:solarCultivoBloc.onChangeFechaTerminacion,
+                  initialDate:solarCultivoBloc.fechaTerminacion,
+                  firstDate:solarCultivoBloc.fechaInicio,
+                );
+              },
+            ),
             SizedBox(height:_responsive.ip(2)),
-            _fechas(),
+            _observacion(),
+            // SizedBox(height:_responsive.ip(2)),
             SizedBox(height:_responsive.ip(2)),
 
             CultivoSensores(solarCultivoBloc:solarCultivoBloc,responsive: _responsive,cultivo: c,),
@@ -403,101 +431,101 @@ class _CultivoEditPageState extends State<CultivoEditPage> {
     );
   }
 
-  _fechas(){
-    return Row(
-      children: <Widget>[
-        _fecha(solarCultivoBloc.fechaInicioStream, "Fecha de Inicio",
-         solarCultivoBloc.onChangeFechaInicio,1),
-        SizedBox(width:5),
-        _fecha(solarCultivoBloc.fechaTerminacionStream, "Fecha de Terminación"
-        , solarCultivoBloc.onChangeFechaTerminacion,2)
+  // _fechas(){
+  //   return Row(
+  //     children: <Widget>[
+  //       _fecha(solarCultivoBloc.fechaInicioStream, "Fecha de Inicio",
+  //        solarCultivoBloc.onChangeFechaInicio,1),
+  //       SizedBox(width:5),
+  //       _fecha(solarCultivoBloc.fechaTerminacionStream, "Fecha de Terminación"
+  //       , solarCultivoBloc.onChangeFechaTerminacion,2)
 
-      ],
-    );
-  }
-  _fecha(Stream stream,String title,Function(String) onChange,int tipo){
-    return StreamBuilder(
-      stream: stream,
-      builder: (BuildContext context, AsyncSnapshot snapshot){
-        return GestureDetector(
-          onTap: (){
-            print("tapp=>>");
-            // if(stream==solarCultivoBloc.fechaInicioStream)
-            //   _selectDate(context,onChange,null);
-            // else if(stream==solarCultivoBloc.fechaTerminacionStream && solarCultivoBloc.fechaInicio!=null){
-            //   _selectDate(context, onChange, solarCultivoBloc.fechaInicio);
-            // }
-            if(tipo==1)
-              _selectDate(context,onChange,null);
-            else if(tipo==2){
-              if(solarCultivoBloc.fechaInicio!=null){
-                _selectDate(context, onChange, solarCultivoBloc.fechaInicio);
-              }
-            }
-          },
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Icon(LineIcons.calendar,color: MyColors.GreyIcon,),
-                  Container(
-                    margin: EdgeInsets.only(left:20),
-                    child: Text(title,style: _style,)),
+  //     ],
+  //   );
+  // }
+  // _fecha(Stream stream,String title,Function(String) onChange,int tipo){
+  //   return StreamBuilder(
+  //     stream: stream,
+  //     builder: (BuildContext context, AsyncSnapshot snapshot){
+  //       return GestureDetector(
+  //         onTap: (){
+  //           print("tapp=>>");
+  //           // if(stream==solarCultivoBloc.fechaInicioStream)
+  //           //   _selectDate(context,onChange,null);
+  //           // else if(stream==solarCultivoBloc.fechaTerminacionStream && solarCultivoBloc.fechaInicio!=null){
+  //           //   _selectDate(context, onChange, solarCultivoBloc.fechaInicio);
+  //           // }
+  //           if(tipo==1)
+  //             _selectDate(context,onChange,null);
+  //           else if(tipo==2){
+  //             if(solarCultivoBloc.fechaInicio!=null){
+  //               _selectDate(context, onChange, solarCultivoBloc.fechaInicio);
+  //             }
+  //           }
+  //         },
+  //         child: Column(
+  //           mainAxisAlignment: MainAxisAlignment.start,
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           children: <Widget>[
+  //             Row(
+  //               crossAxisAlignment: CrossAxisAlignment.center,
+  //               children: <Widget>[
+  //                 Icon(LineIcons.calendar,color: MyColors.GreyIcon,),
+  //                 Container(
+  //                   margin: EdgeInsets.only(left:20),
+  //                   child: Text(title,style: _style,)),
                  
-                ],
-              ),
-              SizedBox(height:5),
-               Container(
-                margin: EdgeInsets.only(left:45),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start, 
-                  children: <Widget>[
-                    Text(
-                      snapshot.hasData? "${snapshot.data}": "",
-                    ),
-                    SizedBox(height:5),
-                    Container(
-                      height:1,
-                       width:100,
-                      color:Colors.grey
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+  //               ],
+  //             ),
+  //             SizedBox(height:5),
+  //              Container(
+  //               margin: EdgeInsets.only(left:45),
+  //               child: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //               mainAxisAlignment: MainAxisAlignment.start, 
+  //                 children: <Widget>[
+  //                   Text(
+  //                     snapshot.hasData? "${snapshot.data}": "",
+  //                   ),
+  //                   SizedBox(height:5),
+  //                   Container(
+  //                     height:1,
+  //                      width:100,
+  //                     color:Colors.grey
+  //                   )
+  //                 ],
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
 
     
-  }
+  // }
   
-  _selectDate(BuildContext context,Function(String) onChange,String firstDate) async{
-     DateTime parsedDate;
-    if(firstDate!=null)
-    parsedDate = DateTime.parse(firstDate);
-      new DateFormat("yyyy-MM-dd");
-       DateTime picked = await showDatePicker(
-        context: context, 
-        initialDate: new DateTime.now(), 
-        firstDate:  parsedDate !=null?parsedDate: new DateTime(2020), 
-        lastDate: new DateTime(2021), 
-        locale: Locale('es'),
-      );
+  // _selectDate(BuildContext context,Function(String) onChange,String firstDate) async{
+  //   DateTime parsedDate;
+  //   if(firstDate!=null)
+  //   parsedDate = DateTime.parse(firstDate);
+  //     new DateFormat("yyyy-MM-dd");
+  //      DateTime picked = await showDatePicker(
+  //       context: context, 
+  //       initialDate: new DateTime.now(), 
+  //       firstDate:  parsedDate !=null?parsedDate: new DateTime(2020), 
+  //       lastDate: new DateTime(2021), 
+  //       locale: Locale('es'),
+  //     );
 
-      if(picked != null){
-          String _fecha;
-          var formatter = new DateFormat("yyyy-MM-dd");
-          _fecha = formatter.format(picked);
-          // solarCultivoBloc.onChangeFechaIncio(_fecha);
-          onChange(_fecha);
-      }
-  }
+  //     if(picked != null){
+  //         String _fecha;
+  //         var formatter = new DateFormat("yyyy-MM-dd");
+  //         _fecha = formatter.format(picked);
+  //         // solarCultivoBloc.onChangeFechaIncio(_fecha);
+  //         onChange(_fecha);
+  //     }
+  // }
   _createButton(){
     return StreamBuilder(
       initialData: solarCultivoBloc.sensores,

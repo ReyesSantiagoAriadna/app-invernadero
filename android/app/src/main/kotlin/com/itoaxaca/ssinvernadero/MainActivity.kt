@@ -1,4 +1,4 @@
-package com.example.app_invernadero_trabajador
+package com.itoaxaca.ssinvernadero
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

@@ -14,11 +14,12 @@ final _icons = <String,IconData>{
   'money'             : LineIcons.money,
   'question_circle'   : LineIcons.question_circle,
   'sign_in'           : LineIcons.sign_in,
-  'key'               : LineIcons.key
+  'key'               : LineIcons.key,
+  'home'              : LineIcons.home,
 };
 
 final _icons_svg = <String,String>{ 
-  'insumo_icon.svg'        :   'assets/icons/insumo_icon.svg',
+  'bottle_icon.svg'        :   'assets/icons/bottle_icon.svg',
   'tools_icon.svg'    :   'assets/icons/tools_icon.svg',
   'task_icon.svg'     :   'assets/icons/task_icon.svg',
   'order_icon.svg'    :   'assets/icons/order_icon.svg',

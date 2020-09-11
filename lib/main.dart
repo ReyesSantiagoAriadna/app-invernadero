@@ -1,3 +1,4 @@
+import 'package:app_invernadero_trabajador/src/blocs/map_box_bloc.dart';
 import 'package:app_invernadero_trabajador/src/pages/actividades/actividades_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/actividades/gastos/gasto_add_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/actividades/gastos/gasto_edit_page.dart';
@@ -25,6 +26,7 @@ import 'package:app_invernadero_trabajador/src/pages/login/register_code_page.da
 import 'package:app_invernadero_trabajador/src/pages/menu_drawer.dart';
 import 'package:app_invernadero_trabajador/src/pages/ofertas/add_oferta_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/ofertas/ofertas_home_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/pedidos/pedido_agendar_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/pedidos/pedidos_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/plagas/add_plaga_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/plagas/edit_plaga_page.dart';
@@ -36,33 +38,47 @@ import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/details_sola
 import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/solar_add_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/solar_cultivos_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/solar_edit_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/task/task_assign_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/task/task_reasignar_horario_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/task/task_reasignar_personal_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/ventas/ventas_home_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/task/calendar.dart';
+import 'package:app_invernadero_trabajador/src/providers/firebase/push_notification_provider.dart';
 import 'package:app_invernadero_trabajador/src/services/actividades/gastos_services.dart';
 import 'package:app_invernadero_trabajador/src/services/actividades/productos_services.dart';
 import 'package:app_invernadero_trabajador/src/services/actividades/sobrantes_services.dart';
 import 'package:app_invernadero_trabajador/src/services/actividades/tareas_services.dart';
 import 'package:app_invernadero_trabajador/src/services/insumosService/insumos_service.dart';
 import 'package:app_invernadero_trabajador/src/services/ofertaService/ofertas_service.dart';
+import 'package:app_invernadero_trabajador/src/services/pedidos/pedidos_service.dart';
 import 'package:app_invernadero_trabajador/src/services/plagasService/plaga_services.dart';
 // import 'package:app_invernadero_trabajador/src/services/productoService/produtos_service.dart';
 import 'package:app_invernadero_trabajador/src/services/solares_services.dart';
 import 'package:app_invernadero_trabajador/src/services/inventarioService/inventario_service.dart';
 import 'package:app_invernadero_trabajador/src/storage/secure_storage.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
+import 'package:app_invernadero_trabajador/src/widgets/date_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
+import 'package:geolocator/geolocator.dart';
+
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/date_symbol_data_local.dart';
+// Example holidays
+
 
 void main() async{
   //var path = await getApplicationDocumentsDirectory();
   //Hive.init(path.path );
-  
 
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = new SecureStorage();
   await prefs.initPrefs();
-
+  // Intl.defaultLocale = 'pt_BR';
+ // await findSystemLocale();
+  // await initializeDateFormatting();
   // DBProvider db = DBProvider();
   // await db.initDB();
   // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -91,99 +107,134 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final prefs = new SecureStorage();
-
+  MapBoxBloc mapBoxBloc;
+  final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
   @override
   void initState() {
     FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
+    mapBoxBloc = MapBoxBloc();
+
+    final pushProvider = new PushNotificationProvider();
+    pushProvider.initNotifications();
+
+    pushProvider.messageStream.listen((onData){
+      //navigatorKey.currentState.pushNamed('ruta'); //navgar hacia ruta o hacer algo
+
+    });
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
-     return MultiProvider(
-        providers: [
-            //ChangeNotifierProvider(create: (_)=> new LocalService()),
-            ChangeNotifierProvider(create: (_)=> new SolarCultivoService(),),
-            ChangeNotifierProvider(create: (_)=> new TareasService(),),
-            ChangeNotifierProvider(create: (_)=> new ProductosService(),),
-            ChangeNotifierProvider(create: (_)=> new GastosService(),),
-            ChangeNotifierProvider(create: (_)=> new SobrantesService(),),
+     return FutureBuilder(
+      future: Permission.location.request(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        return FutureBuilder( //obtener position actual
+          future: Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if(snapshot.hasData){
+              //guardar en el bloc
+              Position p = snapshot.data;
+              mapBoxBloc.changePosition(p);
+            }
 
-            ChangeNotifierProvider(create: (_)=> new PlagaService(),),
-            ChangeNotifierProvider(create: (_)=>new InventarioService(),),
-            ChangeNotifierProvider(create: (_)=>new OfertaService(),),
-            // ChangeNotifierProvider(create: (_)=>new ProductosService(),),
-            ChangeNotifierProvider(create: (_)=>new InsumoService(),)
-          ],
-            child: new MaterialApp(
+            return MultiProvider(
+                providers: [
+                //ChangeNotifierProvider(create: (_)=> new LocalService()),
+                ChangeNotifierProvider(create: (_)=> new SolarCultivoService(),),
+                ChangeNotifierProvider(create: (_)=> new TareasService(),),
+                ChangeNotifierProvider(create: (_)=> new ProductosService(),),
+                ChangeNotifierProvider(create: (_)=> new GastosService(),),
+                ChangeNotifierProvider(create: (_)=> new SobrantesService(),),
+                ChangeNotifierProvider(create: (_)=> new PedidosService(),),
+
+                ChangeNotifierProvider(create: (_)=> new PlagaService(),),
+                ChangeNotifierProvider(create: (_)=>new InventarioService(),),
+                ChangeNotifierProvider(create: (_)=>new OfertaService(),),
+                // ChangeNotifierProvider(create: (_)=>new ProductosService(),),
+                ChangeNotifierProvider(create: (_)=>new InsumoService(),)
+              ],
+              // import 'package:intl/intl.dart';
+                child: new MaterialApp(
+                    navigatorKey: navigatorKey,
+                localizationsDelegates: [ 
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: [
+                  const Locale('en'), // English
+                  const Locale('es'), // Español
+                ],
+
+            title: 'SS Invernadero',
+            theme: miTema,
+            initialRoute: prefs.route,
+            debugShowCheckedModeBanner: false,
+            routes: {
+              'main'                  : (BuildContext)=>MainPage(),
+              'menu'                  : (BuildContext)=>MenuDrawer(),
+              'register_code'         : (BuildContext)=>CodeRegisterPage(),
+              'login_phone'           : (BuildContext)=>LoginPhonePage(),
+              'login_password'        : (BuildContext)=>LoginPasswordPage(),
+              'pin_code'              : (BuildContext)=>PinCodePage(),
+              'config_password'       : (BuildContext)=>ConfigPasswordPage(),
               
-            localizationsDelegates: [ 
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: [
-              const Locale('en'), // English
-              const Locale('es'), // Español
-            ],
+              'menu_drawer'           : (BuildContext)=>MenuDrawer(),
 
-        title: 'SS Invernadero',
-        theme: miTema,
-        initialRoute: prefs.route,
-        debugShowCheckedModeBanner: false,
-        routes: {
-          'main'                  : (BuildContext)=>MainPage(),
-          'menu'                  : (BuildContext)=>MenuDrawer(),
-          'register_code'         : (BuildContext)=>CodeRegisterPage(),
-          'login_phone'           : (BuildContext)=>LoginPhonePage(),
-          'login_password'        : (BuildContext)=>LoginPasswordPage(),
-          'pin_code'              : (BuildContext)=>PinCodePage(),
-          'config_password'       : (BuildContext)=>ConfigPasswordPage(),
-          
-          'menu_drawer'           : (BuildContext)=>MenuDrawer(),
+              'home'                  : (BuildContext)=>MyHomePage(),
+              'solar_cultivos'        : (BuildContext)=>SolarCultivosHomePage(),
+              'details_solar'         : (BuildContext)=>DetailsSolarPage(),
+              'solar_add'             : (BuildContext)=>SolarAddPage(),
+              'solar_edit'            : (BuildContext)=>SolarEditPAge(),
+              'cultivo_add'           : (BuildContext)=>CultivoAddPage(),
+              'cultivo_edit'          : (BuildContext)=>CultivoEditPage(),
+              'cultivo_etapas'        : (BuildContext)=>CultivoEtapasPage(),
 
-          'home'                  : (BuildContext)=>MyHomePage(),
-          'solar_cultivos'        : (BuildContext)=>SolarCultivosHomePage(),
-          'details_solar'         : (BuildContext)=>DetailsSolarPage(),
-          'solar_add'             : (BuildContext)=>SolarAddPage(),
-          'solar_edit'            : (BuildContext)=>SolarEditPAge(),
-          'cultivo_add'           : (BuildContext)=>CultivoAddPage(),
-          'cultivo_edit'          : (BuildContext)=>CultivoEditPage(),
-          'cultivo_etapas'        : (BuildContext)=>CultivoEtapasPage(),
+              'actividades'           : (BuildContext)=>ActividadesHomePage(),
+              
+              'tarea_add'             :(BuildContext)=>TareaAddPage(),
+              'tarea_edit'             :(BuildContext)=>TareaEditPage(),
+              'tarea_herramientas'    : (BuildContext)=>TareaHerramientasPage(),
+              'producto_add'          : (BuildContext)=>ProductoAddPage(),
+              'producto_edit'         : (BuildContext)=>ProductoEditPage(),
+              'gasto_add'             : (BuildContext)=>GastoAddPage(),
+              'gasto_edit'            : (BuildContext)=>GastoEditPage(),
+              'sobrante_add'          : (BuildContext)=>SobranteAddPage(),
+              'sobrante_edit'         : (BuildContext)=>SobranteEditPage(),
+              'herramientas'          : (BuildContext)=>HerramientasHomePage(),
+              'herramienta_add'       : (BuildContext)=>AddHerramientaPage(),
+              'herramienta_edit'      : (BuildContext)=>EditHerramientaPage(),
+              
+              'insumos'               : (BuildContext)=>InsumosHomePage(),
 
-          'actividades'           : (BuildContext)=>ActividadesHomePage(),
-          
-          'tarea_add'             :(BuildContext)=>TareaAddPage(),
-          'tarea_edit'             :(BuildContext)=>TareaEditPage(),
-          'tarea_herramientas'    : (BuildContext)=>TareaHerramientasPage(),
-          'producto_add'          : (BuildContext)=>ProductoAddPage(),
-          'producto_edit'         : (BuildContext)=>ProductoEditPage(),
-          'gasto_add'             : (BuildContext)=>GastoAddPage(),
-          'gasto_edit'            : (BuildContext)=>GastoEditPage(),
-          'sobrante_add'          : (BuildContext)=>SobranteAddPage(),
-          'sobrante_edit'         : (BuildContext)=>SobranteEditPage(),
-          'herramientas'          : (BuildContext)=>HerramientasHomePage(),
-          'herramienta_add'       : (BuildContext)=>AddHerramientaPage(),
-          'herramienta_edit'      : (BuildContext)=>EditHerramientaPage(),
-          
-          'insumos'               : (BuildContext)=>InsumosHomePage(),
+              'insumos_edit'          : (BuildContext)=>EditInsumoPage(),
+              'insumos_add'           : (BuildContext)=>AddInsumoPage(),
+              
+              'ofertas'               : (BuildContext)=>OfertasHomePage(),
+              'oferta_add'            : (BuildContext)=>AddOfertaPage(),
+              
+              'pedidos'               : (BuildContext)=>PedidosHomePage(),
+              'pedido_agendar'        : (BuildContext)=>PedidoAgendarPage(),
+              
+              'plagas'                : (BuildContext)=>PlagasHomePage(),
+              'plaga_add'             : (BuildContext)=>AddPlagaPage(),
+              'plaga_edit'            : (BuildContext)=>PlagaEditPage(),
 
-          'insumos_edit'          : (BuildContext)=>EditInsumoPage(),
-          'insumos_add'           : (BuildContext)=>AddInsumoPage(),
-          
-          'ofertas'               : (BuildContext)=>OfertasHomePage(),
-          'oferta_add'            : (BuildContext)=>AddOfertaPage(),
-          
-          'pedidos'               : (BuildContext)=>PedidosHomePage(),
-          
-          'plagas'                : (BuildContext)=>PlagasHomePage(),
-          'plaga_add'             : (BuildContext)=>AddPlagaPage(),
-          'plaga_edit'            : (BuildContext)=>PlagaEditPage(),
-
-          'ventas'                : (BuildContext)=>VentasHomePage(),
-          'ajustes'               : (BuildContext)=>AjustesPage(),
-        }
-      ),
+              'ventas'                : (BuildContext)=>VentasHomePage(),
+              'ajustes'               : (BuildContext)=>AjustesPage(),
+              
+              'calendar'              : (BuildContext)=>MyCalendar(),
+              'tarea_asignar'         : (BuildContext)=>TaskAssignPage(),
+              'tarea_reasignar_personal' : (BuildContext)=>TaskReasignarPersonalPage(),
+              'tarea_reasignar_horario'  : (BuildContext)=>TaskReasignarHorarioPage(),
+              'test'                  : (BuildContext)=>MyDatePicker()
+            }
+          ),
+        );        
+          },
+        );
+      },
     );
   }
 }

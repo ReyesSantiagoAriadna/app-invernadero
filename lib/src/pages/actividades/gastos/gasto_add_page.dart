@@ -131,7 +131,7 @@ class _GastoAddPageState extends State<GastoAddPage> {
             SizedBox(height:_responsive.ip(2)),
             InputDate(title:"Fecha",stream:genericBloc.fechaIniStream,
                     onChange:genericBloc.onChangeFechaIn,
-                    initialData:genericBloc.fechaIni,
+                    initialDate:genericBloc.fechaIni,
                     firstDate:null
             ),
            // _date("Fecha")
