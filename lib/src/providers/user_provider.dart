@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:app_invernadero_trabajador/src/models/task/tarea_date_mode.dart';
 import 'package:app_invernadero_trabajador/src/storage/secure_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
@@ -30,10 +31,14 @@ class UserProvider{
         url,body: {"celular": AppConfig.nexmo_country_code+ celular}
         );
     
-      
+      if(response.body.contains("error") && response.body.contains("no found")){
+        return {'ok':false, 'mensaje' : "No se encontro el numero de celular",'error':"no found"};
+      }
+
       Map<String,dynamic> decodedResp = jsonDecode(response.body);
       print(decodedResp);
       
+
       if(decodedResp.containsKey('celular')){ 
         print("retornando respuesta valida del servidor");
         return {
@@ -94,6 +99,11 @@ class UserProvider{
         await _storage.write('token',decodedResp['access_token']);
         //  await fcm.subscribeToTopic(celular);
         // await fcm.subscribeToTopic(AppConfig.all_topic);
+        Personal p = Personal.fromJsonLogin(decodedResp['personal']);
+        _storage.rolPersonal= p.rol;
+        _storage.idPersonal = p.id;
+        _storage.numberPhone = p.celular;
+
       return {'ok':true, 'celular' : decodedResp};
       }else{
         return {'ok':false, 'mensaje' : decodedResp['message']};

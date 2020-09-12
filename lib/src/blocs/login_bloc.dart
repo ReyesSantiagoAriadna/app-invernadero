@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app_invernadero_trabajador/src/blocs/validators.dart';
 import 'package:app_invernadero_trabajador/src/providers/nexmo_sms_verify_provider.dart';
+import 'package:app_invernadero_trabajador/src/providers/twilio/twilio_provider.dart';
 import 'package:app_invernadero_trabajador/src/providers/user_provider.dart';
 import 'package:app_invernadero_trabajador/src/storage/secure_storage.dart';
 import 'package:rxdart/rxdart.dart';
@@ -10,6 +11,7 @@ class LoginBloc with Validators{
 
   UserProvider _userProvider = UserProvider();
   NexmoSmsVerifyProvider _nexmoSmsVerifyProvider = NexmoSmsVerifyProvider();
+  TwilioProvider _twilioProvider = new TwilioProvider();
 
   static final LoginBloc _singleton = LoginBloc._internal();
 
@@ -72,7 +74,7 @@ class LoginBloc with Validators{
       switch(response['verificado'].toString().trim()){
         case '0':
           print("verificar");
-          Map res = await _nexmoSmsVerifyProvider.sendCode(celular: phone);
+          Map res = await _twilioProvider.sendCode(celular: phone);///await _nexmoSmsVerifyProvider.sendCode(celular: phone);
 
           if(res['ok'])
             changeNavRoute('pin_code');
@@ -90,15 +92,18 @@ class LoginBloc with Validators{
          _navRouteController.sink.add('Ha ocurrido un error ${response['mensaje']}');   
       }
     }else{
+      // if(response.containsKey("error")){
+        // _navRouteController.sink.add('Ha ocurrido un error ${response['mensaje']}'); 
+      //}else{
+         _navRouteController.sink.add('Ha ocurrido un error ${response['mensaje']}');      
+      // }
       changeLoading(false);
       // changeNavRoute('Ha ocurrido un error ${response['mensaje']}');
-       _navRouteController.sink.add('Ha ocurrido un error ${response['mensaje']}');      
     }
   }
   
   void verifyCode(String code)async{
-    Map response = await _nexmoSmsVerifyProvider.verify(code: code);
-
+    Map response = await _twilioProvider.verify(code: code); ///_nexmoSmsVerifyProvider.verify(code: code);
     if(response['ok']){
       changeNavRoute('config_password');
     }else{

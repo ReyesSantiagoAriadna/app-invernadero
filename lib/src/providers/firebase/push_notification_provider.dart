@@ -68,7 +68,7 @@ class PushNotificationProvider{
     print("=======on onResume========"); //volviendo del bakground
     print("mensaje $message");
   }
-
+  
 
   subscribeToTopic(String topic){
     print("*********SUBCRIBIENDOSE A TOPIC $topic *********");

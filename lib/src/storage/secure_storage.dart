@@ -36,9 +36,6 @@ class SecureStorage{
   }
 
 
-  
-  
-  
   get informacion{
     return _prefs.getBool('informacion')??false;
   }
@@ -51,13 +48,40 @@ class SecureStorage{
     _prefs.setBool('informacion', value);
   }
 
-  get idClient{
-    return _prefs.getInt('id_client')??'';
+  get idPersonal{
+    return _prefs.getInt('id_personal')??'';
   }
 
-  set idClient(int idClient){
-    _prefs.setInt('id_client', idClient);
+  set idPersonal(int idPersonal){
+    _prefs.setInt('id_personal', idPersonal);
   }
+
+  set rolPersonal(String r){
+    _prefs.setString('rol', r);
+  }
+  get rolPersonal{
+    return _prefs.getString('rol');
+  }
+
+  set numberPhone(String number){
+    _prefs.setString('number_phone', number);
+  }
+
+  get numberPhone{
+    return _prefs.getString('number_phone');
+  }
+  
+  
+
+  get route{
+    return _prefs.getString('route')?? 'register_code' ;//'register_code';
+  }
+
+
+  set route(String route){
+    _prefs.setString('route', route);
+  }
+
 
   get idFeature{
     return _prefs.getString('id_feature')??'';
@@ -72,10 +96,5 @@ class SecureStorage{
   set notificationId(String notificationId){
     _prefs.setString('notification_id', notificationId);
   }
-  get route{
-    return _prefs.getString('route')?? 'login_phone' ;//'register_code';
-  }
-  set route(String route){
-    _prefs.setString('route', route);
-  }
+
 }

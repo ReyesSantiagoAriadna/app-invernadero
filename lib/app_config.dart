@@ -53,4 +53,10 @@ class AppConfig{
   static const int statusTaskEnEspera=4;
   
 
+  static const String fcm_topic_admin = "admin";
+  static const String fcm_topic_employee = "employee";
+
+  static const String rol_empleado = "1";
+  static const String rol_admin ="0";
+
 }

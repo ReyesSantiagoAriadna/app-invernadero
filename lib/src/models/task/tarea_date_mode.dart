@@ -101,6 +101,7 @@ class Personal {
         this.codigo,
         this.verificado,
         this.deletedAt,
+        this.rol,
     });
 
     int id;
@@ -120,7 +121,7 @@ class Personal {
     String codigo;
     String verificado;
     DateTime deletedAt;
-
+    String rol;
     factory Personal.fromJson(Map<String, dynamic> json) => Personal(
         id: json["id"],
         nombre: json["nombre"],
@@ -139,6 +140,28 @@ class Personal {
         codigo: json["codigo"]==null?null:json["codigo"],
         verificado:json["verificado"]==null? null:json["verificado"],
         deletedAt: json["deleted_at"] == null ? null : DateTime.parse(json["deleted_at"]),
+    );
+
+
+    factory Personal.fromJsonLogin(Map<String, dynamic> json) => Personal(
+        id: json["id"],
+        nombre: json["nombre"],
+        ap: json["ap"],
+        am: json["am"],
+        direccion: json["direccion"],
+        telefono: json["telefono"],
+        celular: json["celular"],
+        rfc: json["rfc"] == null ? null : json["rfc"],
+        createdAt:json["created_at"]==null?null: DateTime.parse(json["created_at"]),
+        updatedAt:json["updated_at"]==null?null: DateTime.parse(json["updated_at"]),
+        costoHora:json["costoHora"]==null?null: json["costoHora"].toDouble(),
+        urlImagen: json["url_imagen"] == null ? null : json["url_imagen"],
+        lat: json["lat"] == null ? null : json["lat"].toDouble(),
+        lng: json["lng"] == null ? null : json["lng"].toDouble(),
+        codigo: json["codigo"]==null?null:json["codigo"],
+        verificado:json["verificado"]==null? null:json["verificado"],
+        deletedAt: json["deleted_at"] == null ? null : DateTime.parse(json["deleted_at"]),
+        rol : json["rol"]
     );
 
     Map<String, dynamic> toJson() => {
