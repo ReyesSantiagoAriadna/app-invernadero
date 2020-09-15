@@ -9,7 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
 class PedidosService with ChangeNotifier{
-  
+  static PedidosService instance = PedidosService();
+
   PedidosProvider pedidosProvider = PedidosProvider();
 
   // SolarCultivoBloc solarCultivoBloc = SolarCultivoBloc();
@@ -34,7 +35,7 @@ class PedidosService with ChangeNotifier{
   PedidosService(){
     this.getPedidos();
   }
-  
+  bool _isLoading =false;
   
   dispose(){
     _pedidosController.close();
@@ -44,6 +45,13 @@ class PedidosService with ChangeNotifier{
   
 
 
+  
+
+  void addPedido(Pedido p){   
+    p.isNew=true;
+    pedidosList.insert(0,p);
+    _pedidosController.sink.add(pedidosList);
+  }
   
 
   Future<bool> getPedidos()async{

@@ -3,6 +3,9 @@
 import 'dart:async';
 
 import 'package:app_invernadero_trabajador/src/pages/actividades/actividades_home_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/employee/actividades/actividades_home_employee.dart';
+import 'package:app_invernadero_trabajador/src/pages/employee/home/employee_calendar.dart';
+import 'package:app_invernadero_trabajador/src/pages/employee/home/home_employee_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/herramientas/herramientas_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/home/home_app_bar.dart';
 import 'package:app_invernadero_trabajador/src/pages/home/home_page.dart';
@@ -80,7 +83,7 @@ class PageBloc{
   
   String get pageTitle => _pageTitleController.value;
   
-  void pickPage(String route,String pageTitle) {
+  void pickPage(BuildContext context,String route,String pageTitle) {
     // indice = i;
     // _pageTitleController.sink.add(pageTitle);
     onChangePageTitle(pageTitle);
@@ -91,8 +94,12 @@ class PageBloc{
       case 'home':
         // _pageController.sink.add(Widget.MyHomePage);
         _pageController.sink.add(MyHomePage());
-        onChangeListActionsAppBar(homeActionsAppBar());
+        onChangeListActionsAppBar(homeActionsAppBar(context));
         break;
+      case 'home_employee':
+        _pageController.sink.add(HomeEmployeePage());
+        onChangeListActionsAppBar(homeActionsAppBar(context));
+      break;
       case 'solar_cultivos':
       //  _pageController.sink.add(Widget.SolarCultivosHomePage);
        _pageController.sink.add(SolarCultivosHomePage());
@@ -113,6 +120,10 @@ class PageBloc{
         // _pageController.sink.add(Widget.ActividadesHomePage);
          _pageController.sink.add(ActividadesHomePage());
       break;
+      case 'actividades_employee':
+        _pageController.sink.add(ActividadesEmployeeHome());
+      break;
+      
       case 'pedidos':
         // _pageController.sink.add(Widget.PedidosHomePage);
         _pageController.sink.add(PedidosHomePage());

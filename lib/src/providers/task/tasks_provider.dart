@@ -73,7 +73,7 @@ class TaskProvider{
 
   //terminar tarea
  Future<Map<String,dynamic>> confirmarTarea(int consecutivo)async{  
-    
+
     final url = "${AppConfig.base_url}/api/personal/finalizar_tarea"; 
     final token = await _storage.read('token');
     Map<String, String> headers = {
@@ -82,11 +82,11 @@ class TaskProvider{
     final response = await http.post(
       url, 
       headers: headers,
-      body:   json.encode( 
-        {
-          "consecutivo":consecutivo,
+      // body:   json.encode( 
+      body:  {
+          "consecutivo":consecutivo.toString(),
         }
-      )
+      // )
       );
     print("RESPUESTA DE TAREA PERSONAL");
     print(response.body);

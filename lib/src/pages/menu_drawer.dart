@@ -1,16 +1,20 @@
 
 
 import 'package:app_invernadero_trabajador/app_config.dart';
+import 'package:app_invernadero_trabajador/src/blocs/login_bloc.dart';
 import 'package:app_invernadero_trabajador/src/blocs/map_box_bloc.dart';
 import 'package:app_invernadero_trabajador/src/blocs/page_bloc.dart';
 import 'package:app_invernadero_trabajador/src/blocs/solar_cultivo_bloc.dart';
+import 'package:app_invernadero_trabajador/src/blocs/user_bloc.dart';
 import 'package:app_invernadero_trabajador/src/models/ofertas/ofertaTipo.dart';
 import 'package:app_invernadero_trabajador/src/models/productos/producto.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/solar.dart';
 import 'package:app_invernadero_trabajador/src/pages/default_actions_app_bar.dart';
+import 'package:app_invernadero_trabajador/src/pages/employee/home/home_employee_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/home/home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/home/main_page.dart';
 import 'package:app_invernadero_trabajador/src/providers/menu_provider.dart';
+import 'package:app_invernadero_trabajador/src/services/notifications/notifications_service.dart';
 import 'package:app_invernadero_trabajador/src/services/ofertaService/ofertas_service.dart';
 import 'package:app_invernadero_trabajador/src/services/productoService/produtos_service.dart';
 import 'package:app_invernadero_trabajador/src/services/solares_services.dart';
@@ -20,12 +24,16 @@ import 'package:app_invernadero_trabajador/src/utils/colors.dart';
 import 'package:app_invernadero_trabajador/src/utils/icon_string_util.dart';
 import 'package:app_invernadero_trabajador/src/utils/responsive.dart';
 import 'package:app_invernadero_trabajador/src/widgets/badge_bottom_icon.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
+
+import 'employee/home/employee_calendar.dart';
 
 class MenuDrawer extends StatefulWidget {
   @override
@@ -37,6 +45,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
   Responsive _responsive;
   Future<List<dynamic>> opts;
   PageBloc _pageBloc;
+  LoginBloc loginBloc = LoginBloc();
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
   bool open=false;
 
@@ -50,8 +59,10 @@ class _MenuDrawerState extends State<MenuDrawer> {
   Stream<List<Solar>> solaresStream;
   Stream<List<OfertaTipo>> ofertaTipoStream;
   Stream<List<Producto>> productoStream;
-
+  String rol;
   int init =-1;
+  String initialRoute;
+  bool _isLoading =false;
   SecureStorage _prefs = SecureStorage();
   _handleDrawer(){
     _key.currentState.openDrawer();
@@ -61,8 +72,22 @@ class _MenuDrawerState extends State<MenuDrawer> {
   }
   bool _checkConfiguration() => true;
 
+
+
   @override
   void initState() {
+    if(_prefs.rolPersonal=='0'){
+      rol = "Administrador";
+      initialRoute = 'home';
+      opts =  menuProvider.loadData();
+    }else{
+      rol= "Trabajador";
+      initialRoute = 'home_employee';
+      opts =  menuProvider.loadRoutesEmployee();
+    }
+
+   
+
     MapBoxBloc mbBloc = MapBoxBloc();
     if(mbBloc.position==null){
       Position p = new Position(latitude: AppConfig.default_lat,longitude: AppConfig.default_long);
@@ -72,10 +97,6 @@ class _MenuDrawerState extends State<MenuDrawer> {
     mbBloc.getWeatherBit();
 
 
-    _pageBloc = PageBloc();
-    _pageBloc.onChangePageTitle('Inicio');
-    _pageBloc.onChangeListActionsAppBar(defaulActionsAppBar());
-    //_pageBloc.onChangePage(MyHomePage());
     myScroll ();
 
     if (_checkConfiguration()) {
@@ -85,18 +106,35 @@ class _MenuDrawerState extends State<MenuDrawer> {
         await Provider
         .of<SolarCultivoService>(context,listen: false)
         .fetchSolares();
-      });
-
-      
-
-      
+      });      
     }
-
+    _prefs.route = 'menu_drawer';
+    NotificationsService.instance.getNotifications();
     super.initState();
   } 
 
+  
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if(_pageBloc==null){
+      _pageBloc = PageBloc();
+      _pageBloc.pickPage(context,initialRoute, "Inicio");
+      _pageBloc.changeScrollController(_scrollBottomBarController);
+      _pageBloc.changeShowAppBar(true);
 
 
+      _responsive = Responsive.of(context);    
+      solaresStream = Provider.of<SolarCultivoService>(context).solarStream;
+      ofertaTipoStream = Provider.of<OfertaService>(context).ofertaTipoStream;
+
+       if( Provider.of<SolarCultivoService>(context).solarList.isNotEmpty){
+        SolarCultivoBloc solarBloc = SolarCultivoBloc();
+        solarBloc.changeSolarHome(Provider.of<SolarCultivoService>(context).solarList[0]);
+      }
+    
+    }
+  }
  
 
   @override
@@ -137,58 +175,55 @@ void myScroll() async {
 } 
 
 
-  @override
-  void didChangeDependencies() {
-    _prefs.route = 'menu_drawer';
-    super.didChangeDependencies();
-    opts =  menuProvider.loadData();
-    _responsive = Responsive.of(context);
-    _pageBloc.changeScrollController(_scrollBottomBarController);
-    _pageBloc.changeShowAppBar(true);
-    
-    solaresStream = Provider.of<SolarCultivoService>(context).solarStream;
-    ofertaTipoStream = Provider.of<OfertaService>(context).ofertaTipoStream;
-   /// productoStream = Provider.of<ProductosService>(context).productoStream;
-   
-    if(init==-1){
-      if( Provider.of<SolarCultivoService>(context).solarList.isNotEmpty){
-        SolarCultivoBloc solarBloc = SolarCultivoBloc();
-        solarBloc.changeSolarHome(Provider.of<SolarCultivoService>(context).solarList[0]);
-      }
-    }
-  }
+
 
   
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: _pageBloc.actionsAppBarStream ,
-      builder: (BuildContext context, AsyncSnapshot snapshot){
-        return Scaffold(
-          backgroundColor: Colors.white,
-          key: _key,
-          appBar: _showAppbar
-            ?  myAppBar(snapshot.data)
-          : PreferredSize(
-            child: Container(),
-            preferredSize: Size(0.0, 0.0),
-          ),
-          body: StreamBuilder(
-            stream: _pageBloc.pageStream ,
-            builder: (BuildContext context, AsyncSnapshot snapshot){
-              if(snapshot.hasData){
-                return snapshot.data;
-              }
-              return MyHomePage();
-            },
-          ),
-          drawer: Drawer(
-            child: _options(),
-          ),
-    );
+    return Stack(
+      children: <Widget>[
+        Positioned(
+          child: StreamBuilder(
+              stream: _pageBloc.actionsAppBarStream ,
+              builder: (BuildContext context, AsyncSnapshot snapshot){
+                return Scaffold(
+                  backgroundColor: Colors.white,
+                  key: _key,
+                  appBar: _showAppbar
+                    ?  myAppBar(snapshot.data)
+                  : PreferredSize(
+                    child: Container(),
+                    preferredSize: Size(0.0, 0.0),
+                  ),
+                  body: StreamBuilder(
+                    stream: _pageBloc.pageStream ,
+                    builder: (BuildContext context, AsyncSnapshot snapshot){
+                      if(snapshot.hasData){
+                        return snapshot.data;
+                      }
+                      if(_prefs.rolPersonal==AppConfig.rol_empleado)
+                        return HomeEmployeePage();
+                      return MyHomePage();
+                    },
+                  ),
+                  drawer: Drawer(
+                    child: _options(),
+                  ),
+            );
 
-      },
+              },
+            ),
+        ),
+
+        _isLoading? Positioned.fill(child:  Container(
+                    color:Colors.black45,
+                    child: Center(
+                      child:SpinKitCircle(color: miTema.accentColor),
+                    ),
+                  ),):Container()
+      ],
     );
+    // return ;
   }
 
   
@@ -213,36 +248,76 @@ void myScroll() async {
       width: double.infinity,
       height: 2,
       color: Colors.grey[200],
+     ),
+    ListTile( 
+      onTap: () {
+        // Provider.of<MenuController>(context, listen: true).toggle();
+        
+        Navigator.pushNamed(context, 'ajustes');
+      },
+      leading: Icon(LineIcons.cog,color:MyColors.GreyIcon),
+      title: Text('Ajustes  ',
+        style: TextStyle(
+          color: MyColors.GreyIcon,
+          fontFamily: 'Quicksand',
+          fontWeight: FontWeight.w700,
+          fontSize: _responsive.ip(1.8)
+        ),
+        ),
     ),
-            ListTile(
-              onTap: () {
-                // Provider.of<MenuController>(context, listen: true).toggle();
-               
-                Navigator.pushNamed(context, 'ajustes');
-              },
-              leading: Icon(LineIcons.cog,color:MyColors.GreyIcon),
-              title: Text('Ajustes  ',
-                style: TextStyle(
-                  color: MyColors.GreyIcon,
-                  fontFamily: 'Quicksand',
-                  fontWeight: FontWeight.w700,
-                  fontSize: _responsive.ip(1.8)
-                ),
-                ),
-            ),
-           
+
+    ListTile( 
+      onTap: ()async {    
+
+       await _logOut();
+      
+      },
+      leading: Icon(LineIcons.sign_out,color:MyColors.GreyIcon),
+      title: Text('Salir',
+        style: TextStyle(
+          color: MyColors.GreyIcon,
+          fontFamily: 'Quicksand',
+          fontWeight: FontWeight.w700,
+          fontSize: _responsive.ip(1.8)
+        ),
+        ),
+    ),
+
     ],
     );
   }
-  String rut = 'home';
+
+    
+  _logOut()async{
+    if(_isLoading)return;
+    setState(() {
+      _isLoading=true;
+    });
+    await loginBloc.logOut();
+    setState(() {
+      _isLoading = false;
+    });
+    if(loginBloc.navRoute.contains("Error")){
+      Flushbar(
+        message:  loginBloc.navRoute,
+        duration:  Duration(seconds: 2),              
+      )..show(context);
+    }else{
+      Navigator.pushReplacementNamed(context, loginBloc.navRoute); 
+    }
+  }
   List<Widget> _listItems(List<dynamic> data){
     final List<Widget> opciones=[];
+    
+    
+
+
     data.forEach((opt){
       final widgetTemp = 
       Container(
         margin: EdgeInsets.only(left:10,right:10),
         decoration: BoxDecoration(
-          color: opt['ruta']==rut?miTema.accentColor.withOpacity(0.2):Colors.white,
+          color: opt['ruta']==initialRoute?miTema.accentColor.withOpacity(0.2):Colors.white,
           borderRadius:BorderRadius.circular(10)
         ),
         child:ListTile(
@@ -261,8 +336,17 @@ void myScroll() async {
       onTap: (){
         // isScrollingDown =true;
         // _pageBloc.changeShowAppBar(true);
-       _pageBloc.pickPage(opt['ruta'],opt['texto']);
-        rut = opt['ruta'];
+        _pageBloc.pickPage(context,opt['ruta'],opt['texto']);
+          initialRoute = opt['ruta'];
+
+        // if(_prefs.rolPersonal==AppConfig.rol_empleado && opt['ruta']=='home'){
+        //   _pageBloc.pickPage('home_employee',opt['texto']);
+        //   initialRoute = 'home_employee';
+        // }else{
+        //   _pageBloc.pickPage(opt['ruta'],opt['texto']);
+        //   initialRoute = opt['ruta'];
+        // }
+      
         Navigator.pop(context);
 
       },
@@ -273,6 +357,14 @@ void myScroll() async {
     return opciones;
   }
 
+  Color _selectColor(String route){
+    if(_prefs.rolPersonal==AppConfig.rol_empleado && route=='home' && initialRoute=='home_employee'){
+        return miTema.accentColor.withOpacity(0.2);
+    }else{
+      if(route==initialRoute)
+      return miTema.accentColor.withOpacity(0.2);
+    }
+  }
   _drawerHeader() {
     return DrawerHeader(
         child: Column(
@@ -280,7 +372,7 @@ void myScroll() async {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children:<Widget>[
           SvgPicture.asset('assets/icons/user.svg',                  
-          height: _responsive.ip(10)),
+          height: _responsive.ip(8)),
           Text('Bienvenido',style: TextStyle(
                 color: Colors.white,
                 fontFamily: 'Quicksand',
@@ -293,6 +385,20 @@ void myScroll() async {
                 fontWeight: FontWeight.w700,
                 fontSize: _responsive.ip(1.5)
               ),),
+           Text("Rol: $rol",style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Quicksand',
+                fontWeight: FontWeight.w700,
+                fontSize: _responsive.ip(1.5)
+              ),),
+            // GestureDetector(
+            //             child: Icon(LineIcons.chevron_circle_down),
+            //             onTapDown: (TapDownDetails details) {
+            //                 _showPopupMenu(details.globalPosition);
+            //               },
+            //           ),
+
+
           ]
         ),
         decoration: BoxDecoration(
@@ -335,5 +441,35 @@ void myScroll() async {
       );
   }
 
- 
+  
+  
+  _showPopupMenu(Offset offset) async {
+    const TextStyle _itemStyle = TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w400);
+    double left = offset.dx;
+    double top = offset.dy;
+    await showMenu(
+    context: context,
+    position: RelativeRect.fromLTRB(left, top, 0, 0),
+    items: [
+     PopupMenuItem<String>(
+          child:GestureDetector(
+            onTap: ()async{
+              // await Provider
+              //   .of<PedidosService>(context,listen: false).entregarPedido(widget.pedido.id);
+              // Flushbar(
+              //           message: widget.pedidoBloc.response!=null?
+              //           widget.pedidoBloc.response
+              //           :
+              //           "Ha ocurrido un error."
+              //           ,
+              //           duration:  Duration(seconds: 2),              
+              //         )..show(context);
+            },
+            child:  const Text('Salir',style:_itemStyle ,), ),
+          ),
+    ],
+    elevation: 8.0,
+  );
+}
+
 }

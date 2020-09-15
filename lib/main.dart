@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:app_invernadero_trabajador/app_config.dart';
 import 'package:app_invernadero_trabajador/src/blocs/map_box_bloc.dart';
 import 'package:app_invernadero_trabajador/src/pages/actividades/actividades_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/actividades/gastos/gasto_add_page.dart';
@@ -10,6 +13,10 @@ import 'package:app_invernadero_trabajador/src/pages/actividades/tareas/tarea_ad
 import 'package:app_invernadero_trabajador/src/pages/actividades/tareas/tarea_edit_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/actividades/tareas/tarea_herramientas.dart';
 import 'package:app_invernadero_trabajador/src/pages/ajustes/ajustes_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/employee/actividades/actividades_home_employee.dart';
+import 'package:app_invernadero_trabajador/src/pages/employee/home/employee_calendar.dart';
+import 'package:app_invernadero_trabajador/src/pages/employee/home/home_employee_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/employee/home/task_details_widget.dart';
 import 'package:app_invernadero_trabajador/src/pages/herramientas/add_herramienta_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/herramientas/edit_herramienta_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/herramientas/herramientas_home_page.dart';
@@ -24,6 +31,7 @@ import 'package:app_invernadero_trabajador/src/pages/login/login_phone_page.dart
 import 'package:app_invernadero_trabajador/src/pages/login/pin_code_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/login/register_code_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/menu_drawer.dart';
+import 'package:app_invernadero_trabajador/src/pages/notifications/notifications_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/ofertas/add_oferta_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/ofertas/ofertas_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/pedidos/pedido_agendar_page.dart';
@@ -44,11 +52,14 @@ import 'package:app_invernadero_trabajador/src/pages/task/task_reasignar_persona
 import 'package:app_invernadero_trabajador/src/pages/ventas/ventas_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/task/calendar.dart';
 import 'package:app_invernadero_trabajador/src/providers/firebase/push_notification_provider.dart';
+import 'package:app_invernadero_trabajador/src/providers/hive/hive_provider.dart';
 import 'package:app_invernadero_trabajador/src/services/actividades/gastos_services.dart';
 import 'package:app_invernadero_trabajador/src/services/actividades/productos_services.dart';
 import 'package:app_invernadero_trabajador/src/services/actividades/sobrantes_services.dart';
 import 'package:app_invernadero_trabajador/src/services/actividades/tareas_services.dart';
+import 'package:app_invernadero_trabajador/src/services/employee/tasks_services.dart';
 import 'package:app_invernadero_trabajador/src/services/insumosService/insumos_service.dart';
+import 'package:app_invernadero_trabajador/src/services/notifications/notifications_service.dart';
 import 'package:app_invernadero_trabajador/src/services/ofertaService/ofertas_service.dart';
 import 'package:app_invernadero_trabajador/src/services/pedidos/pedidos_service.dart';
 import 'package:app_invernadero_trabajador/src/services/plagasService/plaga_services.dart';
@@ -58,6 +69,7 @@ import 'package:app_invernadero_trabajador/src/services/inventarioService/invent
 import 'package:app_invernadero_trabajador/src/storage/secure_storage.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:app_invernadero_trabajador/src/widgets/date_picker.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
@@ -66,6 +78,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
+
+import 'src/models/pedidos/pedido_model.dart';
 // Example holidays
 
 
@@ -76,6 +90,9 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = new SecureStorage();
   await prefs.initPrefs();
+  HiveProvider hiveProvider = HiveProvider();
+  await hiveProvider.initDB();
+
   // Intl.defaultLocale = 'pt_BR';
  // await findSystemLocale();
   // await initializeDateFormatting();
@@ -109,21 +126,110 @@ class _MyAppState extends State<MyApp> {
   final prefs = new SecureStorage();
   MapBoxBloc mapBoxBloc;
   final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+  
+  // final FirebaseMessaging _firebaseMessaging = new FirebaseMessaging();
+  // static bool isNotified=false;
+  
+
+  
   @override
   void initState() {
+    final pushProvider = new PushNotificationProvider();
+    pushProvider.initNotifications();
+    // _firebaseMessaging.requestNotificationPermissions();
+    // _firebaseMessaging.getToken().then((v){
+    //   print("===============FCM TOKEN ==================");
+    //   print("Token $v");
+    // });
+
+
+
+    // _firebaseMessaging.configure(
+    //   onMessage: onMessage,
+    //   onBackgroundMessage: onBackgroundMessage,
+    //   onLaunch: onLaunch,
+    //   onResume: onResume,
+    // );
+
+
+
+
     FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
     mapBoxBloc = MapBoxBloc();
 
-    final pushProvider = new PushNotificationProvider();
-    pushProvider.initNotifications();
+    
+    
+    // pushProvider.messageStream.listen((onData){
+    //   //navigatorKey.currentState.pushNamed('ruta'); //navgar hacia ruta o hacer algo
 
-    pushProvider.messageStream.listen((onData){
-      //navigatorKey.currentState.pushNamed('ruta'); //navgar hacia ruta o hacer algo
+    // });
 
-    });
+    
     super.initState();
   }
+
+  
+  // Future<dynamic> onMessage(Map<String, dynamic> message) async{
+  
+
+  //   if(isNotified)return;
+  //     print("=======on message========"); //ap en primer plano
+  //   print("mensaje $message");
+  //   isNotified=true;
+    
+  //   NotificationsService.instance.getNotifications();
+  //   final data = message['data'];
+  //   if(data!=null){
+  //     _toProcessData(data);
+  //   }
+  //   print("Saliendo de on message");
+  //   isNotified=false;
+  // }
+
+  // Future<dynamic> onLaunch(Map<String, dynamic> message) async{
+  //   print("=======on onLaunch========");
+  //   NotificationsService.instance.getNotifications();
+  //   print("mensaje $message");
+  // }
+  // Future<dynamic> onResume(Map<String, dynamic> message) async{
+  //   print("=======on onResume========"); //volviendo del bakground
+  //   print("mensaje $message");
+  //   NotificationsService.instance.getNotifications();
+  // }
+
+  //  static Future<dynamic> onBackgroundMessage(Map<String, dynamic> message) async {
+  //   // var provider = Provider.of<NotificationsService>(context,listen: false);
+  //   // provider.getNotifications();
+  //   if (message.containsKey('data')) {
+  //     // Handle data message
+  //     final dynamic data = message['data'];
+      
+  //   }
+
+  //   if (message.containsKey('notification')) {
+  //     // Handle notification message
+  //     final dynamic notification = message['notification'];
+  //   }
+
+  // // Or do other work.
+  // } 
+
+  // _toProcessData(dynamic data){
+  //   switch (data['tipo']){
+  //     case AppConfig.fcm_type_pedido:  //tipo pedido
+  //     Pedido p = Pedido.fromJson(json.decode(data['pedido']));
+  //     print("======== PEDIDO ======");
+  //     print("${p.id} ${p.totalPagado}");
+  //     PedidosService.instance.addOrReplace(p);
+  //     break;
+
+  //     default:
+
+  //     break;
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
      return FutureBuilder(
@@ -146,13 +252,15 @@ class _MyAppState extends State<MyApp> {
                 ChangeNotifierProvider(create: (_)=> new ProductosService(),),
                 ChangeNotifierProvider(create: (_)=> new GastosService(),),
                 ChangeNotifierProvider(create: (_)=> new SobrantesService(),),
-                ChangeNotifierProvider(create: (_)=> new PedidosService(),),
+                ChangeNotifierProvider(create: (_)=> PedidosService.instance),
 
                 ChangeNotifierProvider(create: (_)=> new PlagaService(),),
                 ChangeNotifierProvider(create: (_)=>new InventarioService(),),
                 ChangeNotifierProvider(create: (_)=>new OfertaService(),),
                 // ChangeNotifierProvider(create: (_)=>new ProductosService(),),
-                ChangeNotifierProvider(create: (_)=>new InsumoService(),)
+                ChangeNotifierProvider(create: (_)=>new InsumoService(),),
+                ChangeNotifierProvider(create: (_)=>TasksEmployeeService.instance,),
+                ChangeNotifierProvider(create: (_)=>NotificationsService.instance,),
               ],
               // import 'package:intl/intl.dart';
                 child: new MaterialApp(
@@ -169,7 +277,7 @@ class _MyAppState extends State<MyApp> {
 
             title: 'SS Invernadero',
             theme: miTema,
-            initialRoute: prefs.route,
+            initialRoute:prefs.route,
             debugShowCheckedModeBanner: false,
             routes: {
               'main'                  : (BuildContext)=>MainPage(),
@@ -183,6 +291,7 @@ class _MyAppState extends State<MyApp> {
               'menu_drawer'           : (BuildContext)=>MenuDrawer(),
 
               'home'                  : (BuildContext)=>MyHomePage(),
+              'home_employee'         : (BuildContext)=>HomeEmployeePage(),
               'solar_cultivos'        : (BuildContext)=>SolarCultivosHomePage(),
               'details_solar'         : (BuildContext)=>DetailsSolarPage(),
               'solar_add'             : (BuildContext)=>SolarAddPage(),
@@ -228,7 +337,14 @@ class _MyAppState extends State<MyApp> {
               'tarea_asignar'         : (BuildContext)=>TaskAssignPage(),
               'tarea_reasignar_personal' : (BuildContext)=>TaskReasignarPersonalPage(),
               'tarea_reasignar_horario'  : (BuildContext)=>TaskReasignarHorarioPage(),
-              'test'                  : (BuildContext)=>MyDatePicker()
+              'test'                  : (BuildContext)=>MyDatePicker(),
+
+
+              'actividades_employee'  : (BuildContext)=>ActividadesEmployeeHome(),
+              'task_employee_details' : (BuildContext)=>TaskEmployeeDetails(),
+
+              
+              'notifications'         : (BuildContext)=>NotificationsPage(),
             }
           ),
         );        

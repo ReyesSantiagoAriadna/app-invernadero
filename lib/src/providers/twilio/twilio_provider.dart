@@ -40,7 +40,7 @@ class TwilioProvider{
       print("RESPUESTA DE VERIFICACION $decodedResp");
       if(decodedResp.containsKey('response') && decodedResp.containsKey('number')){ 
         //inicializar Request ID & number 
-        
+
         ///this.requestId = decodedResp['request_id'];
         this.number = decodedResp['number'];
         
@@ -66,7 +66,7 @@ class TwilioProvider{
       Map<String,dynamic> decodedResp = jsonDecode(response.body);
       if(decodedResp.containsKey('access_token')){ 
         //save token 
-        Personal p = Personal.fromJsonLogin(jsonDecode(response.body)['client']);
+        Personal p = Personal.fromJsonLogin(jsonDecode(response.body)['personal']);
         _storage.idPersonal = p.id;
         
         await _storage.write('token',decodedResp['access_token']);

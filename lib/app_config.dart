@@ -12,6 +12,7 @@ class AppConfig{
   static const provider_api = 'personals'; //personals
   static const String quicksand = 'Quicksand';
   static const nexmo_country_code='52';
+  static const twilio_country_code='52';
   static const double default_lat = 17.06542 ;
   static const double default_long = -96.72365;
   //** MAPBOX */
@@ -59,4 +60,27 @@ class AppConfig{
   static const String rol_empleado = "1";
   static const String rol_admin ="0";
 
+
+  static const int hive_type1 = 1;  
+  static const int hive_type2 = 2;
+
+  static const String hive_adapter_name_1 = "NotificationsAdapter";
+  static const String hive_adapter_name_2 = "DataAdapter";
+
+
+  static const String notif_type_insumo = "AppNotificationsInsumoNotification";
+  static const String notif_type_tarea_p = "AppNotificationsTareaPersonalNotification";
+  static const String notif_type_pedido = "AppNotificationsOrderNotification";
+
+  static const String event_created = "created";
+  static const String event_updated = "updated";
+  
+
+
+  static const String fcm_type_insumo = "Insumo";
+  static const String fcm_type_pedido = "Pedido";
+  static const String fcm_type_plaga = "Plaga";
+  static const String fcm_type_tarea_personal = "TareaPersonal";
+  static const String fcm_type_producto ="Producto";
+  
 }

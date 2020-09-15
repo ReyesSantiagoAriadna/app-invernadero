@@ -608,7 +608,14 @@ class _MyCalendarState extends State<MyCalendar> with TickerProviderStateMixin{
                          context,
                          "Tarea",
                           "¿Estas seguro de confirmar la tarea?",
-                          ()=>print("hello mundo")
+                          ()=>taskBloc.confirmarTarea(tp.consecutivo).then((v){
+                        Flushbar(
+                          message:  taskBloc.response,
+                          duration:  Duration(seconds: 2),              
+                        )..show(context);
+                        
+                      })
+
                          ))
                       :Container(),
                     IconButton(icon: Icon(LineIcons.eye), onPressed: ()=>showDetails(tp)),
@@ -759,7 +766,8 @@ class _MyCalendarState extends State<MyCalendar> with TickerProviderStateMixin{
                         )..show(context).then((r){
                           Navigator.pop(context);
                         });
-                      }));
+                      })
+                      );
                   },
                 ),
                 new ListTile(

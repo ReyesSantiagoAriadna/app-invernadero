@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_invernadero_trabajador/app_config.dart';
 import 'package:app_invernadero_trabajador/src/blocs/validators.dart';
 import 'package:app_invernadero_trabajador/src/providers/nexmo_sms_verify_provider.dart';
 import 'package:app_invernadero_trabajador/src/providers/twilio/twilio_provider.dart';
@@ -74,7 +75,8 @@ class LoginBloc with Validators{
       switch(response['verificado'].toString().trim()){
         case '0':
           print("verificar");
-          Map res = await _twilioProvider.sendCode(celular: phone);///await _nexmoSmsVerifyProvider.sendCode(celular: phone);
+
+          Map res = await _twilioProvider.sendCode(celular:AppConfig.twilio_country_code+phone);///await _nexmoSmsVerifyProvider.sendCode(celular: phone);
 
           if(res['ok'])
             changeNavRoute('pin_code');
@@ -110,13 +112,21 @@ class LoginBloc with Validators{
       print("Ha ocurrido un error en la verificacion");
       changeNavRoute('Ha ocurrido un error en la verificacion');
     }
+  } 
+  
+  void resendOTP()async{
+    final phone = await  _prefs.read('celular');
+    final response = await _twilioProvider.sendCode(celular:phone);
+    if(response['ok'])
+      _navRouteController.sink.add('Hemos enviado el código de verificación a tu celular');
+    else
+      _navRouteController.sink.add('Ha ocurrido un error ${response['message']}');  
   }
 
 
   void configPassword(String password)async{
     final phone = await  _prefs.read('celular');
     Map response = await _userProvider.changePassword(celular: phone, password: password);
-    
     if(response['ok']){
       changeNavRoute('home');
     }else{
@@ -128,7 +138,7 @@ class LoginBloc with Validators{
   void login(String password)async{
     final phone = await  _prefs.read('celular');
     Map response = await _userProvider.login(celular: phone, password: password);
-
+    
     if(response['ok']){
       changeNavRoute('menu_drawer');
     }else{
@@ -136,4 +146,13 @@ class LoginBloc with Validators{
     }
   }
 
+
+  void logOut()async{
+    Map response = await _userProvider.logout();
+    if(response['ok']){
+      changeNavRoute('register_code');
+    }else{
+      changeNavRoute('Error al ingresar');
+    }
+  }
 }

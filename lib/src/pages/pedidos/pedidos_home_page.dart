@@ -51,7 +51,8 @@ class _PedidosHomePageState extends State<PedidosHomePage> {
           _isLoading=true;
           });
           
-           Provider.of<PedidosService>(context,listen: false)
+          //  Provider.of<PedidosService>(context,listen: false)
+          PedidosService.instance
            .getPedidos()
            .then((v){
               if(mounted){
@@ -119,7 +120,8 @@ class _PedidosHomePageState extends State<PedidosHomePage> {
                       child: Container(
               margin:EdgeInsets.only(left:8,right: 8),
               child: StreamBuilder(
-                stream: Provider.of<PedidosService>(context).pedidosStream,
+                // stream: Provider.of<PedidosService>(context).pedidosStream,
+               stream: PedidosService.instance.pedidosStream,
                 builder: (BuildContext context, AsyncSnapshot snapshot){
                   if(snapshot.hasData){
                     List<Pedido> pedidos = snapshot.data;

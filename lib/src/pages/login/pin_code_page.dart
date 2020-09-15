@@ -39,7 +39,7 @@ class _PinCodePageState extends State<PinCodePage>{
   LoginBloc bloc;
   // NexmoSmsVerificationUtil _nexmoSmsVerificationUtil;
   _PinCodePageState();//this.mobileNumber);
-
+  String number;
   Responsive responsive; 
   @override
   void initState() {
@@ -80,21 +80,20 @@ class _PinCodePageState extends State<PinCodePage>{
                       child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                          AspectRatio(
-                      aspectRatio: 16/7,
-                      child: LayoutBuilder(
-                        builder:(_,contraints){
-                          return Container(
-                            
-                            child:  SvgPicture.asset('assets/images/enter_code.svg',
-                              height: contraints.maxHeight*.4,
-                              width: contraints.maxWidth,
-                            ),
-                          );
-                        }
-                      )
-                    )   ,
-                    SizedBox(height: responsive.ip(1),),
+                        AspectRatio(
+                        aspectRatio: 16/5,
+                        child: LayoutBuilder(
+                          builder:(_,contraints){
+                            return Container(
+                              child:  SvgPicture.asset('assets/images/enter_code.svg',
+                                height: contraints.maxHeight*.2,
+                                width: contraints.maxWidth,
+                              ),
+                            );
+                          }
+                        )
+                      )   ,
+                    // SizedBox(height: responsive.ip(1),),
                     Text("Código de verificación",style: TextStyle(fontSize:responsive.ip(3),fontWeight:FontWeight.bold),),
                     SizedBox(height: responsive.ip(1),),
                     Padding(
@@ -102,6 +101,7 @@ class _PinCodePageState extends State<PinCodePage>{
                       child: FutureBuilder(
                         future: _prefs.read('celular'),
                         builder: (BuildContext context, AsyncSnapshot snapshot) {
+                          number = snapshot.data;
                           return Text("El código de verificación se ha enviado al:+ ${snapshot.data}",
                           textWidthBasis: TextWidthBasis.longestLine, 
                           style: TextStyle(color:Color(0xffbbbbbb),),
@@ -110,7 +110,7 @@ class _PinCodePageState extends State<PinCodePage>{
                         },
                       ), 
                     ),
-                    SizedBox(height:responsive.ip(0.5)),
+                    // SizedBox(height:responsive.ip(0.5)),
                     _inputBox(),
                     SizedBox(height: responsive.ip(1),),
 
@@ -121,7 +121,7 @@ class _PinCodePageState extends State<PinCodePage>{
                     ),
 
 
-                    SizedBox(height: responsive.ip(1),),
+                    // SizedBox(height: responsive.ip(1),),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children:<Widget>[
@@ -132,7 +132,7 @@ class _PinCodePageState extends State<PinCodePage>{
                           onPressed: _isResendEnable?_resendOtp:null,)
                       ]
                     ),
-                    SizedBox(height: responsive.ip(2),),  
+                    // SizedBox(height: responsive.ip(1),),  
                     RoundedButton(
                       label: "Siguiente", 
                       onPressed:
@@ -247,6 +247,12 @@ class _PinCodePageState extends State<PinCodePage>{
      //_nexmoSmsVerificationUtil.resentOtp();
      restarTimer();
      print("enviando codigo de verificacion");
+     bloc.resendOTP();
+      Flushbar(
+        message:  bloc.navRoute,
+        duration:  Duration(seconds: 2),              
+      )..show(context);
+
     }else{
       print("aun no se puede solicitar un nuevo codigo");
     }

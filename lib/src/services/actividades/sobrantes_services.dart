@@ -46,14 +46,16 @@ class SobrantesService with ChangeNotifier{
   
 
 
-  void getSobrantes()async{
+  Future<bool> getSobrantes()async{
     print(">>>>>>>>>>>>>cargando sobrantes>>>>>>>>>>>>>");
     final list =  await sobrantesProvider.loadSobrantes();
     if(list!=[] && list.isNotEmpty){
       this.sobrantesList.addAll(list);
       _sobrantesController.sink.add(sobrantesList);
+      return true;
     }
     notifyListeners();
+    return false;
   }
 
   // Future<bool> fetchSolares()async{

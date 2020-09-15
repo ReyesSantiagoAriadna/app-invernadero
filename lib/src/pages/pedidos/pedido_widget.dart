@@ -57,6 +57,7 @@ class _PedidoWidgetState extends State<PedidoWidget> {
       onTap: (){
       },
       child: new Container(
+       
         margin: EdgeInsets.only(top:10,bottom:5),
         child:Card(
           elevation: 2,
@@ -64,6 +65,7 @@ class _PedidoWidgetState extends State<PedidoWidget> {
             children:<Widget>[
              // _createFlutterMap(widget.solar.latitud, widget.solar.longitud),
               Container(
+                color:widget.pedido.isNew?Colors.blue.withOpacity(0.1):Colors.white,
                 padding: EdgeInsets.all(4),
                 width: double.infinity,
                 child: Row(
@@ -225,11 +227,13 @@ class _PedidoWidgetState extends State<PedidoWidget> {
                   leading: new Icon(LineIcons.trash_o),
                   title: new Text('Eliminar',style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w400),),
                   onTap: () { 
-                    Provider.of<TareasService>(context,listen: false)
+                    // Provider.of<TareasService>(context,listen: false)
+                    TareasService.instance
                     .deleteTarea(widget.pedido.id)
                     .then((r){
                       Flushbar(
-                        message:  Provider.of<TareasService>(context,listen: false).response,
+                        //message:  Provider.of<TareasService>(context,listen: false).response,
+                        message: TareasService.instance.response,
                         duration:  Duration(seconds: 2),              
                       )..show(context).then((r){
                         Navigator.pop(context);
@@ -323,8 +327,11 @@ class _PedidoWidgetState extends State<PedidoWidget> {
     }
   }
 
-
+  
   void detailsModalBottomSheet(context)async{
+    if(widget.pedido.isNew){
+      widget.pedido.isNew=false;
+    }
     TextStyle _itemStyle = TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w600);
     //  showModalBottomSheet(
     //   context: context,
@@ -353,6 +360,7 @@ class _PedidoWidgetState extends State<PedidoWidget> {
         
         return Container(
           // height:200,
+          
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -515,10 +523,13 @@ class _PedidoWidgetState extends State<PedidoWidget> {
         enabled:  widget.pedido.estatus=="Rechazado"?false:true,
         child:GestureDetector(
           onTap: ()async{
-            await Provider
-              .of<PedidosService>(context,listen: false).rechazarPedido(widget.pedido.id);
+            await 
+            // Provider
+            //   .of<PedidosService>(context,listen: false).rechazarPedido(widget.pedido.id);
+            PedidosService.instance.rechazarPedido(widget.pedido.id);
             Flushbar(
-              message:  Provider.of<PedidosService>(context,listen: false).response,
+              // message:  Provider.of<PedidosService>(context,listen: false).response,
+              message: PedidosService.instance.response,
               duration:  Duration(seconds: 2),              
             )..show(context);
           },
@@ -527,8 +538,10 @@ class _PedidoWidgetState extends State<PedidoWidget> {
      PopupMenuItem<String>(
           child:GestureDetector(
             onTap: ()async{
-              await Provider
-                .of<PedidosService>(context,listen: false).entregarPedido(widget.pedido.id);
+              await
+              //  Provider
+              //   .of<PedidosService>(context,listen: false).entregarPedido(widget.pedido.id);
+              PedidosService.instance.entregarPedido(widget.pedido.id);
               Flushbar(
                         message: widget.pedidoBloc.response!=null?
                         widget.pedidoBloc.response

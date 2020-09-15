@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:app_invernadero_trabajador/src/models/task/tarea_date_mode.dart';
+import 'package:app_invernadero_trabajador/src/providers/firebase/push_notification_provider.dart';
 import 'package:app_invernadero_trabajador/src/storage/secure_storage.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 
@@ -19,11 +21,11 @@ class UserProvider{
 
   UserProvider._internal();
 
-
+  final _fcm = PushNotificationProvider();
   final _storage = SecureStorage();  
   
   Future<Map<String,dynamic>> findPhone({@required String celular})async{
-      await _storage.write('celular',AppConfig.nexmo_country_code+ celular);
+      await _storage.write('celular',AppConfig.twilio_country_code+celular);
       final url = "${AppConfig.base_url}/api/personal/find_phone";
 
       
@@ -97,12 +99,20 @@ class UserProvider{
       print(response.body);
       if(decodedResp.containsKey('access_token')){ //access_token,token_type,expires_at
         await _storage.write('token',decodedResp['access_token']);
-        //  await fcm.subscribeToTopic(celular);
-        // await fcm.subscribeToTopic(AppConfig.all_topic);
+       
         Personal p = Personal.fromJsonLogin(decodedResp['personal']);
         _storage.rolPersonal= p.rol;
         _storage.idPersonal = p.id;
         _storage.numberPhone = p.celular;
+        print("Roooolll de personal ¨*********** ${p.rol}");
+        await _fcm.subscribeToTopic(celular);
+        if(p.rol==AppConfig.rol_admin){
+          await _fcm.subscribeToTopic(AppConfig.fcm_topic_admin);
+           await _fcm.subscribeToTopic(AppConfig.fcm_topic_employee);
+        }else if(p.rol == AppConfig.rol_empleado){
+          await _fcm.subscribeToTopic(AppConfig.fcm_topic_employee);
+        }
+
 
       return {'ok':true, 'celular' : decodedResp};
       }else{
@@ -172,7 +182,7 @@ class UserProvider{
 
   Future<Map<String,dynamic>> logout()async{
     try{
-      final url = "${AppConfig.base_url}/api/client/logout";
+      final url = "${AppConfig.base_url}/api/personal/logout";
       final token = await _storage.read('token');
         Map<String, String> headers = {
       HttpHeaders.authorizationHeader: "Bearer $token",
@@ -191,6 +201,13 @@ class UserProvider{
       
       if(decodedResp.containsKey('message')){ 
         // TODO: remove  token 
+        await _fcm.unsubscribeFromTopic( _storage.numberPhone);
+        await _fcm.unsubscribeFromTopic(AppConfig.rol_empleado);
+        if(_storage.rolPersonal==AppConfig.rol_admin){
+          await _fcm.unsubscribeFromTopic(AppConfig.fcm_topic_admin);
+        }
+
+
 
         await _storage.delete('token'); 
         _storage.sesion = false;

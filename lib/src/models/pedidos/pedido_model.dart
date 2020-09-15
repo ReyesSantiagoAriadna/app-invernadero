@@ -52,7 +52,7 @@ class Pedido {
     String tipoEntrega;
     List<Detalle> detalles;
     Cliente cliente;
-
+    bool isNew=false;
     factory Pedido.fromJson(Map<String, dynamic> json) => Pedido(
         id: json["id"],
         idCliente: json["id_cliente"],

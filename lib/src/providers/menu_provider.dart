@@ -19,6 +19,14 @@ class _MenuProvider{
     return opciones;
 
   }
+
+  
+  Future<List<dynamic>>  loadRoutesEmployee() async{
+    final resp = await rootBundle.loadString('data/menu_employee.json');
+    Map dataMap = json.decode(resp);
+    opciones = dataMap['rutas'];
+    return opciones;
+  }
 }
 
 final menuProvider = _MenuProvider();

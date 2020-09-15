@@ -52,7 +52,7 @@ class PedidoBloc with Validators{
       );
       list.add(p);
     });
-
+    
     FechaPedidoModel object = FechaPedidoModel(
       fechaInicio:  DateFormat("yyyy-MM-dd").parse(gB.fechaIni),
       fechaFinal:  DateFormat("yyyy-MM-dd").parse(gB.fechaFin),
@@ -67,8 +67,9 @@ class PedidoBloc with Validators{
   Future<bool> addFechaPedido(BuildContext context)async{
      FechaPedidoModel object = prepareParameters();
 
-    final resp = await Provider
-      .of<PedidosService>(context,listen: false).fechaPedido(object);
+    // final resp = await Provider
+    //   .of<PedidosService>(context,listen: false).fechaPedido(object);
+    final resp = await PedidosService.instance.fechaPedido(object);
     if(resp)
       return true;
     return false;

@@ -19,7 +19,7 @@ class _SolarCultivosHomePageState extends State<SolarCultivosHomePage> {
   PageBloc _pageBloc;
   Stream<List<Solar>> solaresStream;
   ScrollController _hideButtonController;
-  bool _isVisible;
+  bool _isVisible; 
   SolarCultivoBloc solarCultivoBloc = SolarCultivoBloc();
   bool _isLoading=false;
   @override
@@ -102,7 +102,7 @@ class _SolarCultivosHomePageState extends State<SolarCultivosHomePage> {
       body: Stack(
         children: <Widget>[
           Positioned(
-                      child: Container(
+            child: Container(
               margin:EdgeInsets.only(left:8,right: 8),
               child: StreamBuilder(
                 stream: Provider.of<SolarCultivoService>(context).solarStream,
@@ -114,7 +114,6 @@ class _SolarCultivosHomePageState extends State<SolarCultivosHomePage> {
                        physics: BouncingScrollPhysics(),
                       itemCount: solares.length,
                       itemBuilder: (BuildContext context, int index) {
-                        print("elemtn");
                       return SolarWidget(solar:solares[index],solarCultivoBloc: solarCultivoBloc,);
                      },
                     );

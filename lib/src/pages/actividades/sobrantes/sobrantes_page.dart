@@ -42,27 +42,27 @@ class _SobrantesPageState extends State<SobrantesPage> {
         if(_hideButtonController.position.pixels==_hideButtonController.position.maxScrollExtent){
           print("final**********");
         
-          // setState(() {
-          // _isLoading=true;
-          // });
+          setState(() {
+          _isLoading=true;
+          });
 
-          //  Provider.of<SolarCultivoService>(context,listen: false)
-          //  .fetchSolares()
-          //  .then((v){
-          //     if(mounted){
-          //     setState(() {
-          //       _isLoading=false;
-          //     });
+           Provider.of<SobrantesService>(context,listen: false)
+           .getSobrantes()
+           .then((v){
+              if(mounted){
+              setState(() {
+                _isLoading=false;
+              });
 
               
-          //     if(v){
-          //       _hideButtonController.animateTo(
-          //         _hideButtonController.position.pixels +100,
-          //          duration: Duration(milliseconds:250), 
-          //          curve: Curves.fastOutSlowIn);
-          //     }
-          //    }
-          //  });
+              if(v){
+                _hideButtonController.animateTo(
+                  _hideButtonController.position.pixels +100,
+                   duration: Duration(milliseconds:250), 
+                   curve: Curves.fastOutSlowIn);
+              }
+             }
+           });
         }
         if(_isVisible == true) {
             

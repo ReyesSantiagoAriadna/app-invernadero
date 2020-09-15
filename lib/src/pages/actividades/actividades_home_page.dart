@@ -7,6 +7,7 @@ import 'package:app_invernadero_trabajador/src/pages/actividades/gastos/gastos_p
 import 'package:app_invernadero_trabajador/src/pages/actividades/productos/productos_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/actividades/sobrantes/sobrantes_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/actividades/tareas/tareas_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/employee/actividades/tareas_employee_page.dart';
 import 'package:app_invernadero_trabajador/src/providers/regions_provider.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:app_invernadero_trabajador/src/utils/colors.dart';
@@ -42,6 +43,7 @@ class _ActividadesHomePageState extends State<ActividadesHomePage> with SingleTi
   }
   @override
   Widget build(BuildContext context) {
+    TextStyle style = TextStyle(color: MyColors.GreyIcon,fontFamily:AppConfig.quicksand,fontSize:10,fontWeight: FontWeight.w700 );
     return Scaffold(
       
       appBar: new AppBar(
@@ -54,10 +56,27 @@ class _ActividadesHomePageState extends State<ActividadesHomePage> with SingleTi
                 indicatorColor: miTema.accentColor,
                 controller: _tabController,
                 tabs: [
-                  new Tab(icon: new Icon(LineIcons.calendar_check_o,color: Colors.grey,),),
-                  new Tab(icon: new Icon(LineIcons.archive,color:MyColors.GreyIcon,)),
-                  new Tab(icon: new Icon(LineIcons.money,color: Colors.grey,)),
-                  new Tab(icon: new Icon(LineIcons.clipboard,color: Colors.grey,)),
+                  new Tab(icon: new Column(children:<Widget>[ 
+                    Text("Tareas",style: style,),
+                    Icon(LineIcons.calendar_check_o,color: MyColors.GreyIcon,)]),),
+                  new Tab(icon: Column(
+                    children: <Widget>[
+                      Text("Productos",style: style,),
+                      new Icon(LineIcons.archive,color:MyColors.GreyIcon,),
+                    ],
+                  )),
+                  new Tab(icon: Column(
+                    children: <Widget>[
+                      Text("Gastos",style: style,),
+                      new Icon(LineIcons.money,color: Colors.grey,),
+                    ],
+                  )),
+                  new Tab(icon: Column(
+                    children: <Widget>[
+                      Text("Sobrantes",style: style,),
+                      new Icon(LineIcons.clipboard,color: Colors.grey,),
+                    ],
+                  )),
                 ],
               ),
             ],

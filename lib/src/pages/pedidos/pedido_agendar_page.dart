@@ -287,7 +287,7 @@ class _PedidoAgendarPageState extends State<PedidoAgendarPage> {
     });
     
     Flushbar(
-      message: Provider.of<PedidosService>(context,listen: false).response,
+      message: PedidosService.instance.response,///Provider.of<PedidosService>(context,listen: false).response,
       duration:  Duration(seconds: 2),
     )..show(context).then((r){
       Navigator.pop(context);

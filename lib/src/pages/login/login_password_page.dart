@@ -127,8 +127,31 @@ class _LoginPasswordPageState extends State<LoginPasswordPage> {
 
   _forgotPassword(){
     // Navigator.pushReplacementNamed(context, 'pin_code',arguments: _user.phone);
-  }
+      // Flushbar(
+      //   message:  "Hemos enviado un código a tu celular",
+      //   duration:  Duration(seconds: 2),              
+      // )..show(context).then((v){
+      //   bloc
+      //   Navigator.pushNamed(context, 'pin_code');
+      // });
 
+      bloc.resendOTP();
+
+      if(bloc.navRoute.contains("Error")){
+        Flushbar(
+        message: bloc.navRoute,
+        duration:  Duration(seconds: 2),              
+        )..show(context);
+      }else{
+        Flushbar(
+        message: bloc.navRoute,
+        duration:  Duration(seconds: 2),              
+        )..show(context).then((v){
+          Navigator.pushNamed(context, 'pin_code');
+        });
+      }
+   
+  }
   _submit()async{
      if(_isLoading)return;
     

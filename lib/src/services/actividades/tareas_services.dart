@@ -16,7 +16,7 @@ import 'package:app_invernadero_trabajador/src/models/actividades/herramienta_mo
 import 'package:app_invernadero_trabajador/src/models/actividades/insumos_model.dart' as insumo;
 
 class TareasService with ChangeNotifier{
-  
+  static TareasService instance = new TareasService();
   TareasProvider tareasProvider = TareasProvider();
 
   // SolarCultivoBloc solarCultivoBloc = SolarCultivoBloc();
@@ -63,16 +63,19 @@ class TareasService with ChangeNotifier{
 
   
 
-
-  void getTareas()async{
+  
+  Future<bool> getTareas()async{
     print(">>>>>>>>>>>>>cargando Tareas>>>>>>>>>>>>>");
     final list =  await tareasProvider.loadTareas();
     if(list!=[] && list.isNotEmpty){
       this.tareasList.addAll(list);
       _tareasController.sink.add(tareasList);
+      return true;
     }
     notifyListeners();
+    return false;
   }
+
 
   void getHerramientas()async{
     print(">>>>>>>>>>>>>cargando Herramientas>>>>>>>>>>>>>");

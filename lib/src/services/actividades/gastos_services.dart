@@ -45,14 +45,16 @@ class GastosService with ChangeNotifier{
   
 
 
-  void getGastos()async{
+  Future<bool> getGastos()async{
     print(">>>>>>>>>>>>>cargando Gastos>>>>>>>>>>>>>");
     final list =  await gastosProvider.loadGastos();
     if(list!=[] && list.isNotEmpty){
       this.gastosList.addAll(list);
       _gastosController.sink.add(gastosList);
+      return true;
     }
     notifyListeners();
+    return false;
   }
 
   Future<bool> getPersonal()async{

@@ -41,9 +41,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   Responsive _responsive;
   SolarCultivoBloc solarBloc = SolarCultivoBloc();
   TaskBloc taskBloc = TaskBloc();
+  PageBloc _pageBloc;
+  
   @override
   void initState() {
     super.initState();
+    _pageBloc = PageBloc();
 
 
     FlutterStatusbarcolor.setStatusBarColor(Colors.white);
@@ -81,6 +84,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       width: double.infinity,
       margin: EdgeInsets.all(10),
       child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        controller: _pageBloc.scrollCont,
               child: Column(
           children: <Widget>[
             _weatherBit(),
@@ -326,6 +331,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     //   final date = DateTime.parse(clima.data[0].datetime);
     //   taskBloc.onChangeDateNet(date);
     // }
+    
     TextStyle _style =TextStyle(color:Colors.white,fontFamily: AppConfig.quicksand,
                   fontWeight: FontWeight.w700
                 );
@@ -336,39 +342,46 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         borderRadius : BorderRadius.circular(15)
       ),
       width: double.infinity,
-      height: 150,
+      height: 160,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Column(
-            children:<Widget>[
-              Text(clima==null?
-                "Oaxaca, MX":
-               "${clima.data[0].cityName}, ${clima.data[0].countryCode}",
-              style: TextStyle(
-                fontSize: 25,
-                color:Colors.white,fontFamily:AppConfig.quicksand,fontWeight:FontWeight.w700),),
-              SizedBox(height:5),
-              Text(
-                clima==null?
-                "0.0 °C":
-                "${clima.data[0].temp} °C",style:  TextStyle(fontFamily:AppConfig.quicksand,fontSize:35,color:Colors.white),),
-              SizedBox(height:5),
-              Text(clima==null?"":"Sensación termica ${clima.data[0].appTemp} °C",style: _style,),
-              SizedBox(height:5),
-              Text(clima==null?"":"${clima.data[0].datetime}",style: _style,)
+          Expanded(
+                      child: Column(
+              children:<Widget>[
+                Text(clima==null?
+                  "Oaxaca, MX":
+                 "${clima.data[0].cityName}, ${clima.data[0].countryCode}",
+                style: TextStyle(
+                
+                  fontSize: 20,
+                  color:Colors.white,fontFamily:AppConfig.quicksand,fontWeight:FontWeight.w700),
+                  overflow: TextOverflow.ellipsis,
+                  ),
+                SizedBox(height:5),
+                Text(
+                  clima==null?
+                  "0.0 °C":
+                  "${clima.data[0].temp} °C",style:  TextStyle(fontFamily:AppConfig.quicksand,fontSize:35,color:Colors.white),),
+                SizedBox(height:5),
+                Text(clima==null?"":"Sensación termica ${clima.data[0].appTemp} °C",style: _style,),
+                SizedBox(height:5),
+                Text(clima==null?"":"${clima.data[0].datetime}",style: _style,)
 
-            
-            ]
+              
+              ]
+            ),
           ),
-          Column(
-            children:<Widget>[
-              _icon(clima.data[0].weather.icon),
-               Text(clima==null?"":"${clima.data[0].weather.description}",
-                style: TextStyle(color:Colors.white,fontFamily: AppConfig.quicksand,
-                  fontWeight: FontWeight.w700
-                ),),
-            ]
+          Expanded(
+                      child: Column(
+              children:<Widget>[
+                _icon(clima.data[0].weather.icon),
+                 Text(clima==null?"":"${clima.data[0].weather.description}",
+                  style: TextStyle(color:Colors.white,fontFamily: AppConfig.quicksand,
+                    fontWeight: FontWeight.w700
+                  ),),
+              ]
+            ),
           )
         ],
       ),  
@@ -405,7 +418,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         ),
         child: Column(
           children:<Widget>[
-            Text("Calendario",style: TextStyle(fontSize:18,fontFamily: AppConfig.quicksand, color:Colors.white,fontWeight: FontWeight.w700),),
+            Text("Calendario",style: TextStyle(fontSize:15,fontFamily: AppConfig.quicksand, color:Colors.white,fontWeight: FontWeight.w700),),
             Icon(LineIcons.calendar_check_o,color:Colors.white,size:45),
             // Text("1",style: TextStyle(color:Colors.white,fontWeight: FontWeight.w700,fontSize: 25),),
           ]
@@ -429,7 +442,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         ),
         child: Column(
           children:<Widget>[
-            Text("Tareas concluidas",style: TextStyle(fontSize: 18, fontFamily: AppConfig.quicksand, color:Colors.white,fontWeight: FontWeight.w700),),
+            Text("Tareas concluidas",style: TextStyle(fontSize: 15, fontFamily: AppConfig.quicksand, color:Colors.white,fontWeight: FontWeight.w700),),
             Icon(LineIcons.calendar_check_o,color:Colors.white,size:45),
             // Text("1",style: TextStyle(fontFamily: AppConfig.quicksand, color:Colors.white,fontWeight: FontWeight.w700,fontSize: 25),),
           ]

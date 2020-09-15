@@ -76,13 +76,13 @@ class _LoginPhonePageState extends State<LoginPhonePage> {
                     ),
                     SizedBox(height: responsive.ip(4),),
                     _inputText(bloc),
-                    SizedBox(height: responsive.ip(5),),       
+                    SizedBox(height: responsive.ip(2),),       
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: _createButon(bloc),
                     )
                 ],),),
-
+                
                  _isLoading? Positioned.fill(child:  Container(
                     color:Colors.black45,
                     child: Center(

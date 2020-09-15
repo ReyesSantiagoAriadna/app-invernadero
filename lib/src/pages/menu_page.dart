@@ -148,7 +148,7 @@ class _MenuScreenState extends State<MenuScreen> {
       onTap: (){
         // Navigator.pushNamed(context, opt['ruta']);
         //Provider.of<MenuController>(context, listen: true).toggle();
-        _pageBloc.pickPage(opt['ruta'],opt['texto']);
+        _pageBloc.pickPage(context,opt['ruta'],opt['texto']);
 
         
       },

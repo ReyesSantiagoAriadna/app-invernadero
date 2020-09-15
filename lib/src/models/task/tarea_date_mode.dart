@@ -103,7 +103,7 @@ class Personal {
         this.deletedAt,
         this.rol,
     });
-
+    
     int id;
     String nombre;
     String ap;
