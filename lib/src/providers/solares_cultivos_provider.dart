@@ -69,14 +69,11 @@ class SolaresCultivosProvider{
     } 
     
     if(response.body.contains("solares") && response.body.contains("id")){
-      // SolarModel solares = SolarModel.fromJson(json.decode(response.body));
-      // return solares.solares.values.toList().cast();
       var decodeData = jsonDecode(response.body)['solares'] as List;
        List<Solar> solares = 
         decodeData.map((productoJson) => Solar.fromJson(productoJson)).toList();
         if(decodeData==null) return [];
         return solares;
-
     }
     return [];
   }
