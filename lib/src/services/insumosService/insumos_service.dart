@@ -1,7 +1,7 @@
-
 import 'dart:io';
 
 import 'package:app_invernadero_trabajador/src/models/insumos/insumo.dart';
+import 'package:app_invernadero_trabajador/src/models/proveedores/proveedor.dart';
 import 'package:app_invernadero_trabajador/src/providers/insumos/insumos_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
@@ -9,28 +9,40 @@ import 'package:rxdart/rxdart.dart';
 class InsumoService with ChangeNotifier{
   InsumosProvider insumosProvider = new InsumosProvider();
 
-  List<Insumo> insumoList = List();
+  List<Insumo> insumoList = List(); 
+  List<Insumo> insumoSelect = List();
+  List<Proveedor> proveedorList = List();
   
   final _insumosController =  new BehaviorSubject<List<Insumo>>();
   final _responseController = new BehaviorSubject<String>();
-
+  final _proveedorController = new BehaviorSubject<List<Proveedor>>();
+  final _insumoSelectController =  new BehaviorSubject<List<Insumo>>();
+  
   Stream<List<Insumo>> get insumoStream => _insumosController.stream;
-  List<Insumo> get insumos => insumoList;
+  Stream<List<Proveedor>> get proveedorStream => _proveedorController.stream;
+  Stream<List<Insumo>> get insumoSelectStream => _insumoSelectController.stream;
 
   Function(String) get changeResponse => _responseController.sink.add;
   String get response => _responseController.value;
 
+  List<Insumo> get insumos => insumoList;
+  List<Proveedor> get proveedores => _proveedorController.value;
+  List<Insumo> get insumoSelet => _insumoSelectController.value;
+
   InsumoService(){
-    this.getInsumos();
+    this.getInsumos(); 
+    this.getProveedores();
+    this.getInsumosSelect();
   }
 
   dispose(){
     _insumosController.close();
-    _responseController.close();
+    _responseController.close(); 
+    _insumoSelectController.close();
   }
 
   void getInsumos()async{
-    final list =  await insumosProvider.getInsumos();
+    final list =  await insumosProvider.loadInsumos();
     if(list != [] && list.isNotEmpty){
       this.insumoList.addAll(list);
       _insumosController.sink.add(insumoList);
@@ -38,21 +50,54 @@ class InsumoService with ChangeNotifier{
     notifyListeners();
   }
 
-  Future<bool> fetchInsumos()async{
-    final list = await insumosProvider.getInsumos();
+  Future<bool> fetchInsumos()async{ 
+    final list = await insumosProvider.loadInsumos(); 
     if(list != [] && list.isNotEmpty){
      this.insumoList.addAll(list);
-      _insumosController.sink.add(insumoList);
+      _insumoSelectController.sink.add(insumoList);
       return true;
     }
     return false;
   }
+
+  void getInsumosSelect()async{
+     print("--------------insumos select --------------");
+    final list =  await insumosProvider.loadInsumosSelect();
+    if(list != [] && list.isNotEmpty){
+      this.insumoSelect.addAll(list);
+      _insumoSelectController.sink.add(insumoSelect);
+    }
+    notifyListeners();
+  }
+
+  Future<bool> fetchInsumosSelect()async{
+    print("--------------insumos select fetch--------------");
+    final list = await insumosProvider.loadInsumosSelect();
+    print(list.toString());
+    if(list != [] && list.isNotEmpty){
+     this.insumoSelect.addAll(list);
+      _insumoSelectController.sink.add(insumoSelect);
+      return true;
+    }
+    return false;
+  }
+
+  void getDesSelect()async{
+    final list = await insumosProvider.loadInsumos();
+    for (var i = 0; i < list.length; i++) {
+      
+    }
+  }
+ 
 
   Future<bool> addInsumo(Insumo insumo)async{
     final resp = await insumosProvider.addInsumo(insumo);
     if(resp != null){
       this.insumoList.add(resp);
       _insumosController.sink.add(insumoList);
+      //-------select
+      this.insumoSelect.add(resp);
+      _insumoSelectController.sink.add(insumoSelect);
       changeResponse('succes');
       return true;
     }else {
@@ -73,7 +118,7 @@ class InsumoService with ChangeNotifier{
       changeResponse('Algo salio mal');
       return false;
     }
-  }
+  } 
 
    Future<String> subirFoto(File foto) async{
     final fotoUrl = await insumosProvider.subirImagenCloudinary(foto);
@@ -84,5 +129,40 @@ class InsumoService with ChangeNotifier{
       changeResponse("Algo salio mal");
       return "";
     }
+    
   }
+
+  void getProveedores()async{
+    print("--------------proveedores-------------------");
+    final list = await insumosProvider.getProveedores();
+    if(list!=null && list.isNotEmpty){
+      this.proveedorList.addAll(list);
+      _proveedorController.sink.add(proveedorList); 
+    }
+    notifyListeners();
+  }
+
+  Future<bool> fetchProveedores()async{
+    print(">>>>>>>>>>>>>cargando proveedores>>>>>>>>>>>>>");
+    final list =  await insumosProvider.getProveedores();
+    if(list!=[] && list.isNotEmpty){
+      this.proveedorList.addAll(list);
+      _proveedorController.sink.add(proveedorList);
+      return true;
+    }
+    return false; 
+  }
+ 
+  Future<bool> addCompra(List<String> insumos, List<String> cantidades,List<String> precios, int proveedor)async{
+    final list = await insumosProvider.addCompra(insumos, cantidades, precios, proveedor);
+    if(list != [] && list.isNotEmpty){ 
+      //this.insumoList.addAll(list);
+      _insumosController.sink.add(list);
+      notifyListeners();
+      return true;
+    }
+    notifyListeners();
+    return false;
+  } 
+
 }

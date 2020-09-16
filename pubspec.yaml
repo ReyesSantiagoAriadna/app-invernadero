@@ -52,6 +52,7 @@ dependencies:
   hive: ^1.4.1+1
   hive_flutter: ^0.3.0+2
   path_provider:
+  barcode_scan: ^1.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -81,6 +82,7 @@ flutter:
     - assets/images/
     - data/menu_opts.json
     - data/menu_employee.json
+    - data/menu_ajustes.json
     - data/regionalizacion.json
     - assets/
   #  - images/a_dot_burr.jpeg

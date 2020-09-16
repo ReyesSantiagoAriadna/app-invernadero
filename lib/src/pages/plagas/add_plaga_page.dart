@@ -9,6 +9,8 @@ import 'package:app_invernadero_trabajador/src/services/plagasService/plaga_serv
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:app_invernadero_trabajador/src/utils/colors.dart';
 import 'package:app_invernadero_trabajador/src/utils/responsive.dart';
+import 'package:app_invernadero_trabajador/src/widgets/alert_dialogs/dialog_select_cultivo.dart';
+import 'package:app_invernadero_trabajador/src/widgets/alert_dialogs/dialog_select_solar.dart';
 import 'package:app_invernadero_trabajador/src/widgets/dialog_list_cultivos.dart';
 import 'package:app_invernadero_trabajador/src/widgets/dialog_list_solares.dart'; 
 import 'package:app_invernadero_trabajador/src/widgets/rounded_button.dart';
@@ -75,7 +77,7 @@ class _AddPlagaPageState extends State<AddPlagaPage> {
   @override
   void dispose() { 
     plagaBloc.reset();
-    solarCultivoBloc.reset();
+    solarCultivoBloc.resetSolaresPlagas();   
     super.dispose(); 
   }
 
@@ -92,8 +94,8 @@ class _AddPlagaPageState extends State<AddPlagaPage> {
           icon: Icon(LineIcons.angle_left, color: MyColors.GreyIcon), 
           onPressed: ()=> Navigator.pop(context)
         ),
-        title:Text("Nueva plaga",
-             style: TextStyle(color: MyColors.GreyIcon) 
+        title:Text("Nueva plaga",style:TextStyle(color: MyColors.GreyIcon,
+              fontFamily: AppConfig.quicksand,fontWeight: FontWeight.w800)
         ),
         actions: <Widget>[
           _crearBoton()
@@ -137,9 +139,11 @@ class _AddPlagaPageState extends State<AddPlagaPage> {
             ),
             SizedBox(height:15),
             _mostrarFoto(),
-            SizedBox(height:_responsive.ip(1)),             
-            _mostrarSolares(),            
-            SizedBox(height:_responsive.ip(0.5)),
+            SizedBox(height:_responsive.ip(1)),        
+            DialogSelectSolar(solarCultivoBloc: solarCultivoBloc, responsive: _responsive),
+            SizedBox(height:_responsive.ip(2)),
+            DialogSelectCultivo(solarCultivoBloc: solarCultivoBloc, responsive: _responsive),
+           SizedBox(height:_responsive.ip(0.5)),
             _inputDeteccionDate(), 
             SizedBox(height:_responsive.ip(2)),
             _inputNombre(),
@@ -220,92 +224,7 @@ class _AddPlagaPageState extends State<AddPlagaPage> {
     );
   }
 
-  _mostrarSolares(){
-    return  Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-          children: <Widget>[
-            Icon(LineIcons.sun_o,color: MyColors.GreyIcon,),
-            SizedBox(width:10),
-            Text("Solar",style: _style,),
-          ],
-        ),
-          SizedBox(height:_responsive.ip(2)),
-          // StreamBuilder(
-          //   stream: solarCultivoBloc.solarActiveStream ,
-          //   builder: (BuildContext context, AsyncSnapshot snapshot){
-          //     Solar solar = snapshot.data;
-          //     return GestureDetector(
-          //       onTap: (){
-          //          showDialog(
-          //         context: context,
-          //         builder: (BuildContext context) {
-          //           return DialogList(solarCultivoBloc: solarCultivoBloc,);
-          //         });
-          //       },
-          //       child:snapshot.hasData?
-          //        _select(solar.nombre):
-          //        _select("Elije el solar"),
-          //     );
-          //   },            
-          // ),
-          SizedBox(height:_responsive.ip(2)),
-          Row(
-            children: <Widget>[
-              SvgPicture.asset('assets/icons/seelding_icon.svg',color:MyColors.GreyIcon,height: 20,),
-              SizedBox(width:10),
-              Text("Cultivo",style: _style,),
-            ],
-          ),
-          SizedBox(height:_responsive.ip(2)),
-          StreamBuilder(
-            stream: solarCultivoBloc.cultivoActiveStream ,
-            builder: (BuildContext context, AsyncSnapshot snapshot){            
-              Cultivo cultivo = snapshot.data;
-              return GestureDetector(
-                onTap: (){
-                   showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return DialogListCultivo(solarCultivoBloc: solarCultivoBloc,);
-                  });
-                },
-                child:snapshot.hasData
-                
-                ? _select((
-                  cultivo.nombre),
-                ):_select("Elije el cultivo"),
-              );
-            },
-          ),
-        ], 
-    ); 
-  }
-
-  _select(String data){
-    return Container(
-      height: 50,
-      margin: EdgeInsets.only(left:35,right:10),
-      padding: const EdgeInsets.all(5.0),
-      decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(5),
-      border: Border.all(
-        width: 1,
-        color: MyColors.GreyIcon)  
-      ),
-      child: Row(
-        children:<Widget>[
-         Text(data,style: TextStyle(color:MyColors.GreyIcon,fontFamily: AppConfig.quicksand,
-          fontSize: _responsive.ip(1.5),fontWeight: FontWeight.w700
-        ),),
-        Expanded(child:Container()),
-        Icon(Icons.expand_more,color: MyColors.GreyIcon,)
-        ]
-      )
-    );
-  }
-
+  
     
   
  

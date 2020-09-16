@@ -2,10 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:app_invernadero_trabajador/src/models/task/tarea_date_mode.dart';
 import 'package:app_invernadero_trabajador/src/providers/firebase/push_notification_provider.dart';
+import 'package:app_invernadero_trabajador/src/models/trabajador/trabajador.dart';
 import 'package:app_invernadero_trabajador/src/storage/secure_storage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
-import 'package:meta/meta.dart';
+import 'package:meta/meta.dart'; 
+import 'package:http_parser/http_parser.dart'; 
+import 'package:mime_type/mime_type.dart';
+
 
 import '../../app_config.dart';
 import 'package:http/http.dart' as http;
@@ -221,6 +225,166 @@ class UserProvider{
       return {'ok':false, 'mensaje' : 'error'};
     }
       
+  }
+
+
+  
+   Future<Trabajador> getTrabajador()async{    
+    final url = "${AppConfig.base_url}/api/personal/getUser"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",};
+    
+    final response = await http.get(
+      url, 
+      headers: headers,);
+
+    print("Respuesta Trabajador----------------");
+    print(response.body);
+    if(response.body.contains("trabajador")&& response.body.contains("id") ){
+      print("Respuesta Update----------------${response.body}");
+      Trabajador trabajador = Trabajador.fromJson(json.decode(response.body)['trabajador']);
+      return trabajador;
+    } 
+    return null;
+  }
+
+   Future<String> subirImagenCloudinary(File imagen) async{
+    final url = Uri.parse('https://api.cloudinary.com/v1_1/dtev8lpem/image/upload?upload_preset=f9k9os9d');
+    final mimeType = mime(imagen.path).split('/'); //image/jpeg
+
+    final imageUploadRequest = http.MultipartRequest( //peticion para subir el archivo
+      'POST',
+      url
+    );
+
+    final file = await http.MultipartFile.fromPath( //se carga el archivo
+      'file', 
+      imagen.path,
+      contentType: MediaType(mimeType[0], mimeType[1]),
+    );
+
+    imageUploadRequest.files.add(file);
+    
+    final streamResponse = await imageUploadRequest.send();
+    final resp = await http.Response.fromStream(streamResponse);
+
+    if (resp.statusCode != 200 && resp.statusCode != 201) {
+        print('Algo salio mal');
+        print(resp.body);
+        return null;
+    }
+
+    final respData = json.decode(resp.body);
+    print(respData);
+
+    return respData['secure_url'];
+  }
+
+  Future<Trabajador> updateName(String nameTrabajador) async{
+    final url = "${AppConfig.base_url}/api/personal/updateName"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",}; 
+    
+    final response = await http.put(
+      url, 
+      headers: headers,
+      body: { 
+        "nombre":nameTrabajador,  
+      });
+
+    if(response.body.contains('trabajador')  && response.body.contains("id")){
+      Trabajador trabajador = Trabajador.fromJson(json.decode(response.body)['trabajador']);
+      return trabajador;
+    }
+    return null;
+  }
+
+  Future<Trabajador> updateApaterno(String aPaterno) async{
+    final url = "${AppConfig.base_url}/api/personal/updatePaterno"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",}; 
+    
+    final response = await http.put(
+      url, 
+      headers: headers,
+      body: { 
+        "ap":aPaterno,  
+      });
+
+    if(response.body.contains('trabajador')  && response.body.contains("id")){
+      Trabajador trabajador = Trabajador.fromJson(json.decode(response.body)['trabajador']);
+      return trabajador;
+    }
+    return null;
+  }
+
+  Future<Trabajador> updateAmaterno(String aMaterno) async{
+    final url = "${AppConfig.base_url}/api/personal/updateMaterno"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",}; 
+    
+    final response = await http.put(
+      url, 
+      headers: headers,
+      body: { 
+        "am":aMaterno,  
+      });
+
+    if(response.body.contains('trabajador')  && response.body.contains("id")){
+      Trabajador trabajador = Trabajador.fromJson(json.decode(response.body)['trabajador']);
+      return trabajador;
+    }
+    return null;
+  }
+
+  Future<Trabajador> updateRfc(String rfc) async{
+    final url = "${AppConfig.base_url}/api/personal/updateRfc"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",}; 
+    
+    final response = await http.put(
+      url, 
+      headers: headers,
+      body: { 
+        "rfc":rfc,  
+      });
+
+    if(response.body.contains('trabajador')  && response.body.contains("id")){
+      Trabajador trabajador = Trabajador.fromJson(json.decode(response.body)['trabajador']);
+      return trabajador;
+    }
+    return null;
+  }
+
+  Future<Trabajador> updatePhoto(String urlImagen) async{
+    final url = "${AppConfig.base_url}/api/personal/updatePhoto"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",}; 
+    
+    final response = await http.put(
+      url, 
+      headers: headers,
+      body: { 
+        "url_imagen": urlImagen,  
+      });
+
+    if(response.body.contains('trabajador')  && response.body.contains("id")){
+      Trabajador trabajador = Trabajador.fromJson(json.decode(response.body)['trabajador']);
+      return trabajador;
+    }
+    return null;
   }
  
   // Future<UserModel> cargarUsuario()async{

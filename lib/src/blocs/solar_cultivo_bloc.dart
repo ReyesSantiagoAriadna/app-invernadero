@@ -293,4 +293,9 @@ class SolarCultivoBloc with Validators{
     }
     onChangeEtapas(etapasList);
   }
+
+  void resetSolaresPlagas(){
+    _solarActiveController.addError('*');
+    _cultivoActiveController.addError('*');
+  }
 }

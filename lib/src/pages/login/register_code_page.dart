@@ -12,6 +12,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:barcode_scan/barcode_scan.dart';
 
 class CodeRegisterPage extends StatefulWidget {
   @override
@@ -145,7 +146,20 @@ class _CodeRegisterPageState extends State<CodeRegisterPage> {
       child: StreamBuilder( 
         stream: bloc.codeStream,
         builder: (BuildContext context,AsyncSnapshot snapshot){
-        return InputText(
+        return TextFormField(
+            decoration: InputDecoration(
+              focusedBorder:  UnderlineInputBorder(      
+                        borderSide: BorderSide(color:miTema.accentColor)),
+              //icon: Icon(LineIcons.wrench),
+              //labelText: 'Código',              
+              errorText: snapshot.error,
+              prefixIcon: IconButton(
+                icon: Icon(LineIcons.qrcode), 
+                onPressed: ()=> _scanQR())
+            ),
+            onChanged:  bloc.changeCode, 
+          );
+        /*InputText(
           placeholder: 'Código',
           validator: (String text){
           },
@@ -153,7 +167,7 @@ class _CodeRegisterPageState extends State<CodeRegisterPage> {
           icon: LineIcons.qrcode,
           onChange: bloc.changeCode,
           errorText: snapshot.error,
-        );
+        );*/
       }),
     );
   }
@@ -172,5 +186,27 @@ class _CodeRegisterPageState extends State<CodeRegisterPage> {
         }
       )
     );
+  }
+
+  _scanQR()async{
+    String futureString;
+
+    try {
+       futureString = await BarcodeScanner.scan();
+    } catch (e) {
+      print("********************************");
+      futureString = e.toString();
+    }
+    print("-----------------------------------");
+    print('Furute String: $futureString');
+
+    if(futureString !=null){
+      print("-----------------------------------");
+      print("Trenemos informacion");
+      bloc.changeCode(futureString);
+      
+      _registerCode();
+
+    }
   }
 }

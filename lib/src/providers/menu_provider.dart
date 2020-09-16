@@ -9,6 +9,7 @@ class _MenuProvider{
 
   _MenuProvider(){
     loadData();
+    loadMenu();
   }
 
   Future<List<dynamic>>  loadData() async{
@@ -19,13 +20,21 @@ class _MenuProvider{
     return opciones;
 
   }
-
-  
+ 
   Future<List<dynamic>>  loadRoutesEmployee() async{
     final resp = await rootBundle.loadString('data/menu_employee.json');
     Map dataMap = json.decode(resp);
     opciones = dataMap['rutas'];
     return opciones;
+
+  }
+  Future<List<dynamic>>  loadMenu() async{
+    final resp = await rootBundle.loadString('data/menu_ajustes.json');
+
+    Map dataMap = json.decode(resp);
+    opciones = dataMap['rutas'];
+    return opciones;
+
   }
 }
 
