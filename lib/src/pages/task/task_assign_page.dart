@@ -8,32 +8,16 @@ import 'package:app_invernadero_trabajador/src/blocs/generic_bloc.dart';
 import 'package:app_invernadero_trabajador/src/blocs/pedido/pedido_bloc.dart';
 import 'package:app_invernadero_trabajador/src/blocs/solar_cultivo_bloc.dart';
 import 'package:app_invernadero_trabajador/src/blocs/task/task_bloc.dart';
-import 'package:app_invernadero_trabajador/src/models/actividades/producto_model.dart';
 import 'package:app_invernadero_trabajador/src/models/task/tarea_date_mode.dart';
-import 'package:app_invernadero_trabajador/src/pages/pedidos/select_productos.dart';
-import 'package:app_invernadero_trabajador/src/services/actividades/gastos_services.dart';
-import 'package:app_invernadero_trabajador/src/services/actividades/productos_services.dart';
-import 'package:app_invernadero_trabajador/src/services/actividades/sobrantes_services.dart';
-import 'package:app_invernadero_trabajador/src/services/actividades/tareas_services.dart';
-import 'package:app_invernadero_trabajador/src/services/pedidos/pedidos_service.dart';
+import 'package:app_invernadero_trabajador/src/services/tasks/task_services.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:app_invernadero_trabajador/src/utils/colors.dart';
 import 'package:app_invernadero_trabajador/src/utils/responsive.dart';
 import 'package:app_invernadero_trabajador/src/widgets/alert_dialogs/dialog_select.dart';
-import 'package:app_invernadero_trabajador/src/widgets/alert_dialogs/dialog_select_cultivo.dart';
-import 'package:app_invernadero_trabajador/src/widgets/alert_dialogs/dialog_select_cultivo_etapa.dart';
-import 'package:app_invernadero_trabajador/src/widgets/alert_dialogs/dialog_select_herramienta.dart';
-import 'package:app_invernadero_trabajador/src/widgets/alert_dialogs/dialog_select_personal.dart';
-import 'package:app_invernadero_trabajador/src/widgets/alert_dialogs/dialog_select_productos.dart';
-import 'package:app_invernadero_trabajador/src/widgets/alert_dialogs/dialog_select_solar.dart';
-import 'package:app_invernadero_trabajador/src/widgets/inputs/input_date.dart';
-import 'package:app_invernadero_trabajador/src/widgets/inputs/input_svg_icon.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 
@@ -48,13 +32,14 @@ class _TaskAssignPageState extends State<TaskAssignPage> {
   Responsive _responsive;
   bool _isLoading=false;
   SolarCultivoBloc solarBloc = SolarCultivoBloc();
-  TaskBloc taskBloc = TaskBloc();
+  // TaskBloc taskBloc = TaskBloc();
+  TaskService taskService = TaskService.instance;
 
   @override
   void initState() {
     if(solarBloc.cultivoHome!=null){
       print("Cultivo homeeee = ${solarBloc.cultivoHome.id} ${solarBloc.cultivoHome}");
-      taskBloc.tareasCultivo();
+      taskService.tareasCultivo();
     }
     super.initState();
   }
@@ -82,7 +67,7 @@ class _TaskAssignPageState extends State<TaskAssignPage> {
             elevation: 0.0,
             brightness: Brightness.light,
             backgroundColor: Colors.white,
-            title:Text("Asignar Tarea ${DateFormat('yyyy-MM-dd').format(taskBloc.tasksDateKey)}",style:TextStyle(color: MyColors.GreyIcon,
+            title:Text("Asignar Tarea ${DateFormat('yyyy-MM-dd').format(taskService.tasksDateKey)}",style:TextStyle(color: MyColors.GreyIcon,
               fontFamily: AppConfig.quicksand,fontWeight: FontWeight.w800
             )),
             leading: IconButton(
@@ -132,16 +117,16 @@ class _TaskAssignPageState extends State<TaskAssignPage> {
             SizedBox(height:5),
             // _inputSolar(), 
            StreamBuilder(
-             stream: taskBloc.taskCultivoStream ,
+             stream: taskService.taskCultivoStream ,
              builder: (BuildContext context, AsyncSnapshot snapshot){
                List<Tarea> list;
                 if(snapshot.hasData){
                   list = snapshot.data;
                 }
                 return DialogSelectGeneric(
-                stream: taskBloc.tareaActiveStream,
-                initialData: taskBloc.tareaActive,
-                onchange: taskBloc.onChangeTareaActive,
+                stream: taskService.tareaActiveStream,
+                initialData: taskService.tareaActive,
+                onchange: taskService.onChangeTareaActive,
                 responsive: _responsive,
                 title: "Tarea",
                 content: "Elije la tarea",
@@ -156,16 +141,16 @@ class _TaskAssignPageState extends State<TaskAssignPage> {
             SizedBox(height:_responsive.ip(2)),
 
             StreamBuilder(
-             stream: taskBloc.personalStream ,
+             stream: taskService.personalStream ,
              builder: (BuildContext context, AsyncSnapshot snapshot){
                List<Personal> list;
                 if(snapshot.hasData){
                   list = snapshot.data;
                 }
                 return DialogSelectGeneric(
-                stream: taskBloc.personalActiveStream,
-                initialData: taskBloc.personalActive,
-                onchange: taskBloc.onChangePersonalActive,
+                stream: taskService.personalActiveStream,
+                initialData: taskService.personalActive,
+                onchange: taskService.onChangePersonalActive,
                 responsive: _responsive,
                 title: "Personal",
                 content: "Elije al trabajador",
@@ -178,7 +163,7 @@ class _TaskAssignPageState extends State<TaskAssignPage> {
             SizedBox(height:_responsive.ip(2)),
 
             StreamBuilder(
-              stream: taskBloc.tareaActiveStream ,
+              stream: taskService.tareaActiveStream ,
               builder: (BuildContext context, AsyncSnapshot snapshot){
                 if(snapshot.hasData)
                   return _taskDetails(snapshot.data);
@@ -226,7 +211,7 @@ class _TaskAssignPageState extends State<TaskAssignPage> {
 
   _createButton(){
     return StreamBuilder(
-      stream: taskBloc.formDelegateTask,
+      stream: taskService.formDelegateTask,
       builder: (BuildContext context, AsyncSnapshot snapshot){
           return IconButton(
           icon: Icon(LineIcons.save,color: MyColors.GreyIcon,),
@@ -242,14 +227,14 @@ class _TaskAssignPageState extends State<TaskAssignPage> {
       _isLoading=true;
     });
 
-    await taskBloc.asignarTarea();
-
+    await taskService.asignarTarea();
+    
     setState(() {
       _isLoading=true;
     });
     
     Flushbar(
-      message: taskBloc.response,
+      message: taskService.response,
       duration:  Duration(seconds: 2),
     )..show(context).then((r){
       Navigator.pop(context);

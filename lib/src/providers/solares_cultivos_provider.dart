@@ -51,7 +51,36 @@ class SolaresCultivosProvider{
     }
     return [];
   }
+  //search_solar
   
+  Future<List<Solar>> filterSolares(String data)async{  
+    final url = "${AppConfig.base_url}/api/personal/search_solar?data=$data"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",};
+    
+    final response = await http.get(
+      url, 
+      headers: headers,);
+    print(response.body);
+    if(response.body.contains('message')){
+      return[];
+    } 
+    
+    if(response.body.contains("solares") && response.body.contains("id")){
+      // SolarModel solares = SolarModel.fromJson(json.decode(response.body));
+      // return solares.solares.values.toList().cast();
+      var decodeData = jsonDecode(response.body)['solares'] as List;
+       List<Solar> solares = 
+        decodeData.map((productoJson) => Solar.fromJson(productoJson)).toList();
+        if(decodeData==null) return [];
+        return solares;
+
+    }
+    return [];
+  }
+
   Future<Solar> addSolar(Solar solar)async{
     final url = "${AppConfig.base_url}/api/personal/add_solar"; 
     final token = await _storage.read('token');

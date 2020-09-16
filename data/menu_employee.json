@@ -5,57 +5,57 @@
             "ruta"      :   "home_employee",
             "icon"      :   "home",
             "texto"     :   "Inicio",
-            "subtitulo" :   "Inicio"
+            "subtitulo" :   "Inicio de la aplicación."
         },
         {
             "ruta"      :   "solar_cultivos",
             "icon"      :   "sun_o",
             "texto"     :   "Solares",
-            "subtitulo" :   "Solares y cultivos."
+            "subtitulo" :   "Administra los solares y cultivos del invernadero."
         },
         {
             "ruta"      :   "plagas",
             "icon"      :   "bug",
             "texto"     :   "Plagas",
-            "subtitulo" :   "Plagas y enfermedades."
+            "subtitulo" :   "Registra las plagas y enfermedades del invernadero."
         },
       
         {
             "ruta"      :   "insumos",
             "icon"      :   "bottle_icon.svg",
             "texto"     :   "Insumos",
-            "subtitulo" :   "Insumos."
+            "subtitulo" :   "Controla los insumos del invernadero"
         },
 
         {
             "ruta"      :   "herramientas",
             "icon"      :   "tools_icon.svg",
             "texto"     :   "Herramientas",
-            "subtitulo" :   "Herramientas."
+            "subtitulo" :   "Administra las herramientas."
         },
         {
             "ruta"      :   "actividades_employee",
             "icon"      :   "task_icon.svg",
             "texto"     :   "Actividades",
-            "subtitulo" :   "Actividades."
+            "subtitulo" :   "Controla las actividades, gastos, productos y sobrantes."
         },
         {
             "ruta"  :   "pedidos",
             "icon"  :   "order_icon.svg",
             "texto" :   "Pedidos",
-            "subtitulo" :   "Pedidos"
+            "subtitulo" :   "Administra los pedidos de productos."
         },
         {
             "ruta"  :   "ofertas",
             "icon"  :   "sale_icon.svg",
             "texto" :   "Ofertas",
-            "subtitulo" :   "Ofertas"
+            "subtitulo" :   "Agrega ofertas de productos para los clientes."
         },
         {
             "ruta"  :       "ventas",
             "icon"  :       "money",
             "texto" :       "Ventas",
-            "subtitulo" :   "Ventas"
+            "subtitulo" :   "Controla las ventas del invernadero."
         }
     ]
 }

@@ -18,7 +18,9 @@ import 'package:app_invernadero_trabajador/src/utils/colors.dart';
 import 'package:app_invernadero_trabajador/src/utils/responsive.dart';
 import 'package:app_invernadero_trabajador/src/widgets/alert_dialogs/dialog_select_cultivo.dart';
 import 'package:app_invernadero_trabajador/src/widgets/alert_dialogs/dialog_select_solar.dart';
+import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -42,10 +44,26 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   SolarCultivoBloc solarBloc = SolarCultivoBloc();
   TaskBloc taskBloc = TaskBloc();
   PageBloc _pageBloc;
-  
+  TextStyle _titleStyle;
+  TextStyle _subtitleStyle ;
+
   @override
   void initState() {
     super.initState();
+    _titleStyle = TextStyle(fontFamily:'Quicksand',fontWeight:FontWeight.w600);
+    _subtitleStyle =  TextStyle(fontFamily:'Quicksand',fontWeight:FontWeight.w700);
+
+    SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
+    FeatureDiscovery.discoverFeatures(
+      context,
+      const <String>{ // Feature ids for every feature that you want to showcase in order.
+        'solar_select_feature_id',
+        'cultivo_select_feature_id',
+      },
+    ); 
+  });
+
+
     _pageBloc = PageBloc();
 
 
@@ -216,6 +234,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
   
   _solarInf(){
+    
     return GestureDetector(
       onTap: (){
         showDialog(
@@ -236,10 +255,21 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ),
           child: Row(
             children:<Widget>[
-              IconButton(icon: Icon(LineIcons.sun_o,color:Colors.black54), 
-              onPressed:(){
-                
-              }),
+              DescribedFeatureOverlay(
+                featureId: 'solar_select_feature_id', // Unique id that identifies this overlay.
+                tapTarget:   Icon(LineIcons.sun_o,color: MyColors.GreyIcon,), // The widget that will be displayed as the tap target.
+                title: Text("Solar",style: _titleStyle),
+                description: Text("Elije el solar para ver la información",
+                  style: _subtitleStyle
+                ),
+                backgroundColor: MyColors.YellowDiscovery,// Theme.of(context).primaryColor,
+                targetColor:Colors.white,
+                textColor: Colors.grey[800],
+                child:    IconButton(icon: Icon(LineIcons.sun_o,color:Colors.black54), 
+                    onPressed:(){
+                    })
+              ),
+             
               StreamBuilder(
                 stream: solarBloc.solarHomeStream ,
                 builder: (BuildContext context, AsyncSnapshot snapshot){
@@ -283,8 +313,21 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ),
           child: Row(
             children:<Widget>[
-              IconButton(icon:  SvgPicture.asset('assets/icons/seelding_icon.svg',color:Colors.black54,height: 20,) , 
-              onPressed:(){}),
+              DescribedFeatureOverlay(
+                featureId: 'cultivo_select_feature_id', // Unique id that identifies this overlay.
+                tapTarget:  IconButton(icon:  SvgPicture.asset('assets/icons/seelding_icon.svg',color:Colors.black54,height: 20,) , 
+                    onPressed:(){}), // The widget that will be displayed as the tap target.
+                title: Text("Cultivo",style: _titleStyle),
+                description: Text("Elije el cultivo para más información",
+                  style: _subtitleStyle
+                ),
+                backgroundColor: MyColors.YellowDiscovery,// Theme.of(context).primaryColor,
+                targetColor:Colors.white,
+                textColor: Colors.grey[800],
+                child:   IconButton(icon:  SvgPicture.asset('assets/icons/seelding_icon.svg',color:Colors.black54,height: 20,) , 
+                    onPressed:(){}),
+              ),
+
               StreamBuilder(
                 stream: solarBloc.cultivoHomeStream ,
                 builder: (BuildContext context, AsyncSnapshot snapshot){

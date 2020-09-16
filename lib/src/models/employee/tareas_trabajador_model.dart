@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'package:app_invernadero_trabajador/src/models/actividades/tareas_model.dart';
 import 'package:app_invernadero_trabajador/src/models/task/tarea_date_mode.dart' as t;
+import 'package:app_invernadero_trabajador/src/models/task/tarea_date_mode.dart';
 
 TareasTrabajador tareasTrabajadorFromJson(String str) => TareasTrabajador.fromJson(json.decode(str));
 
@@ -20,6 +21,12 @@ class TareasTrabajador {
     factory TareasTrabajador.fromJson(Map<String, dynamic> json) => TareasTrabajador(
         tareasTrabajador: Map.from(json["tareas_trabajador"]).map((k, v) => MapEntry<DateTime, List<TareasTrabajadorElement>>
         (DateTime.parse(k), List<TareasTrabajadorElement>.from(v.map((x) => TareasTrabajadorElement.fromJson(x))))),
+    );
+  
+    factory TareasTrabajador.fromJsonToAdmin(Map<String, dynamic> json) => 
+    TareasTrabajador(
+        tareasTrabajador: Map.from(json["tareas_trabajador"]).map((k, v) => MapEntry<DateTime, List<TareasTrabajadorElement>>
+        (DateTime.parse(k), List<TareasTrabajadorElement>.from(v.map((x) => TareasTrabajadorElement.fromJsonToAdmins(x))))),
     );
 
     Map<String, dynamic> toJson() => {
@@ -38,6 +45,7 @@ class TareasTrabajadorElement {
         this.horaFinal,
         this.createdAt,
         this.updatedAt,
+        this.personal,
         this.tarea,
         this.insumos,
         this.herramientas,
@@ -52,6 +60,7 @@ class TareasTrabajadorElement {
     String horaFinal;
     DateTime createdAt;
     DateTime updatedAt;
+    Personal personal;
     t.Tarea tarea;
     List<Insumo> insumos;
     List<Herramienta> herramientas;
@@ -59,16 +68,32 @@ class TareasTrabajadorElement {
     factory TareasTrabajadorElement.fromJson(Map<String, dynamic> json) => TareasTrabajadorElement(
         idTarea: json["id_tarea"],
         idPersonal: json["id_personal"],
-        fecha: DateTime.parse(json["fecha"]),
+        fecha: json["fecha"]==null?null: DateTime.parse(json["fecha"]),
         status: json["status"],
         consecutivo: json["consecutivo"],
         horaInicio: json["horaInicio"],
         horaFinal: json["horaFinal"],
         createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-        tarea: t.Tarea.fromJson(json["tarea"]),
-        insumos: List<Insumo>.from(json["insumos"].map((x) => Insumo.fromJson(x))),
-        herramientas: List<Herramienta>.from(json["herramientas"].map((x) => Herramienta.fromJson(x))),
+        updatedAt: json["updated_at"]==null?null: DateTime.parse(json["updated_at"]),
+        tarea:json["tarea"]==null?null: t.Tarea.fromJson(json["tarea"]),
+        insumos: json["insumos"]==null?[]: List<Insumo>.from(json["insumos"].map((x) => Insumo.fromJson(x))),
+        herramientas:  json["herramientas"] ==null?[]:List<Herramienta>.from(json["herramientas"].map((x) => Herramienta.fromJson(x))),
+    );
+
+    factory TareasTrabajadorElement.fromJsonToAdmins(Map<String, dynamic> json) => TareasTrabajadorElement(
+        idTarea: json["id_tarea"],
+        idPersonal: json["id_personal"],
+        fecha: json["fecha"]==null?null: DateTime.parse(json["fecha"]),
+        status: json["status"],
+        consecutivo: json["consecutivo"],
+        horaInicio: json["horaInicio"],
+        horaFinal: json["horaFinal"],
+        createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
+        updatedAt: json["updated_at"]==null?null: DateTime.parse(json["updated_at"]),
+        personal: json["personal"]==null?null: Personal.fromJson( json["personal"]),
+        tarea:json["tarea"]==null?null: t.Tarea.fromJson(json["tarea"]),
+        insumos: json["insumos"]==null?[]: List<Insumo>.from(json["insumos"].map((x) => Insumo.fromJson(x))),
+        herramientas:  json["herramientas"] ==null?[]:List<Herramienta>.from(json["herramientas"].map((x) => Herramienta.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {

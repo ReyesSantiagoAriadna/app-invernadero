@@ -24,9 +24,11 @@ import 'package:app_invernadero_trabajador/src/utils/colors.dart';
 import 'package:app_invernadero_trabajador/src/utils/icon_string_util.dart';
 import 'package:app_invernadero_trabajador/src/utils/responsive.dart';
 import 'package:app_invernadero_trabajador/src/widgets/badge_bottom_icon.dart';
+import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
@@ -72,10 +74,32 @@ class _MenuDrawerState extends State<MenuDrawer> {
   }
   bool _checkConfiguration() => true;
 
+  TextStyle _titleStyle;
+  TextStyle _subtitleStyle ;
 
 
   @override
   void initState() {
+    SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
+    FeatureDiscovery.discoverFeatures(
+      context,
+      const <String>{ // Feature ids for every feature that you want to showcase in order.
+        'menu_feature_id',
+        'notifications_feature_id',
+        "home_feature_id",
+        "solar_cultivos_feature_id",
+        "plagas_feature_id",
+        "insumos_feature_id",
+        "herramientas_feature_id",
+        "actividades_feature_id",
+        "pedidos_feature_id",
+        "ofertas_feature_id",
+        "ventas_feature_id"
+      },
+    ); 
+  });
+
+  
     if(_prefs.rolPersonal=='0'){
       rol = "Administrador";
       initialRoute = 'home';
@@ -117,6 +141,9 @@ class _MenuDrawerState extends State<MenuDrawer> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _titleStyle = TextStyle(fontFamily:'Quicksand',fontWeight:FontWeight.w600);
+    _subtitleStyle =  TextStyle(fontFamily:'Quicksand',fontWeight:FontWeight.w700);
+
     if(_pageBloc==null){
       _pageBloc = PageBloc();
       _pageBloc.pickPage(context,initialRoute, "Inicio");
@@ -313,6 +340,9 @@ void myScroll() async {
 
 
     data.forEach((opt){
+
+      String id_feature = "${opt['ruta']}_feature_id";
+      print("ID DEL FEATURE $id_feature");
       final widgetTemp = 
       Container(
         margin: EdgeInsets.only(left:10,right:10),
@@ -332,7 +362,20 @@ void myScroll() async {
                 ),
                 ),
       //leading: getIcon(opt['icon'],_responsive,opt['ruta']==rut?Colors.white:MyColors.GreyIcon),
-      leading: getIcon(opt['icon'],_responsive,MyColors.GreyIcon),
+      leading:
+        DescribedFeatureOverlay(
+                    featureId: id_feature, // Unique id that identifies this overlay.
+                    tapTarget:   getIcon(opt['icon'],_responsive,MyColors.GreyIcon), // The widget that will be displayed as the tap target.
+                    title: Text(opt['texto'],style: _titleStyle),
+                    description: Text(opt['subtitulo'],
+                      style: _subtitleStyle
+                    ),
+                    backgroundColor: MyColors.YellowDiscovery,// Theme.of(context).primaryColor,
+                    targetColor:Colors.white,
+                    textColor: Colors.grey[800],
+                    child:   getIcon(opt['icon'],_responsive,MyColors.GreyIcon),
+                  ),
+     
       onTap: (){
         // isScrollingDown =true;
         // _pageBloc.changeShowAppBar(true);
@@ -414,9 +457,27 @@ void myScroll() async {
         brightness: Brightness.light,
         elevation:0.0,
         backgroundColor:Colors.white,
-       leading: new IconButton(icon: new Icon(
-          LineIcons.bars,color: MyColors.GreyIcon,
-        ),onPressed:_handleDrawer,), 
+        
+        leading : DescribedFeatureOverlay(
+                    featureId: 'menu_feature_id', // Unique id that identifies this overlay.
+                    tapTarget: const Icon(LineIcons.bars), // The widget that will be displayed as the tap target.
+                    title: Text('Menu',style: _titleStyle),
+                    description: Text('Toca el icono para navegar en el menu de opciones.',
+                      style: _subtitleStyle
+                    ),
+                    backgroundColor: MyColors.YellowDiscovery,// Theme.of(context).primaryColor,
+                    targetColor:Colors.white,
+                    textColor: Colors.grey[800],
+                    child: new IconButton(icon: new Icon(
+                        LineIcons.bars,color: MyColors.GreyIcon,
+                      ),onPressed:_handleDrawer,)
+                  ),
+        // leading: new IconButton(icon: new Icon(
+        //   LineIcons.bars,color: MyColors.GreyIcon,
+        // ),onPressed:_handleDrawer,), 
+        
+        
+        
         title: StreamBuilder(
         stream: _pageBloc.pageTitleStream,
         initialData: _pageBloc.pageTitle,

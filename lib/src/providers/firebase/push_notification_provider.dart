@@ -7,6 +7,7 @@ import 'package:app_invernadero_trabajador/src/models/pedidos/pedido_model.dart'
 import 'package:app_invernadero_trabajador/src/services/employee/tasks_services.dart';
 import 'package:app_invernadero_trabajador/src/services/notifications/notifications_service.dart';
 import 'package:app_invernadero_trabajador/src/services/pedidos/pedidos_service.dart';
+import 'package:app_invernadero_trabajador/src/services/tasks/task_services.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
@@ -136,17 +137,19 @@ class PushNotificationProvider{
     } 
   }
 
-
-   _processTareaPersonal(dynamic data){
-    TareasTrabajadorElement task = TareasTrabajadorElement.fromJson(json.decode(data['tarea_personal']));
-   
+  _processTareaPersonal(dynamic data){
+    TareasTrabajadorElement task;
     switch(data['event']){
       case AppConfig.event_created:
+        task = TareasTrabajadorElement.fromJson(json.decode(data['tarea_personal'])); 
         TasksEmployeeService.instance.addTask(task);
       break;
-
       case AppConfig.event_updated:
         TasksEmployeeService.instance.updatedTask(task);
+      break;
+      case AppConfig.event_updated_to_admin:
+        task = TareasTrabajadorElement.fromJsonToAdmins(json.decode(data['tarea_personal'])); 
+        TaskService.instance.updatedTask(task);
       break;
     } 
   }

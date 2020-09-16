@@ -2,16 +2,19 @@ import 'dart:ui';
 
 import 'package:app_invernadero_trabajador/src/blocs/solar_cultivo_bloc.dart';
 import 'package:app_invernadero_trabajador/src/blocs/task/task_bloc.dart';
+import 'package:app_invernadero_trabajador/src/models/employee/tareas_trabajador_model.dart';
 import 'package:app_invernadero_trabajador/src/models/task/tarea_date_mode.dart';
+import 'package:app_invernadero_trabajador/src/services/notifications/notifications_service.dart';
 import 'package:app_invernadero_trabajador/src/services/solares_services.dart';
+import 'package:app_invernadero_trabajador/src/services/tasks/task_services.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:app_invernadero_trabajador/src/utils/colors.dart';
+import 'package:app_invernadero_trabajador/src/widgets/badge_bottom_icon.dart';
 import 'package:app_invernadero_trabajador/src/widgets/my_alert_dialog.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -28,7 +31,7 @@ class _MyCalendarState extends State<MyCalendar> with TickerProviderStateMixin{
   ScrollController scrollController;
   bool dialVisible = true;
   SolarCultivoBloc solarBloc = SolarCultivoBloc();
-  TaskBloc taskBloc = TaskBloc();
+  // TaskBloc taskBloc = TaskBloc();
   Map<DateTime, List<dynamic>> _events;
   List _selectedEvents;
   DateTime dateSelected;
@@ -45,6 +48,11 @@ class _MyCalendarState extends State<MyCalendar> with TickerProviderStateMixin{
   ScrollController _hideButtonController;
   bool _isVisible;
   bool bannerVisible;
+
+  TaskService taskService = TaskService.instance;
+  
+ 
+
   @override
   void initState() {
     super.initState();
@@ -56,10 +64,10 @@ class _MyCalendarState extends State<MyCalendar> with TickerProviderStateMixin{
     dateSelected = _selectedDay;
     bannerVisible=true;
     ///--> _selectedDay
-    taskBloc.onChangeTasksDateKey(dateSelected);
+    taskService.onChangeTasksDateKey(dateSelected);
 
     if(solarBloc.cultivoHome!=null)
-        taskBloc.getTaskCalendar(solarBloc.cultivoHome.id);
+        taskService.getTaskCalendar(solarBloc.cultivoHome.id);
     _events = {
       
       _selectedDay: [],
@@ -103,23 +111,25 @@ class _MyCalendarState extends State<MyCalendar> with TickerProviderStateMixin{
            }
         }
     }});
+
+  
   }
 
   @override
   void dispose() {
     _animationController.dispose();
     _calendarController.dispose();
-    taskBloc.reset();
+    taskService.reset();
     super.dispose();
   }
 
   void _onDaySelected(DateTime day, List events) {
     print('CALLBACK: _onDaySelected $day');
     
-    taskBloc.onChangeTasksDateKey(day);
+    taskService.onChangeTasksDateKey(day);
     // dateSelected = day;
     // List<TareasPersonal> list = events as List<TareasPersonal>;
-    taskBloc.onChangeEventsList(events);
+    taskService.onChangeEventsList(events);
     // setState(() {
     //   _selectedEvents = events;
     // });
@@ -152,10 +162,10 @@ class _MyCalendarState extends State<MyCalendar> with TickerProviderStateMixin{
 
 
     return StreamBuilder(
-      stream: taskBloc.tasksCalendarStream ,
+      stream: taskService.tasksCalendarStream ,
       builder: (BuildContext context, AsyncSnapshot snapshot){
         if(snapshot.hasData){
-          Map<DateTime, List<TareasPersonal>> map = snapshot.data;
+          Map<DateTime, List<TareasTrabajadorElement>> map = snapshot.data;
           _events= map;
         }
         return SafeArea(
@@ -170,6 +180,22 @@ class _MyCalendarState extends State<MyCalendar> with TickerProviderStateMixin{
               backgroundColor: Colors.white,
               leading: IconButton(icon: Icon(LineIcons.angle_left,color: MyColors.GreyIcon,), 
                 onPressed:()=> Navigator.pop(context)),
+              actions: <Widget>[
+                StreamBuilder<Object>(
+                    // stream:  Provider.of<NotificationsService>(context,listen: false).notifIndicatorStream,
+                    stream: NotificationsService.instance.notifIndicatorStream,
+                    builder: (context, snapshot) {
+                      return GestureDetector(
+                        onTap: ()=>Navigator.pushNamed(context, 'notifications'),
+                          child: Container(
+                          margin: EdgeInsets.only(top:15),
+                          child:BadgeBottomIcon(icon:Icon(LineIcons.bell,color:MyColors.GreyIcon),
+                          number: snapshot.hasData?snapshot.data:0,)
+                        ),
+                      );
+                    }
+                  )
+              ],
             ),
             body: Column(
               mainAxisSize: MainAxisSize.max,
@@ -191,23 +217,16 @@ class _MyCalendarState extends State<MyCalendar> with TickerProviderStateMixin{
               Visibility(
                 visible: _isVisible,
                 child: StreamBuilder(
-                stream: taskBloc.tasksDateKeyStream ,
+                stream: taskService.tasksDateKeyStream ,
                 builder: (BuildContext context, AsyncSnapshot snapshot){
-                  // print("stream builder");
-                  // print("fecha seleccionada ${taskBloc.tasksDateKey}");
-                  // print("FEcha final ${solarBloc.cultivoHome.fechaFinal}");
-                  //  print("Fecha inicio ${solarBloc.cultivoHome.fecha}");
-
-                  // print("Comparacion ${taskBloc.tasksDateKey.subtract(new Duration(days: 1)).isAfter(solarBloc.cultivoHome.fechaFinal)}");
-                  // print("Fecha de servidor: ${Provider.of<SolarCultivoService>(context,listen: false).date.date}");
                   bool f1=true;
                   bool f2=true;
                   bool f3=true;
                   bool f4=true;
                  
                   if(solarBloc.cultivoHome!=null){
-                    f1  = taskBloc.tasksDateKey.subtract(new Duration(days: 1)).isAfter(solarBloc.cultivoHome.fechaFinal);
-                    f2  = taskBloc.tasksDateKey.isBefore(solarBloc.cultivoHome.fecha);
+                    f1  = taskService.tasksDateKey.subtract(new Duration(days: 1)).isAfter(solarBloc.cultivoHome.fechaFinal);
+                    f2  = taskService.tasksDateKey.isBefore(solarBloc.cultivoHome.fecha);
                     f3  = Provider.of<SolarCultivoService>(context,listen: false).date.date.isAfter(solarBloc.cultivoHome.fechaFinal);
                     f4  = Provider.of<SolarCultivoService>(context,listen: false).date.date.isBefore(solarBloc.cultivoHome.fecha);
                   }                  
@@ -238,9 +257,6 @@ class _MyCalendarState extends State<MyCalendar> with TickerProviderStateMixin{
                 elevation: 8.0,
                 shape: CircleBorder(),
                 children: [
-                  // _calendarController.setCalendarFormat(CalendarFormat.month);
-                  // _calendarController.setCalendarFormat(CalendarFormat.twoWeeks);
-                  // _calendarController.setCalendarFormat(CalendarFormat.week);
                   SpeedDialChild(
                     child: Icon(LineIcons.calendar),
                     backgroundColor: Colors.red,
@@ -551,7 +567,7 @@ class _MyCalendarState extends State<MyCalendar> with TickerProviderStateMixin{
 
   Widget _listEvents(){
     return StreamBuilder(
-      stream: taskBloc.tasksCalendarEventsStream ,
+      stream: taskService.tasksCalendarEventsStream ,
       builder: (BuildContext context, AsyncSnapshot snapshot){
         //List<TareasPersonal> list=new List();
         List list = new List();
@@ -568,8 +584,9 @@ class _MyCalendarState extends State<MyCalendar> with TickerProviderStateMixin{
     );
   }
 
-  _elementEvent(TareasPersonal tp){
-      print("Estatus ${tp.status}");
+  _elementEvent(TareasTrabajadorElement tp){
+    // print("Encargad: ${tp.personal.nombre}");
+    print("Estatus ${tp.status}");
      return Container(
               margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0,),
               
@@ -608,9 +625,9 @@ class _MyCalendarState extends State<MyCalendar> with TickerProviderStateMixin{
                          context,
                          "Tarea",
                           "¿Estas seguro de confirmar la tarea?",
-                          ()=>taskBloc.confirmarTarea(tp.consecutivo).then((v){
+                          ()=>taskService.confirmarTarea(tp.consecutivo).then((v){
                         Flushbar(
-                          message:  taskBloc.response,
+                          message:  taskService.response,
                           duration:  Duration(seconds: 2),              
                         )..show(context);
                         
@@ -631,66 +648,9 @@ class _MyCalendarState extends State<MyCalendar> with TickerProviderStateMixin{
               );
   }
 
-  // //tarea
-  // Widget _buildEventList() {
-  //   return ListView(
-  //     children: _selectedEvents
-  //         .map((event) {
-  //           TareasPersonal tp = event as TareasPersonal;
-            
-  //           return Container(
-  //             margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-  //             child: Card(
-  //               elevation: 2.0,
-  //               child: Row(
-  //                 children:<Widget>[
-  //                   Container(
-  //                     color:statusColor(tp.status!=null?tp.status:0),
-  //                     width: 10,
-  //                     height: 50,
-  //                   ),
-  //                   SizedBox(width:5),
-  //                   Expanded(child: Container(
-  //                     child:Column(
-  //                       crossAxisAlignment: CrossAxisAlignment.start,
-  //                       children: <Widget>[
-  //                       Row(
-  //                         children:<Widget>[
-  //                           Icon(LineIcons.clock_o,color: MyColors.GreyIcon,),
-  //                           SizedBox(width:5),
-  //                           Text(" ${tp.horaInicio!=null? tp.horaInicio:""}  hrs - ${tp.horaFinal!=null?tp.horaFinal:""} hrs")
-  //                         ]
-  //                       ),
-  //                       Text("${DateFormat('yyyy-MM-dd').format(tp.fecha)} ${tp.tarea!=null?tp.tarea.nombre:""}"),
-  //                       Text("A cargo de ${tp.personal!=null? tp.personal.nombre:""}"),
-  //                     ],)
-  //                   )),
-  //                   tp.status==4?
-  //                     IconButton(icon: Icon(LineIcons.check),
-  //                      onPressed: ()=>showMyDialog(
-  //                        context,
-  //                        "Tarea",
-  //                         "¿Estas seguro de confirmar la tarea?",
-  //                         ()=>print("hello mundo")
-  //                        ))
-  //                     :Container(),
-  //                   IconButton(icon: Icon(LineIcons.eye), onPressed: ()=>showDetails(tp)),
-  //                   IconButton(icon: Icon(LineIcons.ellipsis_v), onPressed: optionsEllipsis(tp, tp.status)),
-  //                 ]
-  //               ),
-  //             //   child: ListTile(
-  //             //   title: Text("${tp.horaInicio} hrs - ${tp.horaFinal} hrs "),
-  //             //   onTap: () => print('${tp.horaInicio} tapped! concluir'  ),
-  //             //   leading: IconButton(icon: Icon(LineIcons.ellipsis_v), onPressed: null),
-  //             // ),
-  //             ),
-  //             );
-  //         })
-  //         .toList(),
-  //   );
-  // } 
+ 
 
-  Function optionsEllipsis(TareasPersonal tp, int status){
+  Function optionsEllipsis(TareasTrabajadorElement tp, int status){
     if(status==null|| status==AppConfig.statusTaskCancelada || status==AppConfig.statusTaskConcluida){
       return null;
     }
@@ -736,7 +696,7 @@ class _MyCalendarState extends State<MyCalendar> with TickerProviderStateMixin{
     );
   }
 
-  void menuOptions(TareasPersonal tp){
+  void menuOptions(TareasTrabajadorElement tp){
     Column myWidget = Column(
             children:<Widget>[
               Container(
@@ -759,9 +719,9 @@ class _MyCalendarState extends State<MyCalendar> with TickerProviderStateMixin{
                     showMyDialog(
                       context,
                       "Tarea", "¿Estas seguro de cancelar la tarea?"
-                      ,()=>taskBloc.cancelarTarea(tp.consecutivo).then((v){
+                      ,()=>taskService.cancelarTarea(tp.consecutivo).then((v){
                         Flushbar(
-                          message:  taskBloc.response,
+                          message:  taskService.response,
                           duration:  Duration(seconds: 2),              
                         )..show(context).then((r){
                           Navigator.pop(context);
@@ -792,7 +752,7 @@ class _MyCalendarState extends State<MyCalendar> with TickerProviderStateMixin{
     customBottomSheet(myWidget, 0.35);
   }
 
-  void showDetails(TareasPersonal tp){
+  void showDetails(TareasTrabajadorElement tp){
     TextStyle _style = TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w400,color: MyColors.GreyIcon);
     Column myWidget = Column(
       crossAxisAlignment: CrossAxisAlignment.center,

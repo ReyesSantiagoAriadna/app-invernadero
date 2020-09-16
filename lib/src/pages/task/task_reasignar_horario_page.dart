@@ -8,7 +8,10 @@ import 'package:app_invernadero_trabajador/src/blocs/generic_bloc.dart';
 import 'package:app_invernadero_trabajador/src/blocs/pedido/pedido_bloc.dart';
 import 'package:app_invernadero_trabajador/src/blocs/solar_cultivo_bloc.dart';
 import 'package:app_invernadero_trabajador/src/blocs/task/task_bloc.dart';
+import 'package:app_invernadero_trabajador/src/models/employee/tareas_trabajador_model.dart';
 import 'package:app_invernadero_trabajador/src/models/task/tarea_date_mode.dart';
+import 'package:app_invernadero_trabajador/src/services/employee/tasks_services.dart';
+import 'package:app_invernadero_trabajador/src/services/tasks/task_services.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:app_invernadero_trabajador/src/utils/colors.dart';
 import 'package:app_invernadero_trabajador/src/utils/responsive.dart';
@@ -33,18 +36,21 @@ class _TaskReasignarHorarioPageState extends State<TaskReasignarHorarioPage> {
   Responsive _responsive;
   bool _isLoading=false;
   SolarCultivoBloc solarBloc = SolarCultivoBloc();
-  TaskBloc taskBloc = TaskBloc();
-  TareasPersonal tp;
+  //TaskBloc taskBloc = TaskBloc();
+  TareasTrabajadorElement tp;
   TimeRangeResult _defaultTimeRange;
   TimeRangeResult _timeRange;
-   MaterialLocalizations localizations ;
+  MaterialLocalizations localizations ;
+
+  TaskService taskService = TaskService.instance;
+
   @override
   void initState() {
     if(solarBloc.cultivoHome!=null){
       print("Cultivo homeeee = ${solarBloc.cultivoHome.id} ${solarBloc.cultivoHome}");
-      taskBloc.tareasCultivo();
+      taskService.tareasCultivo();
     }
-    taskBloc.onChangeIsValid(false);
+    taskService.onChangeIsValid(false);
     super.initState();
   }
 
@@ -53,10 +59,10 @@ class _TaskReasignarHorarioPageState extends State<TaskReasignarHorarioPage> {
     super.didChangeDependencies();
     if(tp==null){
       localizations = MaterialLocalizations.of(context);
-      tp = ModalRoute.of(context).settings.arguments as TareasPersonal;
-      taskBloc.onChangeTareaActive(tp.tarea);
-      taskBloc.onChangePersonalActive(tp.personal);
-      taskBloc.onChangeDefaultPersonal(tp.personal);
+      tp = ModalRoute.of(context).settings.arguments as TareasTrabajadorElement;
+      taskService.onChangeTareaActive(tp.tarea);
+      taskService.onChangePersonalActive(tp.personal);
+      taskService.onChangeDefaultPersonal(tp.personal);
     
       _defaultTimeRange = TimeRangeResult(
        TimeOfDay(hour:int.parse(tp.horaInicio.split(":")[0]),minute: int.parse(tp.horaInicio.split(":")[1])),
@@ -84,7 +90,7 @@ class _TaskReasignarHorarioPageState extends State<TaskReasignarHorarioPage> {
             elevation: 0.0,
             brightness: Brightness.light,
             backgroundColor: Colors.white,
-            title:Text("Reasignar Personal ${DateFormat('yyyy-MM-dd').format(taskBloc.tasksDateKey)}",
+            title:Text("Reasignar Personal ${DateFormat('yyyy-MM-dd').format(taskService.tasksDateKey)}",
             style:TextStyle(color: MyColors.GreyIcon,
               fontFamily: AppConfig.quicksand,fontWeight: FontWeight.w700
             )),
@@ -134,16 +140,16 @@ class _TaskReasignarHorarioPageState extends State<TaskReasignarHorarioPage> {
             SizedBox(height:5),
             // _inputSolar(), 
            StreamBuilder(
-             stream: taskBloc.taskCultivoStream ,
+             stream: taskService.taskCultivoStream ,
              builder: (BuildContext context, AsyncSnapshot snapshot){
                List<Tarea> list;
                 if(snapshot.hasData){
                   list = snapshot.data;
                 }
                 return DialogSelectGeneric(
-                stream: taskBloc.tareaActiveStream,
-                initialData: taskBloc.tareaActive,
-                onchange: taskBloc.onChangeTareaActive,
+                stream: taskService.tareaActiveStream,
+                initialData: taskService.tareaActive,
+                onchange: taskService.onChangeTareaActive,
                 responsive: _responsive,
                 title: "Tarea",
                 content: "Elije la tarea",
@@ -159,16 +165,16 @@ class _TaskReasignarHorarioPageState extends State<TaskReasignarHorarioPage> {
             SizedBox(height:_responsive.ip(2)),
 
             StreamBuilder(
-             stream: taskBloc.personalStream ,
+             stream: taskService.personalStream ,
              builder: (BuildContext context, AsyncSnapshot snapshot){
                List<Personal> list;
                 if(snapshot.hasData){
                   list = snapshot.data;
                 }
                 return DialogSelectGeneric(
-                stream: taskBloc.personalActiveStream,
-                initialData: taskBloc.personalActive,
-                onchange: taskBloc.onChangePersonalActive,
+                stream: taskService.personalActiveStream,
+                initialData: taskService.personalActive,
+                onchange: taskService.onChangePersonalActive,
                 responsive: _responsive,
                 title: "Personal",
                 content: "Elije al trabajador",
@@ -182,7 +188,7 @@ class _TaskReasignarHorarioPageState extends State<TaskReasignarHorarioPage> {
             SizedBox(height:_responsive.ip(2)),
 
             StreamBuilder(
-              stream: taskBloc.tareaActiveStream ,
+              stream: taskService.tareaActiveStream ,
               builder: (BuildContext context, AsyncSnapshot snapshot){
                 if(snapshot.hasData)
                   return _taskDetails(snapshot.data);
@@ -221,7 +227,7 @@ class _TaskReasignarHorarioPageState extends State<TaskReasignarHorarioPage> {
                       _timeRange = _defaultTimeRange;
                     });
 
-                    taskBloc.onChangePersonalActive(tp.personal);
+                    taskService.onChangePersonalActive(tp.personal);
                   }
                   )
                 ],))
@@ -308,12 +314,12 @@ class _TaskReasignarHorarioPageState extends State<TaskReasignarHorarioPage> {
         String finalHour = localizations.formatTimeOfDay(_timeRange.end,alwaysUse24HourFormat: true);
         finalHour = finalHour+":00";
         print("Inicial $initialHour Final $finalHour");
-        taskBloc.onChangeTaskInitialTime(initialHour);
-        taskBloc.onChangeTaskFinalTime(finalHour);
+        taskService.onChangeTaskInitialTime(initialHour);
+        taskService.onChangeTaskFinalTime(finalHour);
         
-        taskBloc.trabajDispReprogramacionHoras(tp.consecutivo,tp.personal.id).then((v){
+        taskService.trabajDispReprogramacionHoras(tp.consecutivo,tp.personal.id).then((v){
            Flushbar(
-            message:taskBloc.response!=null? taskBloc.response:"",
+            message:taskService.response!=null? taskService.response:"",
             duration:  Duration(seconds: 2),
           )..show(context);
         });
@@ -326,7 +332,7 @@ class _TaskReasignarHorarioPageState extends State<TaskReasignarHorarioPage> {
 
   _createButton(){
     return StreamBuilder(
-      stream: taskBloc.isValidStream,
+      stream: taskService.isValidStream,
       builder: (BuildContext context, AsyncSnapshot snapshot){
          if(!snapshot.hasData)
           return Container();
@@ -338,7 +344,7 @@ class _TaskReasignarHorarioPageState extends State<TaskReasignarHorarioPage> {
             if(snapshot.data){
               showMyDialog(
                       context,
-                      "Tarea Personal", "¿Estas seguro de reprogramar la tarea de ${taskBloc.taskInitialTime} hrs a ${taskBloc.taskFinalTime} hrs?"
+                      "Tarea Personal", "¿Estas seguro de reprogramar la tarea de ${taskService.taskInitialTime} hrs a ${taskService.taskFinalTime} hrs?"
                       ,()=>_changeTime() );
             }
              
@@ -359,14 +365,14 @@ class _TaskReasignarHorarioPageState extends State<TaskReasignarHorarioPage> {
       _isLoading=true;
     });
 
-    await taskBloc.cambiarHorarioTarea(tp.consecutivo);
+    await taskService.cambiarHorarioTarea(tp.consecutivo);
 
     setState(() {
       _isLoading=false;
     });
     
     Flushbar(
-      message: taskBloc.response,
+      message: taskService.response,
       duration:  Duration(seconds: 2),
     )..show(context).then((r){
       Navigator.pop(context);

@@ -9,6 +9,7 @@ import 'package:app_invernadero_trabajador/src/blocs/pedido/pedido_bloc.dart';
 import 'package:app_invernadero_trabajador/src/blocs/solar_cultivo_bloc.dart';
 import 'package:app_invernadero_trabajador/src/blocs/task/task_bloc.dart';
 import 'package:app_invernadero_trabajador/src/models/actividades/producto_model.dart';
+import 'package:app_invernadero_trabajador/src/models/employee/tareas_trabajador_model.dart';
 import 'package:app_invernadero_trabajador/src/models/task/tarea_date_mode.dart';
 import 'package:app_invernadero_trabajador/src/pages/pedidos/select_productos.dart';
 import 'package:app_invernadero_trabajador/src/services/actividades/gastos_services.dart';
@@ -16,6 +17,7 @@ import 'package:app_invernadero_trabajador/src/services/actividades/productos_se
 import 'package:app_invernadero_trabajador/src/services/actividades/sobrantes_services.dart';
 import 'package:app_invernadero_trabajador/src/services/actividades/tareas_services.dart';
 import 'package:app_invernadero_trabajador/src/services/pedidos/pedidos_service.dart';
+import 'package:app_invernadero_trabajador/src/services/tasks/task_services.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:app_invernadero_trabajador/src/utils/colors.dart';
 import 'package:app_invernadero_trabajador/src/utils/responsive.dart';
@@ -39,13 +41,14 @@ class _TaskReasignarPersonalPageState extends State<TaskReasignarPersonalPage> {
   Responsive _responsive;
   bool _isLoading=false;
   SolarCultivoBloc solarBloc = SolarCultivoBloc();
-  TaskBloc taskBloc = TaskBloc();
-  TareasPersonal tp;
+  // TaskBloc taskBloc = TaskBloc();
+  TaskService taskService = TaskService.instance;
+  TareasTrabajadorElement tp;
   @override
   void initState() {
     if(solarBloc.cultivoHome!=null){
       print("Cultivo homeeee = ${solarBloc.cultivoHome.id} ${solarBloc.cultivoHome}");
-      taskBloc.tareasCultivo();
+      taskService.tareasCultivo();
      
     }
     super.initState();
@@ -55,9 +58,9 @@ class _TaskReasignarPersonalPageState extends State<TaskReasignarPersonalPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if(tp==null){
-      tp = ModalRoute.of(context).settings.arguments as TareasPersonal;
-      taskBloc.onChangeTareaActive(tp.tarea);
-      taskBloc.onChangePersonalActive(tp.personal);
+      tp = ModalRoute.of(context).settings.arguments as TareasTrabajadorElement;
+      taskService.onChangeTareaActive(tp.tarea);
+      taskService.onChangePersonalActive(tp.personal);
     }
     _responsive = Responsive.of(context);
   }
@@ -79,7 +82,7 @@ class _TaskReasignarPersonalPageState extends State<TaskReasignarPersonalPage> {
             elevation: 0.0,
             brightness: Brightness.light,
             backgroundColor: Colors.white,
-            title:Text("Reasignar Personal ${DateFormat('yyyy-MM-dd').format(taskBloc.tasksDateKey)}",
+            title:Text("Reasignar Personal ${DateFormat('yyyy-MM-dd').format(taskService.tasksDateKey)}",
             style:TextStyle(color: MyColors.GreyIcon,
               fontFamily: AppConfig.quicksand,fontWeight: FontWeight.w700
             )),
@@ -130,16 +133,16 @@ class _TaskReasignarPersonalPageState extends State<TaskReasignarPersonalPage> {
             SizedBox(height:5),
             // _inputSolar(), 
            StreamBuilder(
-             stream: taskBloc.taskCultivoStream ,
+             stream: taskService.taskCultivoStream ,
              builder: (BuildContext context, AsyncSnapshot snapshot){
                List<Tarea> list;
                 if(snapshot.hasData){
                   list = snapshot.data;
                 }
                 return DialogSelectGeneric(
-                stream: taskBloc.tareaActiveStream,
-                initialData: taskBloc.tareaActive,
-                onchange: taskBloc.onChangeTareaActive,
+                stream: taskService.tareaActiveStream,
+                initialData: taskService.tareaActive,
+                onchange: taskService.onChangeTareaActive,
                 responsive: _responsive,
                 title: "Tarea",
                 content: "Elije la tarea",
@@ -155,16 +158,16 @@ class _TaskReasignarPersonalPageState extends State<TaskReasignarPersonalPage> {
             SizedBox(height:_responsive.ip(2)),
 
             StreamBuilder(
-             stream: taskBloc.personalStream ,
+             stream: taskService.personalStream ,
              builder: (BuildContext context, AsyncSnapshot snapshot){
                List<Personal> list;
                 if(snapshot.hasData){
                   list = snapshot.data;
                 }
                 return DialogSelectGeneric(
-                stream: taskBloc.personalActiveStream,
-                initialData: taskBloc.personalActive,
-                onchange: taskBloc.onChangePersonalActive,
+                stream: taskService.personalActiveStream,
+                initialData: taskService.personalActive,
+                onchange: taskService.onChangePersonalActive,
                 responsive: _responsive,
                 title: "Personal",
                 content: "Elije al trabajador",
@@ -178,7 +181,7 @@ class _TaskReasignarPersonalPageState extends State<TaskReasignarPersonalPage> {
             SizedBox(height:_responsive.ip(2)),
 
             StreamBuilder(
-              stream: taskBloc.tareaActiveStream ,
+              stream: taskService.tareaActiveStream ,
               builder: (BuildContext context, AsyncSnapshot snapshot){
                 if(snapshot.hasData)
                   return _taskDetails(snapshot.data);
@@ -226,7 +229,7 @@ class _TaskReasignarPersonalPageState extends State<TaskReasignarPersonalPage> {
 
   _createButton(){
     return StreamBuilder(
-      stream: taskBloc.personalActiveStream,
+      stream: taskService.personalActiveStream,
       builder: (BuildContext context, AsyncSnapshot snapshot){
           Personal p = snapshot.data;
           return IconButton(
@@ -234,7 +237,7 @@ class _TaskReasignarPersonalPageState extends State<TaskReasignarPersonalPage> {
           onPressed: tp.personal.id!=p.id?()=>
            showMyDialog(
                       context,
-                      "Tarea Personal", "¿Estas seguro de reasignar a ${taskBloc.personalActive.nombre} a esta tarea?"
+                      "Tarea Personal", "¿Estas seguro de reasignar a ${taskService.personalActive.nombre} a esta tarea?"
                       ,()=>_delegetaTask() )
           :null
           );
@@ -249,14 +252,14 @@ class _TaskReasignarPersonalPageState extends State<TaskReasignarPersonalPage> {
       _isLoading=true;
     });
 
-    await taskBloc.reasignarTrabajadorTarea(tp.consecutivo);
+    await taskService.reasignarTrabajadorTarea(tp.consecutivo);
 
     setState(() {
       _isLoading=false;
     });
     
     Flushbar(
-      message: taskBloc.response,
+      message: taskService.response,
       duration:  Duration(seconds: 2),
     )..show(context).then((r){
       Navigator.pop(context);

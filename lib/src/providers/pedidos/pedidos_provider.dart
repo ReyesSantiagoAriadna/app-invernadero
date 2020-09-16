@@ -62,6 +62,30 @@ class PedidosProvider{
     return [];
   }
   
+  
+  Future<List<Pedido>> searchPedido(String data)async{      
+    final url = "${AppConfig.base_url}/api/personal/search_pedido?data=$data"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",};
+    
+    final response = await http.get(
+      url, 
+      headers: headers,);
+
+    print(response.body);
+    if(response.body.contains('message')){
+      return[];
+    } 
+
+    if(response.body.contains("pedidos") && response.body.contains("id")){
+      PedidosModel pedidos = PedidosModel.fromJson(json.decode(response.body));
+      return pedidos.pedidos.values.toList().cast();
+    }
+    return [];
+  }
+
   Future<FechaPedidoModel> agendarPedido(FechaPedidoModel fechaPedido)async{
     final url = "${AppConfig.base_url}/api/personal/agendar_pedido"; 
     final token = await _storage.read('token');

@@ -17,6 +17,7 @@ import 'package:app_invernadero_trabajador/src/pages/pedidos/pedido_actions_app_
 import 'package:app_invernadero_trabajador/src/pages/pedidos/pedidos_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/plagas/plagas_home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/solar_cultivos_home_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/solar_cultivos/solares_actions_app_bar.dart';
 import 'package:app_invernadero_trabajador/src/pages/ventas/ventas_home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -103,6 +104,7 @@ class PageBloc{
       case 'solar_cultivos':
       //  _pageController.sink.add(Widget.SolarCultivosHomePage);
        _pageController.sink.add(SolarCultivosHomePage());
+       onChangeListActionsAppBar(solaresActionsAppBar(context));
         break;
       case 'plagas':
         // _pageController.sink.add(Widget.PlagasHomePage);
@@ -123,11 +125,10 @@ class PageBloc{
       case 'actividades_employee':
         _pageController.sink.add(ActividadesEmployeeHome());
       break;
-      
       case 'pedidos':
         // _pageController.sink.add(Widget.PedidosHomePage);
         _pageController.sink.add(PedidosHomePage());
-         onChangeListActionsAppBar(pedidoActionsAppBar());
+         onChangeListActionsAppBar(pedidoActionsAppBar(context));
       break;
       case 'ofertas':
         // _pageController.sink.add(Widget.OfertasHomePage);
@@ -139,7 +140,6 @@ class PageBloc{
       break;
     }
   }
-  
   dispose() {
     //_navBarController?.close();
   }
