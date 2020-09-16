@@ -10,6 +10,9 @@ import 'package:app_invernadero_trabajador/src/pages/actividades/tareas/tarea_ad
 import 'package:app_invernadero_trabajador/src/pages/actividades/tareas/tarea_edit_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/actividades/tareas/tarea_herramientas.dart';
 import 'package:app_invernadero_trabajador/src/pages/ajustes/ajustes_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/insumos/compra_insumo_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/ajustes/configuration_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/ajustes/update_datos_trabajador.dart';
 import 'package:app_invernadero_trabajador/src/pages/herramientas/add_herramienta_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/herramientas/edit_herramienta_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/herramientas/herramientas_home_page.dart';
@@ -55,6 +58,8 @@ import 'package:app_invernadero_trabajador/src/services/plagasService/plaga_serv
 // import 'package:app_invernadero_trabajador/src/services/productoService/produtos_service.dart';
 import 'package:app_invernadero_trabajador/src/services/solares_services.dart';
 import 'package:app_invernadero_trabajador/src/services/inventarioService/inventario_service.dart';
+import 'package:app_invernadero_trabajador/src/services/trabajadorService/trabajador_service.dart';
+import 'package:app_invernadero_trabajador/src/services/ventas/ventas_service.dart';
 import 'package:app_invernadero_trabajador/src/storage/secure_storage.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:app_invernadero_trabajador/src/widgets/date_picker.dart';
@@ -152,7 +157,9 @@ class _MyAppState extends State<MyApp> {
                 ChangeNotifierProvider(create: (_)=>new InventarioService(),),
                 ChangeNotifierProvider(create: (_)=>new OfertaService(),),
                 // ChangeNotifierProvider(create: (_)=>new ProductosService(),),
-                ChangeNotifierProvider(create: (_)=>new InsumoService(),)
+                ChangeNotifierProvider(create: (_)=>new InsumoService(),),
+                ChangeNotifierProvider(create: (_)=>new TrabajadorService(),),
+                ChangeNotifierProvider(create: (_)=>new VentaService(),), 
               ],
               // import 'package:intl/intl.dart';
                 child: new MaterialApp(
@@ -207,9 +214,9 @@ class _MyAppState extends State<MyApp> {
               'herramienta_edit'      : (BuildContext)=>EditHerramientaPage(),
               
               'insumos'               : (BuildContext)=>InsumosHomePage(),
-
               'insumos_edit'          : (BuildContext)=>EditInsumoPage(),
               'insumos_add'           : (BuildContext)=>AddInsumoPage(),
+              'compra_insumos'        : (BuildContext)=>CompraIsumosPage(),
               
               'ofertas'               : (BuildContext)=>OfertasHomePage(),
               'oferta_add'            : (BuildContext)=>AddOfertaPage(),
@@ -222,7 +229,10 @@ class _MyAppState extends State<MyApp> {
               'plaga_edit'            : (BuildContext)=>PlagaEditPage(),
 
               'ventas'                : (BuildContext)=>VentasHomePage(),
+              
               'ajustes'               : (BuildContext)=>AjustesPage(),
+              'configuracion'         : (BuildContext)=>ConfigurationPage(),
+              'updateTrabajador'      : (BuildContext)=>UpdateDatosTrabajador(),
               
               'calendar'              : (BuildContext)=>MyCalendar(),
               'tarea_asignar'         : (BuildContext)=>TaskAssignPage(),

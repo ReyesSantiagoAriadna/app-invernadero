@@ -4,16 +4,21 @@ import 'package:app_invernadero_trabajador/app_config.dart';
 import 'package:app_invernadero_trabajador/src/blocs/map_box_bloc.dart';
 import 'package:app_invernadero_trabajador/src/blocs/page_bloc.dart';
 import 'package:app_invernadero_trabajador/src/blocs/solar_cultivo_bloc.dart';
+import 'package:app_invernadero_trabajador/src/models/insumos/insumo.dart';
 import 'package:app_invernadero_trabajador/src/models/ofertas/ofertaTipo.dart';
 import 'package:app_invernadero_trabajador/src/models/productos/producto.dart';
+import 'package:app_invernadero_trabajador/src/models/proveedores/proveedor.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/solar.dart';
+import 'package:app_invernadero_trabajador/src/models/trabajador/trabajador.dart';
 import 'package:app_invernadero_trabajador/src/pages/default_actions_app_bar.dart';
 import 'package:app_invernadero_trabajador/src/pages/home/home_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/home/main_page.dart';
 import 'package:app_invernadero_trabajador/src/providers/menu_provider.dart';
+import 'package:app_invernadero_trabajador/src/services/insumosService/insumos_service.dart';
 import 'package:app_invernadero_trabajador/src/services/ofertaService/ofertas_service.dart';
 import 'package:app_invernadero_trabajador/src/services/productoService/produtos_service.dart';
 import 'package:app_invernadero_trabajador/src/services/solares_services.dart';
+import 'package:app_invernadero_trabajador/src/services/trabajadorService/trabajador_service.dart';
 import 'package:app_invernadero_trabajador/src/storage/secure_storage.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:app_invernadero_trabajador/src/utils/colors.dart';
@@ -50,6 +55,11 @@ class _MenuDrawerState extends State<MenuDrawer> {
   Stream<List<Solar>> solaresStream;
   Stream<List<OfertaTipo>> ofertaTipoStream;
   Stream<List<Producto>> productoStream;
+
+  Stream<List<Proveedor>> proveedorStream;
+  Stream<List<Insumo>> insumoStream;
+
+  Stream<Trabajador> trabajadorStream;
 
   int init =-1;
   SecureStorage _prefs = SecureStorage();
@@ -149,6 +159,11 @@ void myScroll() async {
     solaresStream = Provider.of<SolarCultivoService>(context).solarStream;
     ofertaTipoStream = Provider.of<OfertaService>(context).ofertaTipoStream;
    /// productoStream = Provider.of<ProductosService>(context).productoStream;
+    proveedorStream = Provider.of<InsumoService>(context).proveedorStream;
+    insumoStream = Provider.of<InsumoService>(context).insumoSelectStream;
+
+    trabajadorStream = Provider.of<TrabajadorService>(context).trabajadorStream;
+ 
    
     if(init==-1){
       if( Provider.of<SolarCultivoService>(context).solarList.isNotEmpty){
@@ -196,7 +211,7 @@ void myScroll() async {
     return ListView(
       padding: EdgeInsets.zero,
        children: <Widget>[
-      _drawerHeader(),
+      _header(),
       FutureBuilder(
         future: opts,
         initialData: [],
@@ -273,26 +288,59 @@ void myScroll() async {
     return opciones;
   }
 
-  _drawerHeader() {
+    _header(){
+    return StreamBuilder(
+      stream: trabajadorStream , 
+      builder: (BuildContext context, AsyncSnapshot snapshot){
+        if(snapshot.hasData){
+          Trabajador trabajador = snapshot.data;
+          return _drawerHeader(trabajador);
+        }else {
+          return Container();
+        }
+      },
+    );
+  }
+
+
+  _drawerHeader(Trabajador trabajador) {
     return DrawerHeader(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children:<Widget>[
-          SvgPicture.asset('assets/icons/user.svg',                  
-          height: _responsive.ip(10)),
-          Text('Bienvenido',style: TextStyle(
+          (trabajador.urlImagen == null) ?
+          SvgPicture.asset('assets/icons/user.svg',height: _responsive.ip(10))
+          : Container( child:  ClipRRect(
+            borderRadius: BorderRadius.circular(100),
+            child: Container(
+              height: _responsive.ip(10),
+              width:_responsive.ip(10),
+              child: FadeInImage(
+              image: NetworkImage(trabajador.urlImagen),
+              placeholder: AssetImage('assets/jar-loading.gif'), 
+              fit: BoxFit.fill,
+             ),
+            ),
+           )
+          ),
+          
+          Text('Bienvenido (a)',style: TextStyle(
                 color: Colors.white,
                 fontFamily: 'Quicksand',
                 fontWeight: FontWeight.w700,
                 fontSize: _responsive.ip(2)
               ),),
-          Text('User name',style: TextStyle(
-                color: Colors.white,
-                fontFamily: 'Quicksand',
-                fontWeight: FontWeight.w700,
-                fontSize: _responsive.ip(1.5)
-              ),),
+
+          (trabajador.nombre!=null && trabajador.ap!=null)?
+            Text("${trabajador.nombre} ${trabajador.ap}",style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Quicksand',
+                  fontWeight: FontWeight.w700,
+                  fontSize: _responsive.ip(1.5)
+                ),)
+          : Container()
+          
           ]
         ),
         decoration: BoxDecoration(
@@ -300,7 +348,6 @@ void myScroll() async {
         ),
       );
   } 
-
 
   
   AppBar myAppBar(List<Widget> actions){

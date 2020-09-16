@@ -29,7 +29,7 @@ class PlagaBloc with Validators{
   Stream<String> get fechaStream=> _fechaController.stream.transform(validarFechaPlaga);
   Stream<String> get observacionStream=> _observacionController.stream.transform(validarTratamientoPlaga);
   Stream<String> get tratamientoStream=> _tratamientoController.stream.transform(validarObservacionPlaga);
-  Stream<String> get urlImagenStream=> _urlImagenController.stream; 
+  Stream<String> get urlImagenStream=> _urlImagenController.stream.transform(validarImagenPlaga); 
 
 
   Function(int) get changeIdCultivo => _idCultivoController.sink.add;

@@ -1,0 +1,37 @@
+{
+    "nombreApp" : "App Invernadero",
+    "rutas"     : [ 
+        {
+            "ruta"      :   "notificaciones",
+            "icon"      :   "bell",
+            "texto"     :   "Notificaciones",
+            "subtitulo" :   "Activa o desactiva las notificaciones."
+        },
+
+        {
+            "ruta"      :   "configuracion",
+            "icon"      :   "key",
+            "texto"     :   "Configuración",
+            "subtitulo" :   "Contraseña y seguridad."
+        },
+
+        {
+            "ruta"      :   "about",
+            "icon"      :   "info-circle",
+            "texto"     :   "Acerca de",
+            "subtitulo" :   "Acerca de esta aplicación."
+        },
+        {
+            "ruta"      :   "faq",
+            "icon"      :   "question_circle",
+            "texto"     :   "Ayuda",
+            "subtitulo" :   "Consulta informacion sobre como hacer uso de esta aplicación."
+        },
+        {
+            "ruta"  :   "logout",
+            "icon"  :   "sign_in",
+            "texto" :   "Salir",
+            "subtitulo" :   ""
+        }
+    ]
+}

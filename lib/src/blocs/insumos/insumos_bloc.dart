@@ -1,7 +1,7 @@
 
-import 'package:app_invernadero_trabajador/src/blocs/validators.dart';
+import 'package:app_invernadero_trabajador/src/blocs/validators.dart'; 
 import 'package:app_invernadero_trabajador/src/models/insumos/insumo.dart';
- import 'package:rxdart/rxdart.dart';
+import 'package:rxdart/rxdart.dart';
 
 class InsumosBloc with Validators{
   static final InsumosBloc _insumosBloc = InsumosBloc._internal();
@@ -49,6 +49,8 @@ class InsumosBloc with Validators{
   Stream<Insumo> get insumoStream => _insumoController.stream;
   Function(Insumo) get changeInsumo => _insumoController.sink.add;
   Insumo get insumo => _insumoController.value;
+
+  
 
   Stream<bool> get formValidStream => 
     CombineLatestStream.combine7(urlImagenStream,nombreStream, tipoActiveStream, unidadActiveStream, cantidadMinStream, composicionStream, observacionStream, (a,b,c,d,e,f,g) => true);

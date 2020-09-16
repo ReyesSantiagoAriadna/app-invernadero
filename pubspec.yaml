@@ -49,6 +49,7 @@ dependencies:
   flutter_speed_dial: ^1.2.5
   time_range: ^0.4.0
   firebase_messaging: ^7.0.0
+  barcode_scan: ^1.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -77,6 +78,7 @@ flutter:
     - assets/icons/
     - assets/images/
     - data/menu_opts.json
+    - data/menu_ajustes.json
     - data/regionalizacion.json
     - assets/
   #  - images/a_dot_burr.jpeg

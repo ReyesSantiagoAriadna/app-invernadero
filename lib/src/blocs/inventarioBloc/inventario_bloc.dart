@@ -20,8 +20,8 @@ class InventarioBloc with Validators{
 
   Stream<String> get nombreStream => _nombreController.stream.transform(validarNombreHerramienta);
   Stream<String> get descripcionStream => _descripcionController.stream.transform(validarDescripcionHerramienta);
-  Stream<int> get cantidadStream => _cantidadController.stream;
-  Stream<String> get urlImagenStream => _urlImagenController.stream;
+  Stream<int> get cantidadStream => _cantidadController.stream.transform(validarCantidadHerramienta);
+  Stream<String> get urlImagenStream => _urlImagenController.stream.transform(validarImagenHerramienta);
 
   Function(String) get changeNombre => _nombreController.sink.add;
   Function(String) get changeDescripcion => _descripcionController.sink.add;
