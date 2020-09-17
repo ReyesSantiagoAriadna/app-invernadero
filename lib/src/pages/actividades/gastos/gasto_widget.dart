@@ -5,11 +5,13 @@ import 'package:app_invernadero_trabajador/src/models/actividades/gastos_model.d
 import 'package:app_invernadero_trabajador/src/models/actividades/herramienta_model.dart';
 import 'package:app_invernadero_trabajador/src/models/actividades/tareas_model.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/solar.dart';
+import 'package:app_invernadero_trabajador/src/services/actividades/gastos_services.dart';
 import 'package:app_invernadero_trabajador/src/services/actividades/tareas_services.dart';
 import 'package:app_invernadero_trabajador/src/services/solares_services.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:app_invernadero_trabajador/src/utils/colors.dart';
 import 'package:app_invernadero_trabajador/src/utils/responsive.dart';
+import 'package:app_invernadero_trabajador/src/widgets/my_alert_dialog.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -159,16 +161,21 @@ class _GastoWidgetState extends State<GastoWidget> {
                   leading: new Icon(LineIcons.trash_o),
                   title: new Text('Eliminar',style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w400),),
                   onTap: () { 
-                    Provider.of<TareasService>(context,listen: false)
-                    .deleteTarea(widget.gasto.id)
-                    .then((r){
-                      Flushbar(
-                        message:  Provider.of<TareasService>(context,listen: false).response,
-                        duration:  Duration(seconds: 2),              
-                      )..show(context).then((r){
-                        Navigator.pop(context);
-                      });
-                    });
+                    showMyDialog(context, 
+                      "Eliminar gasto",
+                      "¿Estas seguro de eliminar el gasto?",
+                        ()=> Provider.of<GastosService>(context,listen: false)
+                      .deleteGasto(widget.gasto.id)
+                      .then((r){
+                        Flushbar(
+                          message:  Provider.of<GastosService>(context,listen: false).response,
+                          duration:  Duration(seconds: 2),              
+                        )..show(context).then((r){
+                          Navigator.pop(context);
+                        });
+                      })                     
+                     );
+                    
                   },
                 ),
 

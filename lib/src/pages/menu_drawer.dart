@@ -9,6 +9,7 @@ import 'package:app_invernadero_trabajador/src/blocs/user_bloc.dart';
 import 'package:app_invernadero_trabajador/src/models/ofertas/ofertaTipo.dart';
 import 'package:app_invernadero_trabajador/src/models/productos/producto.dart';
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/solar.dart';
+import 'package:app_invernadero_trabajador/src/models/trabajador/trabajador.dart';
 import 'package:app_invernadero_trabajador/src/pages/default_actions_app_bar.dart';
 import 'package:app_invernadero_trabajador/src/pages/employee/home/home_employee_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/home/home_page.dart';
@@ -18,6 +19,7 @@ import 'package:app_invernadero_trabajador/src/services/notifications/notificati
 import 'package:app_invernadero_trabajador/src/services/ofertaService/ofertas_service.dart';
 import 'package:app_invernadero_trabajador/src/services/productoService/produtos_service.dart';
 import 'package:app_invernadero_trabajador/src/services/solares_services.dart';
+import 'package:app_invernadero_trabajador/src/services/trabajadorService/trabajador_service.dart';
 import 'package:app_invernadero_trabajador/src/storage/secure_storage.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:app_invernadero_trabajador/src/utils/colors.dart';
@@ -61,6 +63,8 @@ class _MenuDrawerState extends State<MenuDrawer> {
   Stream<List<Solar>> solaresStream;
   Stream<List<OfertaTipo>> ofertaTipoStream;
   Stream<List<Producto>> productoStream;
+  Stream<Trabajador> trabajadorStream;
+  
   String rol;
   int init =-1;
   String initialRoute;
@@ -94,7 +98,9 @@ class _MenuDrawerState extends State<MenuDrawer> {
         "actividades_feature_id",
         "pedidos_feature_id",
         "ofertas_feature_id",
-        "ventas_feature_id"
+        "ventas_feature_id",
+        'solar_select_feature_id',
+        'cultivo_select_feature_id',
       },
     ); 
   });
@@ -154,7 +160,8 @@ class _MenuDrawerState extends State<MenuDrawer> {
       _responsive = Responsive.of(context);    
       solaresStream = Provider.of<SolarCultivoService>(context).solarStream;
       ofertaTipoStream = Provider.of<OfertaService>(context).ofertaTipoStream;
-
+      trabajadorStream = Provider.of<TrabajadorService>(context).trabajadorStream;
+ 
        if( Provider.of<SolarCultivoService>(context).solarList.isNotEmpty){
         SolarCultivoBloc solarBloc = SolarCultivoBloc();
         solarBloc.changeSolarHome(Provider.of<SolarCultivoService>(context).solarList[0]);
@@ -258,7 +265,7 @@ void myScroll() async {
     return ListView(
       padding: EdgeInsets.zero,
        children: <Widget>[
-      _drawerHeader(),
+      _header(), 
       FutureBuilder(
         future: opts,
         initialData: [],
@@ -408,26 +415,57 @@ void myScroll() async {
       return miTema.accentColor.withOpacity(0.2);
     }
   }
-  _drawerHeader() {
+
+  _header(){
+    return StreamBuilder(
+      stream: trabajadorStream , 
+      builder: (BuildContext context, AsyncSnapshot snapshot){
+        if(snapshot.hasData){
+          Trabajador trabajador = snapshot.data;
+          return _drawerHeader(trabajador);
+        }else {
+          return Container();
+        }
+      },
+    );
+  }
+
+  _drawerHeader(Trabajador trabajador) {
     return DrawerHeader(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children:<Widget>[
-          SvgPicture.asset('assets/icons/user.svg',                  
-          height: _responsive.ip(8)),
+          (trabajador.urlImagen == null) ?
+          SvgPicture.asset('assets/icons/user.svg',height: _responsive.ip(9))
+          : Container( child:  ClipRRect(
+            borderRadius: BorderRadius.circular(100),
+            child: Container(
+              height: _responsive.ip(9),
+              width:_responsive.ip(9),
+              child: FadeInImage(
+              image: NetworkImage(trabajador.urlImagen),
+              placeholder: AssetImage('assets/jar-loading.gif'), 
+              fit: BoxFit.fill,
+             ),
+            ),
+           )
+          ),
           Text('Bienvenido',style: TextStyle(
                 color: Colors.white,
                 fontFamily: 'Quicksand',
                 fontWeight: FontWeight.w700,
                 fontSize: _responsive.ip(2)
               ),),
-          Text('User name',style: TextStyle(
-                color: Colors.white,
-                fontFamily: 'Quicksand',
-                fontWeight: FontWeight.w700,
-                fontSize: _responsive.ip(1.5)
-              ),),
+          (trabajador.nombre!=null && trabajador.ap!=null)?
+            Text("${trabajador.nombre} ${trabajador.ap}",style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Quicksand',
+                  fontWeight: FontWeight.w700,
+                  fontSize: _responsive.ip(1.5)
+                ),)
+          : Container(),
+
            Text("Rol: $rol",style: TextStyle(
                 color: Colors.white,
                 fontFamily: 'Quicksand',

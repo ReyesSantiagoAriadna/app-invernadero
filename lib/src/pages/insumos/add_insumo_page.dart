@@ -67,8 +67,8 @@ class _AddInsumoPageState extends State<AddInsumoPage> {
           icon: Icon(LineIcons.angle_left, color: MyColors.GreyIcon), 
           onPressed: ()=> Navigator.pop(context)
         ),
-        title:Text("Nuevo insumo",
-             style: TextStyle(color: MyColors.GreyIcon) 
+        title:Text("Nuevo insumo",style:TextStyle(color: MyColors.GreyIcon,
+            fontFamily: AppConfig.quicksand,fontWeight: FontWeight.w800)
         ),
         actions: <Widget>[
           _crearBoton()
@@ -438,7 +438,7 @@ class _AddInsumoPageState extends State<AddInsumoPage> {
    final respuesta = await _insumoService.addInsumo(insumoUpd);    
     if(respuesta){
       Flushbar(
-        message:  "Actualizado correctamente",
+        message:  "Agregado correctamente",
         duration:  Duration(seconds: 2),              
       )..show(context).then((r){
           Navigator.pop(context);

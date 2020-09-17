@@ -91,8 +91,8 @@ class _EditInsumoPageState extends State<EditInsumoPage> {
               Navigator.pop(context);
             }
           ),
-          title: Text("Editar insumo",
-              style: TextStyle(color:MyColors.GreyIcon),
+          title: Text("Editar insumo",style:TextStyle(color: MyColors.GreyIcon,
+              fontFamily: AppConfig.quicksand,fontWeight: FontWeight.w800),
           ),
           actions: <Widget>[
             _crearBoton()
@@ -499,8 +499,8 @@ class _EditInsumoPageState extends State<EditInsumoPage> {
       cantidadMinima: int.parse(insumosBloc.cantidadMin),
       observacion: insumosBloc.observacion,
       urlImagen: urlImagen,
-      precioPromedio: insumo.precioPromedio,
-      totalSales: insumo.totalSales
+      //precioPromedio: insumo.precioPromedio,
+      //totalSales: insumo.totalSales
     );  
 
     final respuesta = await _insumoService.updateInsumo(insumoUpd);    

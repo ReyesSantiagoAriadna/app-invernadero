@@ -53,15 +53,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _titleStyle = TextStyle(fontFamily:'Quicksand',fontWeight:FontWeight.w600);
     _subtitleStyle =  TextStyle(fontFamily:'Quicksand',fontWeight:FontWeight.w700);
 
-    SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
-    FeatureDiscovery.discoverFeatures(
-      context,
-      const <String>{ // Feature ids for every feature that you want to showcase in order.
-        'solar_select_feature_id',
-        'cultivo_select_feature_id',
-      },
-    ); 
-  });
+  //   SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
+  //   FeatureDiscovery.discoverFeatures(
+  //     context,
+  //     const <String>{ // Feature ids for every feature that you want to showcase in order.
+  //       'solar_select_feature_id',
+  //       'cultivo_select_feature_id',
+  //     },
+  //   ); 
+  // });
 
 
     _pageBloc = PageBloc();

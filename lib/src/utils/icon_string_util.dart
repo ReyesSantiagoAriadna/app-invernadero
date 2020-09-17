@@ -16,6 +16,11 @@ final _icons = <String,IconData>{
   'sign_in'           : LineIcons.sign_in,
   'key'               : LineIcons.key,
   'home'              : LineIcons.home,
+  'heart'             : Icons.favorite_border,
+  'bell'              : LineIcons.bell,
+  'info-circle'       : LineIcons.info_circle,
+  'question_circle'   : LineIcons.question_circle,
+  'sign_in'           : LineIcons.sign_in,
 };
 
 final _icons_svg = <String,String>{ 

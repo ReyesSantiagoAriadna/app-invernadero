@@ -129,9 +129,9 @@ class _InsumosHomePageState extends State<InsumosHomePage> {
         visible: _isVisible,
         child: FloatingActionButton(
           onPressed: (){
-            Navigator.pushNamed(context,'insumos_add');
+            Navigator.pushNamed(context,'compra_insumos');
           },
-          child: Icon(LineIcons.plus),
+          child: Icon(LineIcons.shopping_cart),
           backgroundColor: miTema.accentColor,
         ),
       )
@@ -169,7 +169,7 @@ class _InsumosHomePageState extends State<InsumosHomePage> {
                   height: _responsive.ip(18),
                   width: double.infinity,
                   child: (insumo.urlImagen == null)
-                  ? Image(image: AssetImage('assets/tools1.png'),fit: BoxFit.fitHeight ,)
+                  ? Image(image: AssetImage('assets/images/placeholder.png'),fit: BoxFit.contain ,)
                   :FadeInImage(
                     image: NetworkImage(insumo.urlImagen),
                     placeholder: AssetImage('assets/jar-loading.gif'), 
@@ -293,12 +293,11 @@ class _InsumosHomePageState extends State<InsumosHomePage> {
          SizedBox(height:2),
         _element(Icon(LineIcons.codepen, color: MyColors.GreyIcon,), "Existente ${insumo.cantidad} "),
          SizedBox(height:2),
-        _element(Icon(LineIcons.money,color: MyColors.GreyIcon,), "Precio promedio ${insumo.precioPromedio}"),
+        _elementComposicion(Icon(LineIcons.pie_chart, color: MyColors.GreyIcon,), "${insumo.composicion} "),
          SizedBox(height:2),
-        _element(Icon(LineIcons.dollar, color: MyColors.GreyIcon),"Valor ${insumo.totalSales}")
-
-        // _element(LineIcons.sitemap, widget.tarea.etapa),
-        //  _element(LineIcons.clipboard, widget.tarea.detalle),
+       // _element(Icon(LineIcons.money,color: MyColors.GreyIcon,), "Precio promedio \$${insumo.precioPromedio}"),
+       //  SizedBox(height:2),
+        //_element(Icon(LineIcons.dollar, color: MyColors.GreyIcon),"Valor \$${insumo.totalSales}") 
       ],
     );
     customBottomSheet(myWidget, 0.25);
@@ -314,5 +313,26 @@ class _InsumosHomePageState extends State<InsumosHomePage> {
         Text(texto,style: _style,)
       ],)
     );
+  }
+
+  _elementComposicion(Widget icon,String texto){
+    TextStyle _style = TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w700,color: MyColors.GreyIcon, );
+    return Container(
+      margin: EdgeInsets.only(left:15),
+      child:Row(children: <Widget>[
+        icon,
+        SizedBox(width:40),
+        Row(
+          children: <Widget>[
+            Container(
+          width: 260,
+          //height: 40, 
+          child: Text(texto,style: _style, overflow: TextOverflow.clip,)
+        )
+          ],
+        )
+      ],),
+
+    ); 
   }
 }

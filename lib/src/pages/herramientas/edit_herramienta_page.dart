@@ -86,8 +86,8 @@ class _EditHerramientaPageState extends State<EditHerramientaPage> {
               Navigator.pop(context);
             }
           ),
-          title: Text("Editar herramienta",
-              style: TextStyle(color:MyColors.GreyIcon),
+          title: Text("Editar herramienta",style:TextStyle(color: MyColors.GreyIcon,
+            fontFamily: AppConfig.quicksand,fontWeight: FontWeight.w800),
           ),
           actions: <Widget>[
             _crearBoton()

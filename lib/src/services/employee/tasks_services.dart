@@ -21,10 +21,10 @@ class TasksEmployeeService with ChangeNotifier{
   final _tasksCalendarEventsController = new BehaviorSubject<List>();
   
   final _responseController = new BehaviorSubject<String>();
-  
+ 
+
   Stream<Map<DateTime, List<TareasTrabajadorElement>>> get tasksCalendarStream => _tasksCalendarController.stream;
   Stream<List> get tasksCalendarEventsStream => _tasksCalendarEventsController.stream;
-
   Stream<String> get responseStream => _responseController.stream;
   Stream<DateTime> get tasksDateKeyStream => _tasksDateKeyController.stream;
 
@@ -38,6 +38,8 @@ class TasksEmployeeService with ChangeNotifier{
   
   DateTime get tasksDateKey => _tasksDateKeyController.value; 
   String get response => _responseController.value;
+ 
+
 
   
   void changeKey(DateTime key){
@@ -134,5 +136,8 @@ class TasksEmployeeService with ChangeNotifier{
       _tasksCalendarController.sink.add(tasksMap);
       _tasksCalendarEventsController.sink.add(list);
   }
+
+
+  
 
 }

@@ -20,9 +20,9 @@ class OfertaBloc with Validators {
   final _tipoActiveController = new BehaviorSubject<OfertaTipo>(); 
  
   Stream<String> get descripcionStream => _descripcionController.stream.transform(validarDescripcionOferta);
-  Stream<String> get urlImagenStream => _urlImagenController.stream;
-  Stream<String> get inicioDateStream => _inicioDateController.stream;
-  Stream<String> get finDateStream => _finDateController.stream;
+  Stream<String> get urlImagenStream => _urlImagenController.stream.transform(validarImagenOferta);
+  Stream<String> get inicioDateStream => _inicioDateController.stream.transform(validarFechaIniOferta);
+  Stream<String> get finDateStream => _finDateController.stream.transform(validarFechaFinOferta);
 
   Stream<OfertaTipo> get tipoActivoStream => _tipoActiveController.stream; 
 

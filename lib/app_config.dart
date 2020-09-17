@@ -75,7 +75,7 @@ class AppConfig{
   static const String event_created = "created";
   static const String event_updated = "updated";
   static const String event_updated_to_admin = "updated_to_admin";
-
+  static const String event_remember = "remember";
 
   static const String fcm_type_insumo = "Insumo";
   static const String fcm_type_pedido = "Pedido";

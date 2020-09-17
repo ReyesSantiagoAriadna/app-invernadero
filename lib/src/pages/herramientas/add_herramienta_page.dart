@@ -78,8 +78,8 @@ class _AddHerramientaPageState extends State<AddHerramientaPage> {
               Navigator.pop(context);
             }
           ),
-          title: Text("Nueva herramienta",
-              style: TextStyle(color:MyColors.GreyIcon),
+          title: Text("Nueva herramienta",style:TextStyle(color: MyColors.GreyIcon,
+            fontFamily: AppConfig.quicksand,fontWeight: FontWeight.w800),
           ),
           actions: <Widget>[
             _crearBoton(), 

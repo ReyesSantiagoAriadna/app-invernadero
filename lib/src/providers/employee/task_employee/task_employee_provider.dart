@@ -17,6 +17,8 @@ import 'package:app_invernadero_trabajador/src/models/task/task_list.dart';
 import 'package:app_invernadero_trabajador/src/models/task/trabajador_disponible.dart';
 import 'package:app_invernadero_trabajador/src/storage/secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:app_invernadero_trabajador/src/models/actividades/tareas_model.dart' as tm;
+
 
 import 'package:app_invernadero_trabajador/src/models/task/tarea_date_mode.dart' as t;
 
@@ -135,6 +137,9 @@ class TaskEmployeeProvider{
       }
       return {'ok':false, 'tarea_personal' : null ,'message' : json.decode(response.body)['message']};
     }
+
+
+  
 
 
 

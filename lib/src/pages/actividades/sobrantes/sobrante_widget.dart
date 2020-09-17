@@ -8,6 +8,7 @@ import 'package:app_invernadero_trabajador/src/services/actividades/tareas_servi
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:app_invernadero_trabajador/src/utils/colors.dart';
 import 'package:app_invernadero_trabajador/src/utils/responsive.dart';
+import 'package:app_invernadero_trabajador/src/widgets/my_alert_dialog.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
@@ -137,16 +138,23 @@ class _SobranteWidgetState extends State<SobranteWidget> {
                   leading: new Icon(LineIcons.trash_o),
                   title: new Text('Eliminar',style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w400),),
                   onTap: () { 
-                    Provider.of<SobrantesService>(context,listen: false)
-                    .deleteSobrante(widget.sobrante.id)
-                    .then((r){
-                      Flushbar(
-                        message:  Provider.of<SobrantesService>(context,listen: false).response,
-                        duration:  Duration(seconds: 2),              
-                      )..show(context).then((r){
-                        Navigator.pop(context);
-                      });
-                    });
+                    showMyDialog(
+                      context, 
+                      "Eliminar Sobrante", 
+                      "¿Estas seguro de elimnar el sobrante?", 
+                      
+                      ()=>Provider.of<SobrantesService>(context,listen: false)
+                        .deleteSobrante(widget.sobrante.id)
+                        .then((r){
+                          Flushbar(
+                            message:  Provider.of<SobrantesService>(context,listen: false).response,
+                            duration:  Duration(seconds: 2),              
+                          )..show(context).then((r){
+                            Navigator.pop(context);
+                          });
+                        })
+                      
+                      );
                   },
                 ),
 

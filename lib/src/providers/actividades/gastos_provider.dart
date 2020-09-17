@@ -129,16 +129,20 @@ class GastosProvider{
 
   
   Future<bool> deleteGasto(String idGasto)async{
+    print("enviando gast..... $idGasto");
     final url = "${AppConfig.base_url}/api/personal/delete_gasto?id_gasto=$idGasto"; 
     final token = await _storage.read('token');
     Map<String, String> headers = {
       HttpHeaders.authorizationHeader: "Bearer $token",
       "Accept": "application/json",};
-
+    
     final response = await http.delete(
       url, 
       headers: headers,
       );
+    print("Respuesta delete gasto");
+    print(response.body);
+    
     if(response.body.contains("message") && response.body.contains("success")){
       print("eliminando");
       return true;

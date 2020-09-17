@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 
 List<Widget> homeActionsAppBar(BuildContext context){
   List<Widget> actions = [
-    IconButton(icon: Icon(LineIcons.search,color: MyColors.GreyIcon), onPressed: null),
+    // IconButton(icon: Icon(LineIcons.search,color: MyColors.GreyIcon), onPressed: null),
     // IconButton(icon: Icon(LineIcons.bell,color: MyColors.GreyIcon), onPressed: null),
 
     

@@ -17,6 +17,7 @@ import 'package:app_invernadero_trabajador/src/models/task/task_list.dart';
 import 'package:app_invernadero_trabajador/src/models/task/trabajador_disponible.dart';
 import 'package:app_invernadero_trabajador/src/storage/secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:app_invernadero_trabajador/src/models/actividades/tareas_model.dart' as tm;
 
 import 'package:app_invernadero_trabajador/src/models/task/tarea_date_mode.dart' as t;
 
@@ -360,5 +361,25 @@ class NewTaskProvider{
     }
     return {'ok':false, 'personal' : [] , 'message':'No hay resultados'};
   } 
+
+    Future<List<tm.Tarea>> getTareasDiarias()async{
+    final url = "${AppConfig.base_url}/api/personal/notifi_tareas_diarias"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",};
+    final response = await http.get(
+      url, 
+      headers: headers,);
+    if(response.body.contains('message')){
+      return [];
+    } 
+    print(response.body); 
+    if(response.body.contains("tareas") && response.body.contains("id")){
+      final tm.TareasModel tareas= tm.TareasModel.fromJson(json.decode(response.body));
+      return tareas.tareas.values.cast();
+    }
+    return [];
+  }
 }
 

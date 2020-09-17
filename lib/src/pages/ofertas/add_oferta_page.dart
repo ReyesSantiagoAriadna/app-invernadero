@@ -80,8 +80,8 @@ class _AddOfertaPageState extends State<AddOfertaPage> {
           icon: Icon(LineIcons.angle_left, color: MyColors.GreyIcon), 
           onPressed: ()=> Navigator.pop(context)
         ),
-        title:Text("Nueva oferta",
-             style: TextStyle(color: MyColors.GreyIcon) 
+        title:Text("Nueva oferta",style:TextStyle(color: MyColors.GreyIcon,
+            fontFamily: AppConfig.quicksand,fontWeight: FontWeight.w800)
         ),
         actions: <Widget>[
           _crearBoton()

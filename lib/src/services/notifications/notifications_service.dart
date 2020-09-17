@@ -30,7 +30,7 @@ class NotificationsService with ChangeNotifier{
 
   Stream<List<Notificacion>> get notificationsStream => _notificationsController.stream;
   Stream<int> get notifIndicatorStream => _notifIndicatorController.stream;
-
+  
 
 
   dispose(){

@@ -5,6 +5,7 @@ import 'package:app_invernadero_trabajador/src/services/solares_services.dart';
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:app_invernadero_trabajador/src/utils/colors.dart';
 import 'package:app_invernadero_trabajador/src/utils/responsive.dart';
+import 'package:app_invernadero_trabajador/src/widgets/my_alert_dialog.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -225,20 +226,20 @@ class _SolarWidgetState extends State<SolarWidget> {
               title: new Text('Eliminar',style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w400),),
               onTap: () { 
                 //_procesarImagen(user);  
-                Provider.of<SolarCultivoService>(context,listen: false)
-                .deleteSolar(widget.solar.id)
-                .then((r){
-                  // if(r){
-                  //   Navigator.pop(context);
-                  // }
-                  
-                  Flushbar(
-                    message:  Provider.of<SolarCultivoService>(context,listen: false).response,
-                    duration:  Duration(seconds: 2),              
-                  )..show(context).then((r){
-                    Navigator.pop(context);
-                  });
-                });
+                showMyDialog(context, 
+                "Eliminar solar", 
+                "¿Estas seguro de eliminar el solar?", 
+                  ()=>Provider.of<SolarCultivoService>(context,listen: false)
+                  .deleteSolar(widget.solar.id)
+                  .then((r){
+                    Flushbar(
+                      message:  Provider.of<SolarCultivoService>(context,listen: false).response,
+                      duration:  Duration(seconds: 2),              
+                    )..show(context).then((r){
+                      Navigator.pop(context);
+                    });
+                  })
+                );
               },
             ),
             ],

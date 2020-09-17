@@ -7,6 +7,7 @@ import 'package:app_invernadero_trabajador/src/providers/task/tasks_provider.dar
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:intl/intl.dart';
+import 'package:app_invernadero_trabajador/src/models/actividades/tareas_model.dart' as tm;
 
 
 class TaskService  with ChangeNotifier,Validators{
@@ -41,7 +42,9 @@ class TaskService  with ChangeNotifier,Validators{
   final _taskFinalTimeController = new BehaviorSubject<String>();
   final _isValidController = new BehaviorSubject<bool>();
   
-
+  final _tareasPorAsignarController = new BehaviorSubject<List<tm.Tarea>>();
+  final _countTaskPorAsignarController = new BehaviorSubject<int>();
+  
   Stream<Map<DateTime, List<TareasTrabajadorElement>>> get tasksCalendarStream => _tasksCalendarController.stream;
   Stream<List> get tasksCalendarEventsStream => _tasksCalendarEventsController.stream;
 
@@ -58,6 +61,9 @@ class TaskService  with ChangeNotifier,Validators{
   Stream<String> get taskFinalTimeStream => _taskFinalTimeController.stream;
   Stream<bool> get isValidStream => _isValidController.stream;
 
+  Stream<List<tm.Tarea>> get tareasPorAsignarStream => _tareasPorAsignarController.stream;
+  Stream<int> get countTaskPorAsignar => _countTaskPorAsignarController.stream;
+  
   Function(DateTime) get onChangeTasksDateKey => changeKey;//_tasksDateKeyController.sink.add;
 
   Function(String) get onChangeTaskInitialTime => _changeTime;
@@ -65,7 +71,9 @@ class TaskService  with ChangeNotifier,Validators{
 
   Function(Personal) get onChangeDefaultPersonal =>_defaultPersonalController.sink.add;
 
-  
+  int get countTasks => _countTaskPorAsignarController.value;
+  Function(int) get onChangeCountTaskPAsignar => _countTaskPorAsignarController.sink.add;
+
   Function(String ) get onChangeResponse => _responseController.sink.add;
   Function(int) get onChangeTaskActive => _taskActiveController.sink.add;
   Function(List) get onChangeEventsList => _tasksCalendarEventsController.sink.add;
@@ -353,5 +361,12 @@ class TaskService  with ChangeNotifier,Validators{
       if(tasksDateKey==task.fecha || tasksDateKey==null)
         _tasksCalendarEventsController.sink.add(list);
       //onChangeTasksDateKey(task.fecha);
+  }
+
+  void tasksPorAsignar()async{
+    final list = await taskProvider.getTareasDiarias();
+    if(list.isNotEmpty){
+      onChangeCountTaskPAsignar(list.length);
+    }
   }
 } 
