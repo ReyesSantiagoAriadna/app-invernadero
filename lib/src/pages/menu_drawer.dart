@@ -96,6 +96,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
         "insumos_feature_id",
         "herramientas_feature_id",
         "actividades_feature_id",
+        "compras_feature_id",
         "pedidos_feature_id",
         "ofertas_feature_id",
         "ventas_feature_id",

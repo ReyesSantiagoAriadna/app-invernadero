@@ -13,6 +13,7 @@ import 'package:app_invernadero_trabajador/src/pages/actividades/tareas/tarea_ad
 import 'package:app_invernadero_trabajador/src/pages/actividades/tareas/tarea_edit_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/actividades/tareas/tarea_herramientas.dart';
 import 'package:app_invernadero_trabajador/src/pages/ajustes/ajustes_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/compras/compras_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/employee/actividades/actividades_home_employee.dart';
 import 'package:app_invernadero_trabajador/src/pages/employee/home/employee_calendar.dart';
 import 'package:app_invernadero_trabajador/src/pages/employee/home/home_employee_page.dart';
@@ -357,6 +358,8 @@ class _MyAppState extends State<MyApp> {
 
                 
                 'notifications'         : (BuildContext)=>NotificationsPage(),
+
+                'compras'               : (BuildContext)=>ShoppingPage()
               }
             ),
           );        

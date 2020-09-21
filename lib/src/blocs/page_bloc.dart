@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:app_invernadero_trabajador/src/pages/actividades/actividades_home_page.dart';
+import 'package:app_invernadero_trabajador/src/pages/compras/compras_page.dart';
 import 'package:app_invernadero_trabajador/src/pages/employee/actividades/actividades_home_employee.dart';
 import 'package:app_invernadero_trabajador/src/pages/employee/home/employee_calendar.dart';
 import 'package:app_invernadero_trabajador/src/pages/employee/home/home_employee_page.dart';
@@ -121,6 +122,10 @@ class PageBloc{
       case 'actividades':
         // _pageController.sink.add(Widget.ActividadesHomePage);
          _pageController.sink.add(ActividadesHomePage());
+      break;
+      case 'compras':
+        // _pageController.sink.add(Widget.ActividadesHomePage);
+         _pageController.sink.add(ShoppingPage());
       break;
       case 'actividades_employee':
         _pageController.sink.add(ActividadesEmployeeHome());

@@ -131,44 +131,6 @@ class _TareaWidgetState extends State<TareaWidget> {
   }
 
 
-  // void _deleteModalBottomSheet(context)async{
-  //   showModalBottomSheet(
-  //     context: context,
-  //     builder: (BuildContext bc){
-  //       return Container(
-  //         child: new Wrap(
-  //         children: <Widget>[ 
-  //           new ListTile(
-  //             leading: new Icon(LineIcons.trash_o),
-  //             title: new Text('Eliminar',style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w400),),
-  //             onTap: () { 
-  //               Provider.of<TareasService>(context,listen: false)
-  //               .deleteTarea(widget.tarea.id)
-  //               .then((r){
-  //                 Flushbar(
-  //                   message:  Provider.of<TareasService>(context,listen: false).response,
-  //                   duration:  Duration(seconds: 2),              
-  //                 )..show(context).then((r){
-  //                   Navigator.pop(context);
-  //                 });
-  //               });
-  //             },
-  //           ),
-
-  //           new ListTile(
-  //             leading: new Icon(LineIcons.pencil),
-  //             title: new Text('Editar',style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w400),),
-  //             onTap: () { 
-  //               Navigator.pushNamed(context, 'tarea_edit',arguments: widget.tarea);
-  //             },
-  //           ),
-            
-  //           ],
-  //          ),
-  //       );
-  //     }
-  //   );
-  // } 
 
  
 

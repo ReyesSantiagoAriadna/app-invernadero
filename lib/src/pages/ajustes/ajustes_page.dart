@@ -255,7 +255,7 @@ class _AjustesPageState extends State<AjustesPage> {
         _switch = LineIcons.toggle_on;
         
         await fcm.subscribeToTopic(_storage.numberPhone);
-        if(p.rol==AppConfig.rol_admin){
+        if(_storage.rolPersonal==AppConfig.rol_admin){
           await fcm.subscribeToTopic(AppConfig.fcm_topic_admin);
            await fcm.subscribeToTopic(AppConfig.fcm_topic_employee);
         }else if(_storage.rolPersonal == AppConfig.rol_empleado){

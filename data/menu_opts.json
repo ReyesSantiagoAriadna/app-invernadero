@@ -40,6 +40,12 @@
             "subtitulo" :   "Controla las actividades, gastos, productos y sobrantes."
         },
         {
+            "ruta"      :   "compras",
+            "icon"      :   "shopping_cart",
+            "texto"     :   "Compras",
+            "subtitulo" :   "Administra las compras de insumos."
+        },
+        {
             "ruta"  :   "pedidos",
             "icon"  :   "order_icon.svg",
             "texto" :   "Pedidos",

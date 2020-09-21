@@ -1,26 +1,35 @@
 import 'dart:io';
 
+import 'package:app_invernadero_trabajador/src/models/compras/compras_model.dart';
 import 'package:app_invernadero_trabajador/src/models/insumos/insumo.dart';
 import 'package:app_invernadero_trabajador/src/models/proveedores/proveedor.dart';
+import 'package:app_invernadero_trabajador/src/providers/compras/compras_provider.dart';
 import 'package:app_invernadero_trabajador/src/providers/insumos/insumos_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 
 class InsumoService with ChangeNotifier{
+  static InsumoService instance = new InsumoService();
+
   InsumosProvider insumosProvider = new InsumosProvider();
+  ComprasProvider comprasProvider = new ComprasProvider();
 
   List<Insumo> insumoList = List(); 
   List<Insumo> insumoSelect = List();
   List<Proveedor> proveedorList = List();
+
+  List<Compra> comprasList = List();
   
   final _insumosController =  new BehaviorSubject<List<Insumo>>();
   final _responseController = new BehaviorSubject<String>();
   final _proveedorController = new BehaviorSubject<List<Proveedor>>();
   final _insumoSelectController =  new BehaviorSubject<List<Insumo>>();
-  
+  final _comprasController = new BehaviorSubject<List<Compra>>();
+
   Stream<List<Insumo>> get insumoStream => _insumosController.stream;
   Stream<List<Proveedor>> get proveedorStream => _proveedorController.stream;
   Stream<List<Insumo>> get insumoSelectStream => _insumoSelectController.stream;
+  Stream<List<Compra>> get comprasStream => _comprasController.stream;
 
   Function(String) get changeResponse => _responseController.sink.add;
   String get response => _responseController.value;
@@ -29,16 +38,31 @@ class InsumoService with ChangeNotifier{
   List<Proveedor> get proveedores => _proveedorController.value;
   List<Insumo> get insumoSelet => _insumoSelectController.value;
 
+
+
+
+
   InsumoService(){
     this.getInsumos(); 
     this.getProveedores();
     this.getInsumosSelect();
+    this.getCompras();
   }
 
   dispose(){
     _insumosController.close();
     _responseController.close(); 
     _insumoSelectController.close();
+  }
+
+  Future<bool> getCompras()async{
+    final list = await comprasProvider.compras();
+    if(list.isNotEmpty){
+      comprasList.addAll(list);
+      _comprasController.add(comprasList);
+      return true;
+    }
+    return false;
   }
 
   void getInsumos()async{

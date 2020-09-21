@@ -21,6 +21,7 @@ final _icons = <String,IconData>{
   'info-circle'       : LineIcons.info_circle,
   'question_circle'   : LineIcons.question_circle,
   'sign_in'           : LineIcons.sign_in,
+  'shopping_cart'     : LineIcons.shopping_cart
 };
 
 final _icons_svg = <String,String>{ 
