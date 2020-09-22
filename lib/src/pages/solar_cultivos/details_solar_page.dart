@@ -173,14 +173,34 @@ Widget build(BuildContext context) {
               }
             )
           ],
-        )
+        ),
+
+        
       ],
     );
   }
 
   List<Widget> _cultivos(){
+    TextStyle _style = TextStyle(fontFamily:AppConfig.quicksand,color: Colors.white);
     final List<Widget> list=[];
     list.add(_elements());
+    final m2  = StreamBuilder(
+      stream: solarCultivoBloc.solarStream ,
+      builder: (BuildContext context, AsyncSnapshot snapshot){
+       Solar s;
+        if(snapshot.hasData){
+          s = snapshot.data;
+        }
+
+        return Text(
+          "Espacio disponible: ${snapshot.hasData? s.m2Libres:"no-data"} m^2",style:_style
+        );
+      },
+    );
+
+    list.add(m2);
+    
+    
     list.add(SizedBox(height: _responsive.ip(1),));
     list.add(
 
@@ -258,6 +278,14 @@ Widget build(BuildContext context) {
                       color: MyColors.GreyIcon,
 
                     ),
+                  ),
+                  Text("${cultivo.largo} m x ${cultivo.ancho} m",
+                  maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: MyColors.GreyIcon,
+
+                    ),
                   )
                 ],
               ))),
@@ -327,7 +355,7 @@ Widget build(BuildContext context) {
           Container(
             color: miTema.accentColor,
             width: _responsive.wp(100),
-            height: _responsive.wp(45),
+            height: _responsive.wp(50),
           ),
 
           Expanded(

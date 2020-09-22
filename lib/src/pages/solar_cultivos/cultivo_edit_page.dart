@@ -43,6 +43,12 @@ class _CultivoEditPageState extends State<CultivoEditPage> {
   TextStyle _secundaryStyle;
   bool _isLoading=false;
   Cultivo c;
+  bool isChange=false;
+
+  double defaultLarge;
+  double defaultWidth;
+
+
   @override
   void initState() {
    
@@ -61,9 +67,18 @@ class _CultivoEditPageState extends State<CultivoEditPage> {
       print("Cultivo sensores=> ${c.moniSensor}  Cultivo ID=>>>>>>>> ${c.id}");
       print("llamdo solo una vez");
       solarCultivoBloc = SolarCultivoBloc();
+
+      defaultLarge = c.largo;
+      defaultWidth = c.ancho;
+
       solarCultivoBloc.changeSolarNombre(c.nombre);
-      solarCultivoBloc.changeSolarLargo(c.largo.toString());
-      solarCultivoBloc.changeSolarAncho(c.ancho.toString());
+      // solarCultivoBloc.changeSolarLargo(c.largo.toString());
+      // solarCultivoBloc.changeSolarAncho(c.ancho.toString());
+      solarCultivoBloc.initSolarCurrentDim(c);
+
+      // solarCultivoBloc.changeCultivoLargo(c.largo.toString());
+      // solarCultivoBloc.changeCultivoAncho(c.ancho.toString());
+
       solarCultivoBloc.changeSolarDescrip(c.observacion);
       solarCultivoBloc.onChangeFechaInicio(formatter.format(c.fechaFinal).toString(),);
       solarCultivoBloc.onChangeFechaTerminacion(formatter.format(c.fechaFinal).toString(),);
@@ -71,7 +86,7 @@ class _CultivoEditPageState extends State<CultivoEditPage> {
       solarCultivoBloc.onChangeCultivoTipo(c.tipo);
 
       solarCultivoBloc.onChangeEtapas(c.etapas);
-
+      
 
       if(c.moniSensor==1){
         solarCultivoBloc.onChangeSensores(true);
@@ -102,8 +117,10 @@ class _CultivoEditPageState extends State<CultivoEditPage> {
   }
   @override
   void dispose() {
+    solarCultivoBloc.resetDim(isChange, defaultLarge,defaultWidth);
     solarCultivoBloc.reset();
     solarCultivoBloc.resetCultivo();
+    // solarCultivoBloc.initSolar();
     //  solarCultivoBloc.dispose();
     super.dispose();
   }
@@ -286,9 +303,82 @@ class _CultivoEditPageState extends State<CultivoEditPage> {
       );
   }
   
-  _medidas(){
+  // _medidas(){
+  //   return Container(
+  //     child: Column(
+  //       children:<Widget>[
+  //         Row(
+  //             children: <Widget>[
+  //               SvgPicture.asset('assets/icons/ruler_icon.svg',color:MyColors.GreyIcon,height: 20,),
+  //               SizedBox(width:18),
+  //               Text("Medidas",style: _style,),
+  //             ],
+  //           ),
+  //           Container(
+  //             margin: EdgeInsets.only(left:35),
+  //             child: Row(
+  //               crossAxisAlignment: CrossAxisAlignment.end,
+  //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //               children:<Widget>[
+  //                 Container(
+  //                   width:_responsive.wp(30),
+  //                   child:StreamBuilder (
+  //                     stream: solarCultivoBloc.solarLargoStream,
+  //                     initialData: solarCultivoBloc.solarLargo,
+  //                     builder: (BuildContext context,snapshot){
+  //                       return TextFormField(
+  //                         initialValue: snapshot.data,
+  //                         keyboardType: TextInputType.number,
+  //                         decoration: InputDecoration(
+  //                         focusedBorder:  UnderlineInputBorder(      
+  //                               borderSide: BorderSide(color:miTema.accentColor)),
+  //                         labelText: 'Largo',
+  //                         errorText: snapshot.error =='*' ? null:snapshot.error,
+  //                         ),
+  //                         onChanged: solarCultivoBloc.changeSolarLargo,
+  //                         );
+  //                     },
+                      
+  //                   ),
+  //                 ),
+  //                 Text("m",style: _style,),
+  //                 SizedBox(width:5),
+  //                  Container(
+  //                   width:_responsive.wp(30),
+  //                   child:StreamBuilder<Object>(
+  //                     stream: solarCultivoBloc.solarAnchoStream,
+  //                     initialData: solarCultivoBloc.solarAncho,
+  //                     builder: (context, snapshot) {
+  //                       return TextFormField(
+  //                         initialValue: snapshot.data,
+  //                         keyboardType: TextInputType.number,
+  //                         decoration: InputDecoration(
+                            
+  //                         focusedBorder:  UnderlineInputBorder(      
+  //                                 borderSide: BorderSide(color:miTema.accentColor)),
+  //                         labelText: 'Ancho',
+  //                         errorText: snapshot.error =='*' ? null:snapshot.error,
+  //                 ),
+  //                 onChanged: solarCultivoBloc.changeSolarAncho,
+  //                 );
+  //                     }
+  //                   ),
+  //                 ),
+  //                 Text("m",style: _style,),
+  //               ]
+  //             ),
+  //           ),
+  //       ]
+  //     )
+  //   );
+  // }
+
+   _medidas(){
     return Container(
+     
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children:<Widget>[
           Row(
               children: <Widget>[
@@ -298,64 +388,56 @@ class _CultivoEditPageState extends State<CultivoEditPage> {
               ],
             ),
             Container(
-              margin: EdgeInsets.only(left:35),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children:<Widget>[
-                  Container(
-                    width:_responsive.wp(30),
-                    child:StreamBuilder (
-                      stream: solarCultivoBloc.solarLargoStream,
-                      initialData: solarCultivoBloc.solarLargo,
-                      builder: (BuildContext context,snapshot){
-                        return TextFormField(
-                          initialValue: snapshot.data,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                          focusedBorder:  UnderlineInputBorder(      
-                                borderSide: BorderSide(color:miTema.accentColor)),
-                          labelText: 'Largo',
-                          errorText: snapshot.error =='*' ? null:snapshot.error,
-                          ),
-                          onChanged: solarCultivoBloc.changeSolarLargo,
-                          );
-                      },
-                      
+               margin: EdgeInsets.only(left:40),
+              // width:_responsive.wp(30),
+              child:StreamBuilder (
+                stream: solarCultivoBloc.cultivoLargoStream,
+                initialData: solarCultivoBloc.cultivoLargo,
+                builder: (BuildContext context,snapshot){
+                  return TextFormField(
+                    initialValue: snapshot.data,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                    focusedBorder:  UnderlineInputBorder(      
+                          borderSide: BorderSide(color:miTema.accentColor)),
+                    labelText: 'Largo en metros',
+                    errorText: snapshot.error =='*' ? null:snapshot.error,
                     ),
-                  ),
-                  Text("m",style: _style,),
-                  SizedBox(width:5),
-                   Container(
-                    width:_responsive.wp(30),
-                    child:StreamBuilder<Object>(
-                      stream: solarCultivoBloc.solarAnchoStream,
-                      initialData: solarCultivoBloc.solarAncho,
-                      builder: (context, snapshot) {
-                        return TextFormField(
-                          initialValue: snapshot.data,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            
-                          focusedBorder:  UnderlineInputBorder(      
-                                  borderSide: BorderSide(color:miTema.accentColor)),
-                          labelText: 'Ancho',
-                          errorText: snapshot.error =='*' ? null:snapshot.error,
-                  ),
-                  onChanged: solarCultivoBloc.changeSolarAncho,
-                  );
-                      }
-                    ),
-                  ),
-                  Text("m",style: _style,),
-                ]
+                    onChanged: solarCultivoBloc.changeCultivoLargo,
+                    );
+                },
+                
               ),
             ),
+            // Text("m",style: _style,),
+            SizedBox(width:5),
+            Container(
+              margin: EdgeInsets.only(left:40),
+              // width:_responsive.wp(30),
+              child:StreamBuilder<Object>(
+                stream: solarCultivoBloc.cultivoAnchoStream,
+                initialData: solarCultivoBloc.cultivoAncho,
+                builder: (context, snapshot) {
+                  return TextFormField(
+                    initialValue: snapshot.data,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      
+                    focusedBorder:  UnderlineInputBorder(      
+                            borderSide: BorderSide(color:miTema.accentColor)),
+                    labelText: 'Ancho en metros',
+                    errorText: snapshot.error =='*' ? null:snapshot.error,
+            ),
+            onChanged: solarCultivoBloc.changeCultivoAncho,
+            );
+                }
+              ),
+            ),
+            // Text("m",style: _style,),
         ]
       )
     );
   }
-
 
   _observacion(){
     return Container(
@@ -563,8 +645,8 @@ class _CultivoEditPageState extends State<CultivoEditPage> {
       idFksolar: solarCultivoBloc.solar.id,
       tipo: solarCultivoBloc.cultivoTipo,
       nombre:solarCultivoBloc.solarNombre,
-      largo: double.parse(solarCultivoBloc.solarLargo),
-      ancho: double.parse(solarCultivoBloc.solarAncho),
+      largo: double.parse(solarCultivoBloc.cultivoLargo),
+      ancho: double.parse(solarCultivoBloc.cultivoAncho),
       fecha: DateTime.parse(solarCultivoBloc.fechaInicio),
       fechaFinal: DateTime.parse(solarCultivoBloc.fechaTerminacion),
       observacion: solarCultivoBloc.solarDescrip,
@@ -583,12 +665,14 @@ class _CultivoEditPageState extends State<CultivoEditPage> {
    
     await Provider.of<SolarCultivoService>(context,listen: false)
       .updateCultivo(cultivo,etapas?1:0);
-
-
+    
+    isChange=true;
+    
     setState(() {
       _isLoading=true;
     });     
     
+
     Flushbar(
       message:  Provider.of<SolarCultivoService>(context,listen: false).response,
       duration:  Duration(seconds: 2),              

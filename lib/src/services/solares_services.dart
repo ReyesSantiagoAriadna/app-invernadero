@@ -162,6 +162,7 @@ class SolarCultivoService with ChangeNotifier{
       solarList[index] = s; 
       _solaresController.sink.add(solarList);
       solarCultivoBloc.onChangeSolar(s);
+      // solarCultivoBloc.initSolar(s);
       changeResponse("Cultivo editado");
       return true;
     }else{

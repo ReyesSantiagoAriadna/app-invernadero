@@ -141,16 +141,65 @@ class Validators{
       }
     }
   );
+  // static SolarCultivoBloc sBloc = new SolarCultivoBloc();
 
   final validateDecimal=StreamTransformer<String,String>.fromHandlers(
     handleData: (d,sink){
       bool valid = 
       RegExp(r'(^\-?\d*\.?\d*)$').hasMatch(d);
-       if(valid){
+    if(valid&&d.isNotEmpty){
         sink.add(d);
+    }else{
+        sink.addError('');
+      }  
+    }
+  );
+
+  
+  static final sBloc = new SolarCultivoBloc();
+
+  final validateLargoC=StreamTransformer<String,String>.fromHandlers(
+    handleData: (d,sink){
+      bool valid = 
+      RegExp(r'(^\-?\d*\.?\d*)$').hasMatch(d);
+      if(valid&&d.isNotEmpty){
+        
+        if(sBloc.cultivoAncho!=null&&sBloc.cultivoAncho.isNotEmpty){
+          double ancho = double.parse(sBloc.cultivoAncho);
+          double largo = double.parse(d);
+          double m2 = ancho*largo;
+          if(m2 <= sBloc.solar.m2Libres)
+            sink.add(d);
+          else  
+            sink.addError("Las medidas exceden las dimenciones del solar");
+        }else{
+          sink.add(d);
+        }
       }else{
         sink.addError('');
-      }
+      }  
+    }
+  );
+
+  final validateAnchoC=StreamTransformer<String,String>.fromHandlers(
+    handleData: (d,sink){ 
+      bool valid = 
+      RegExp(r'(^\-?\d*\.?\d*)$').hasMatch(d);
+    if(valid&&d.isNotEmpty){
+        if(sBloc.cultivoLargo!=null && sBloc.cultivoLargo.isNotEmpty){
+          double ancho = double.parse(d);
+          double largo = double.parse(sBloc.cultivoLargo);
+          double m2 = ancho*largo;
+          if(m2 <=sBloc.solar.m2Libres)
+            sink.add(d);
+          else  
+            sink.addError("Las medidas exceden las dimenciones del solar");
+        }else{
+          sink.add(d);
+        }
+      }else{
+        sink.addError('');
+      } 
     }
   );
 

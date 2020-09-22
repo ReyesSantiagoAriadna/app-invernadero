@@ -33,6 +33,9 @@ class Solar {
     DateTime deletedAt;
     List<Cultivo> cultivos;
 
+    double m2Libres;
+
+
     factory Solar.fromJson(Map<String, dynamic> json) => Solar(
         id: json["id"],
         nombre: json["nombre"],

@@ -228,7 +228,10 @@ class _CultivoAddPageState extends State<CultivoAddPage> {
   
   _medidas(){
     return Container(
+      
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children:<Widget>[
           Row(
               children: <Widget>[
@@ -238,59 +241,53 @@ class _CultivoAddPageState extends State<CultivoAddPage> {
               ],
             ),
             Container(
-              margin: EdgeInsets.only(left:35),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children:<Widget>[
-                  Container(
-                    width:_responsive.wp(30),
-                    child:StreamBuilder (
-                      stream: solarCultivoBloc.solarLargoStream,
-                      builder: (BuildContext context,snapshot){
-                        return TextFormField(
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                          focusedBorder:  UnderlineInputBorder(      
-                                borderSide: BorderSide(color:miTema.accentColor)),
-                          labelText: 'Largo',
-                          errorText: snapshot.error =='*' ? null:snapshot.error,
-                          ),
-                          onChanged: solarCultivoBloc.changeSolarLargo,
-                          );
-                      },
-                      
+               margin: EdgeInsets.only(left:40),
+              // width:_responsive.wp(30),
+              child:StreamBuilder (
+                stream: solarCultivoBloc.cultivoLargoStream,
+                builder: (BuildContext context,snapshot){
+                  return TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                    focusedBorder:  UnderlineInputBorder(      
+                          borderSide: BorderSide(color:miTema.accentColor)),
+                    labelText: 'Largo en metros',
+                    errorText: snapshot.error =='*' ? null:snapshot.error,
                     ),
-                  ),
-                  Text("m",style: _style,),
-                  SizedBox(width:5),
-                   Container(
-                    width:_responsive.wp(30),
-                    child:StreamBuilder<Object>(
-                      stream: solarCultivoBloc.solarAnchoStream,
-                      builder: (context, snapshot) {
-                        return TextFormField(
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            
-                          focusedBorder:  UnderlineInputBorder(      
-                                  borderSide: BorderSide(color:miTema.accentColor)),
-                          labelText: 'Ancho',
-                          errorText: snapshot.error =='*' ? null:snapshot.error,
-                  ),
-                  onChanged: solarCultivoBloc.changeSolarAncho,
-                  );
-                      }
-                    ),
-                  ),
-                  Text("m",style: _style,),
-                ]
+                    onChanged: solarCultivoBloc.changeCultivoLargo,
+                    );
+                },
+                
               ),
             ),
+            // Text("m",style: _style,),
+            SizedBox(width:5),
+            Container(
+                margin: EdgeInsets.only(left:40),
+              // width:_responsive.wp(30),
+              child:StreamBuilder<Object>(
+                stream: solarCultivoBloc.cultivoAnchoStream,
+                builder: (context, snapshot) {
+                  return TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      
+                    focusedBorder:  UnderlineInputBorder(      
+                            borderSide: BorderSide(color:miTema.accentColor)),
+                    labelText: 'Ancho en metros',
+                    errorText: snapshot.error =='*' ? null:snapshot.error,
+            ),
+            onChanged: solarCultivoBloc.changeCultivoAncho,
+            );
+                }
+              ),
+            ),
+            // Text("m",style: _style,),
         ]
       )
     );
   }
+
 
 
   _observacion(){
@@ -491,8 +488,8 @@ class _CultivoAddPageState extends State<CultivoAddPage> {
       idFksolar: solarCultivoBloc.solar.id,
       tipo: solarCultivoBloc.cultivoTipo,
       nombre:solarCultivoBloc.solarNombre,
-      largo: double.parse(solarCultivoBloc.solarLargo),
-      ancho: double.parse(solarCultivoBloc.solarAncho),
+      largo: double.parse(solarCultivoBloc.cultivoLargo),
+      ancho: double.parse(solarCultivoBloc.cultivoAncho),
       fecha: DateTime.parse(solarCultivoBloc.fechaInicio),
       fechaFinal: DateTime.parse(solarCultivoBloc.fechaTerminacion),
       observacion: solarCultivoBloc.solarDescrip,

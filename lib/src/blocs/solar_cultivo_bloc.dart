@@ -25,6 +25,12 @@ class SolarCultivoBloc with Validators{
   BehaviorSubject<String> _solarNombreController = new BehaviorSubject<String>();
   final _solarLargoController = new BehaviorSubject<String>();
   final _solarAnchoController = new BehaviorSubject<String>();
+
+
+  final _cultivoLargoController = new BehaviorSubject<String>();
+  final _cultivoAnchoController = new BehaviorSubject<String>();
+
+
   final _solarDescripController = new BehaviorSubject<String>();
   
   final _solarHomeController = new BehaviorSubject<Solar>();
@@ -63,10 +69,16 @@ class SolarCultivoBloc with Validators{
   Stream<List<Solar>> get solaresStream => _solaresController.stream;
 
 
+
   
   Stream<String> get solarNombreStream => _solarNombreController.stream.transform(validateSolarNombre);
   Stream<String> get solarLargoStream => _solarLargoController.stream.transform(validateDecimal);
   Stream<String> get solarAnchoStream => _solarAnchoController.stream.transform(validateDecimal);
+  
+  Stream<String> get cultivoLargoStream => _cultivoLargoController.stream.transform(validateLargoC);
+  Stream<String> get cultivoAnchoStream => _cultivoAnchoController.stream.transform(validateAnchoC);
+  
+
   Stream<String> get solarDescripStream => _solarDescripController.stream.transform(validateSolarDescripcion);
   Stream<Solar> get solarHomeStream => _solarHomeController.stream;
   Stream<Cultivo> get cultivoHomeStream => _cultivoHomeController.stream;
@@ -109,6 +121,41 @@ class SolarCultivoBloc with Validators{
 
 
   Function(String) get changeSolarLargo => _solarLargoController.sink.add;
+
+
+
+  Function(String) get changeCultivoLargo =>_cultivoLargoController.sink.add;
+  Function(String) get changeCultivoAncho =>_cultivoAnchoController.sink.add;
+
+
+  
+
+  void validateLargo(String l){
+    // print("imprrr");
+    print("change $l");
+    _solarLargoController.sink.add(l);
+    bool valid = 
+    RegExp(r'\B(?=(\d{3})+(?!\d))').hasMatch(l);
+    
+    
+    if(valid){
+      double x = double.parse(l);
+      print("Decimal $x");
+      
+    }else{
+
+    }
+    
+  
+
+
+  }
+
+  void validateAncho(String a){
+    
+    _solarAnchoController.sink.add(a);
+  }
+
   Function(String) get changeSolarAncho => _solarAnchoController.sink.add;
   Function(String) get changeSolarDescrip => _solarDescripController.sink.add;
 
@@ -119,7 +166,44 @@ class SolarCultivoBloc with Validators{
   Function(Region) get changeRegionActive => _regionActiveController.sink.add;
   Function(Distrito) get changeDistritoActive => _distritoActiveController.sink.add;
   Function(String) get changeMunicipioActive => _municipioActiveController.sink.add;
-  Function(Solar) get onChangeSolar => _solarController.sink.add;
+  Function(Solar) get onChangeSolar => initSolar;
+
+  void initSolar(Solar s){
+
+    double m2Total = s.largo * s.ancho;
+    double m2Ocupado=0;
+    s.cultivos.forEach((c){
+      double espacio = c.largo * c.ancho;
+      m2Ocupado+=espacio;
+    });
+
+    s.m2Libres= m2Total-m2Ocupado;
+    _solarController.sink.add(s);
+  }
+
+
+  void initSolarCurrentDim(Cultivo c){
+    //editando 
+    if(c.largo!=null && c.ancho!=null){
+      double currentm2 = c.largo* c.ancho;
+      Solar s  = solar;
+      s.m2Libres+=currentm2;
+      _solarController.sink.add(s);
+      _cultivoLargoController.sink.add(c.largo.toString());
+      _cultivoAnchoController.sink.add(c.ancho.toString());
+    }
+  }
+  
+
+  void resetDim(bool isChange,double l,double a){
+    if(!isChange){ //si no cambio
+      double currentm2 =l*a;
+      Solar s  = solar;
+      s.m2Libres-=currentm2;
+      _solarController.sink.add(s);
+    }
+  }
+
   Function(String) get onChangeCultivoTipo => _cultivoTipoController.sink.add;
 
   Function(bool) get onChangeSensores => _cultivoSensoresController.sink.add;
@@ -146,6 +230,9 @@ class SolarCultivoBloc with Validators{
   String get solarAncho => _solarAnchoController.value;
   String get solarDescrip => _solarDescripController.value;
   
+
+  String get cultivoLargo => _cultivoLargoController.value;
+  String get cultivoAncho => _cultivoAnchoController.value;
 
   Solar get solarActive => _solarActiveController.value;
   Cultivo get cultivoActive => _cultivoActiveController.value;
@@ -183,8 +270,8 @@ class SolarCultivoBloc with Validators{
       , (n, l,a,d,m,r,di) => true);
   
   Stream<bool> get formAddCultivoValidStream => 
-    CombineLatestStream.combine8(tipoCultivoStream,solarNombreStream, solarLargoStream,
-      solarAnchoStream,solarDescripStream,sensoresStream,fechaInicioStream,fechaTerminacionStream
+    CombineLatestStream.combine8(tipoCultivoStream,solarNombreStream, cultivoLargoStream,
+      cultivoAnchoStream,solarDescripStream,sensoresStream,fechaInicioStream,fechaTerminacionStream
       , (e1, e2,e3,e4,e5,e6,e7,e8) => true);
 
    Stream<bool> get formSensores => 
@@ -234,6 +321,8 @@ class SolarCultivoBloc with Validators{
     _regionActiveController.sink.addError('*');
     _distritoActiveController.sink.addError('*');
     _municipioActiveController.sink.addError('*');
+    _cultivoAnchoController.sink.addError('*');
+    _cultivoLargoController.sink.addError('*');
   }
 
   void resetEtapa(){
