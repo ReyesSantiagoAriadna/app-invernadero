@@ -154,7 +154,7 @@ class _EditInsumoPageState extends State<EditInsumoPage> {
   }
 
   _mostrarFoto(){
-    if(insumo.urlImagen != null){
+    if(insumo.urlImagen != null && foto == null){
       return Stack(
         alignment: const Alignment(0.8, 1.0),
         children: <Widget>[

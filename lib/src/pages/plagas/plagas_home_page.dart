@@ -4,6 +4,7 @@ import 'package:app_invernadero_trabajador/src/blocs/plagaBloc/plaga_bloc.dart';
 import 'package:app_invernadero_trabajador/src/models/plagasEnfermedades/plaga.dart';  
 import 'package:app_invernadero_trabajador/src/services/plagasService/plaga_services.dart';
 import 'package:app_invernadero_trabajador/src/utils/colors.dart';
+import 'package:app_invernadero_trabajador/src/widgets/my_alert_dialog.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/rendering.dart'; 
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
@@ -238,17 +239,21 @@ class _PlagasHomePageState extends State<PlagasHomePage> {
             new ListTile(
               leading: new Icon(LineIcons.trash_o),
               title: new Text('Eliminar',style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w400),),
-              onTap: () {   
-                Provider.of<PlagaService>(context,listen: false)
-                .deletePlaga(idPlaga)
-                .then((r){ 
-                  Flushbar(
-                    message:  Provider.of<PlagaService>(context,listen: false).response,
-                    duration:  Duration(seconds: 2),              
-                  )..show(context).then((r){
-                    Navigator.pop(context);
-                  });
-                });
+              onTap: (){
+                showMyDialog(context, 
+                  'Eliminar plaga', 
+                  '¿Estas seguro de eliminar la plaga?', 
+                  ()=> Provider.of<PlagaService>(context, listen: false)
+                    .deletePlaga(idPlaga)
+                    .then((r){
+                      Flushbar(
+                      message:  Provider.of<PlagaService>(context,listen: false).response,
+                      duration:  Duration(seconds: 2),              
+                    )..show(context).then((r){
+                      Navigator.pop(context);
+                    });
+                    })
+                );
               },
             ),
             ],

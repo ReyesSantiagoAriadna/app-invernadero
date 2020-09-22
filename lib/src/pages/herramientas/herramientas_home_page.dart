@@ -8,6 +8,8 @@ import 'package:app_invernadero_trabajador/src/services/inventarioService/invent
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:app_invernadero_trabajador/src/utils/colors.dart';
 import 'package:app_invernadero_trabajador/src/utils/responsive.dart';
+import 'package:app_invernadero_trabajador/src/widgets/my_alert_dialog.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:line_icons/line_icons.dart';
@@ -190,7 +192,7 @@ class _HerramientasHomePageState extends State<HerramientasHomePage> {
                    Text('${herramienta.nombre }',style: _style, overflow: TextOverflow.ellipsis,),
                    Text('Cantidad: ${herramienta.cantidad}',style: _styleSub,),
                    Container(
-                     width: 285, 
+                     width: 240, 
                      child: 
                       Text('Descripción: ${herramienta.descripcion}',
                       style: TextStyle(color:Colors.grey,fontFamily: AppConfig.quicksand,fontSize:_responsive.ip(1.4)),
@@ -208,6 +210,9 @@ class _HerramientasHomePageState extends State<HerramientasHomePage> {
                       children: <Widget>[
                         IconButton(icon:  Icon(LineIcons.pencil,color: MyColors.GreyIcon,), 
                         onPressed: () => Navigator.pushNamed(context, 'herramienta_edit',arguments: herramienta)
+                        ),
+                        IconButton(icon: Icon(LineIcons.trash, color: MyColors.GreyIcon,),
+                        onPressed: ()=> _deleteModalBottomSheet(context, herramienta.id),
                         )
                       ],
                     )
@@ -234,4 +239,38 @@ class _HerramientasHomePageState extends State<HerramientasHomePage> {
       ),
     );
   }
+
+  void _deleteModalBottomSheet(context, int idHerramienta)async{
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc){
+        return Container(
+          child: new Wrap(
+          children: <Widget>[ 
+            new ListTile(
+              leading: new Icon(LineIcons.trash_o),
+              title: new Text('Eliminar',style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w400),),
+              onTap: (){
+                showMyDialog(context, 
+                  'Eliminar herramienta', 
+                  '¿Estas seguro de eliminar la herramienta?', 
+                  ()=> Provider.of<InventarioService>(context, listen: false)
+                    .deleteHerramientas(idHerramienta)
+                    .then((r){
+                      Flushbar(
+                      message:  Provider.of<InventarioService>(context,listen: false).response,
+                      duration:  Duration(seconds: 2),              
+                    )..show(context).then((r){
+                      Navigator.pop(context);
+                    });
+                    })
+                );
+              },
+            ),
+            ],
+           ),
+        );
+      }
+    );
+  } 
 }

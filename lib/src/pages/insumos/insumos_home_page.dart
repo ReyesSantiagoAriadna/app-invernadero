@@ -6,6 +6,8 @@ import 'package:app_invernadero_trabajador/src/services/insumosService/insumos_s
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:app_invernadero_trabajador/src/utils/colors.dart';
 import 'package:app_invernadero_trabajador/src/utils/responsive.dart';
+import 'package:app_invernadero_trabajador/src/widgets/my_alert_dialog.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
@@ -216,8 +218,8 @@ class _InsumosHomePageState extends State<InsumosHomePage> {
                         IconButton(icon:  Icon(LineIcons.eye,color: MyColors.GreyIcon,), 
                         onPressed: ()=> showItem(insumo)
                         ),
-                        IconButton(icon: Icon(LineIcons.pencil,color: MyColors.GreyIcon), 
-                        onPressed: ()=>Navigator.pushNamed(context, 'insumos_edit', arguments: insumo)
+                        IconButton(icon: Icon(LineIcons.ellipsis_v,color: MyColors.GreyIcon), 
+                        onPressed: ()=> menuOptions(insumo)//Navigator.pushNamed(context, 'insumos_edit', arguments: insumo)
                         
                         )
                       ],
@@ -244,6 +246,55 @@ class _InsumosHomePageState extends State<InsumosHomePage> {
         ]
       ),
     );
+  }
+
+    void menuOptions(Insumo insumo){
+    Column myWidget = Column(
+            children:<Widget>[
+              Container(
+                margin: EdgeInsets.only(top:2),
+                width:100,
+                height:5,
+                decoration: BoxDecoration(
+                  color:Colors.black87,
+                  borderRadius: BorderRadius.circular(5)
+                  ),
+                ),
+              new ListTile(
+                dense: true,
+                  leading: new Icon(LineIcons.trash_o),
+                  title: new Text('Eliminar',style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w400),),
+                  onTap: () { 
+                    showMyDialog(context, 
+                    "Eliminar insumo", 
+                    "¿Estas seguro de eliminar el insumo?", 
+                      ()=>Provider.of<InsumoService>(context,listen: false)
+                      .deleteInsumo(insumo.id)
+                      .then((r){
+                        Flushbar(
+                          message:  Provider.of<InsumoService>(context,listen: false).response,
+                          duration:  Duration(seconds: 2),              
+                        )..show(context).then((r){
+                          Navigator.pop(context);
+                        });
+                      })
+                    );
+                  },
+                ),
+
+                new ListTile(
+                  dense: true,
+                  leading: new Icon(LineIcons.pencil),
+                  title: new Text('Editar',style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w400),),
+                  onTap: () { 
+                   // Navigator.pushNamed(context, 'producto_edit',arguments: widget.producto);
+                    Navigator.pushNamed(context, 'insumos_edit', arguments: insumo);
+                  },
+                ),
+            ]
+          );
+     
+    customBottomSheet(myWidget, 0.18);
   }
 
   void customBottomSheet(Widget myWidget,double heightP){
