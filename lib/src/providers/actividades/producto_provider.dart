@@ -6,7 +6,9 @@ import 'package:app_invernadero_trabajador/src/models/actividades/gastos_model.d
 import 'package:app_invernadero_trabajador/src/models/actividades/producto_model.dart';
 import 'package:app_invernadero_trabajador/src/models/actividades/sobrantes_model.dart';
 import 'package:app_invernadero_trabajador/src/storage/secure_storage.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as http; 
+import 'package:http_parser/http_parser.dart'; 
+import 'package:mime_type/mime_type.dart';
 
 class ProductosProvider{
   static final ProductosProvider _ProductosProvider = ProductosProvider._internal();
@@ -139,6 +141,38 @@ class ProductosProvider{
     print("Error al eliminar");
     return false;
   }
+
+  Future<String> subirImagenCloudinary(File imagen) async{
+    final url = Uri.parse('https://api.cloudinary.com/v1_1/dtev8lpem/image/upload?upload_preset=f9k9os9d');
+    final mimeType = mime(imagen.path).split('/'); //image/jpeg
+
+    final imageUploadRequest = http.MultipartRequest( //peticion para subir el archivo
+      'POST',
+      url
+    );
+
+    final file = await http.MultipartFile.fromPath( //se carga el archivo
+      'file', 
+      imagen.path,
+      contentType: MediaType(mimeType[0], mimeType[1]),
+    );
+
+    imageUploadRequest.files.add(file);
+    
+    final streamResponse = await imageUploadRequest.send();
+    final resp = await http.Response.fromStream(streamResponse);
+
+    if (resp.statusCode != 200 && resp.statusCode != 201) {
+        print('Algo salio mal');
+        print(resp.body);
+        return null;
+    }
+
+    final respData = json.decode(resp.body);
+    print(respData);
+
+    return respData['secure_url'];
+  } 
 
   
 }

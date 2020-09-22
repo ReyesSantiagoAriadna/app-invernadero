@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app_invernadero_trabajador/src/models/actividades/gastos_model.dart';
 import 'package:app_invernadero_trabajador/src/models/actividades/producto_model.dart';
 import 'package:app_invernadero_trabajador/src/models/actividades/sobrantes_model.dart';
@@ -109,6 +111,17 @@ class ProductosService with ChangeNotifier{
     }else{
       changeResponse("Algo ha salido mal");
       return false;
+    }
+  }
+
+  Future<String> subirFoto(File foto) async{
+    final fotoUrl = await productosProvider.subirImagenCloudinary(foto);
+    if(fotoUrl != null){
+      changeResponse("Imagen cargada");
+      return fotoUrl;
+    }else {
+      changeResponse("Algo salio mal");
+      return "";
     }
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:app_invernadero_trabajador/app_config.dart';
@@ -17,6 +18,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 
@@ -35,6 +37,8 @@ class _ProductoAddPageState extends State<ProductoAddPage> {
   GenericBloc genericBloc;
   SolarCultivoBloc solarCultivoBloc;
   ActividadProductoBloc pBloc;
+  File foto; 
+  String urlImagen = '';
 
   @override
   void initState() {
@@ -122,8 +126,10 @@ class _ProductoAddPageState extends State<ProductoAddPage> {
               height: 2,
               color: Colors.grey[300],
             ),
-            SizedBox(height:5),
-            // _inputSolar(),
+            SizedBox(height:15),
+            // _inputSolar(), 
+             _mostrarFoto(), 
+            SizedBox(height:10), 
             DialogSelectSolar(solarCultivoBloc: solarCultivoBloc, responsive: _responsive),
             SizedBox(height:_responsive.ip(2)),
             DialogSelectCultivo(solarCultivoBloc: solarCultivoBloc, responsive: _responsive),
@@ -182,7 +188,70 @@ class _ProductoAddPageState extends State<ProductoAddPage> {
   }
   
 
+ Widget _mostrarFoto(){   
+    return  Stack(
+       alignment: const Alignment(0.8, 1.0),
+       children: <Widget>[
+       ClipRRect(
+         borderRadius: BorderRadius.circular(100),
+         child: Container(
+            height: 140,
+            width: 140,
+            child: (foto!=null) 
+            ? new Image.file(foto,fit: BoxFit.cover)
+            :Image.asset('assets/no-image.png', fit: BoxFit.cover,),
+         ),
+        ),
+       Container(
+          decoration: BoxDecoration(
+             borderRadius: BorderRadius.circular(100),
+             color: miTema.accentColor,
+          ),         
+          child: IconButton(
+           icon: Icon(LineIcons.camera, color:Colors.white, size: 30,), 
+               onPressed: _procesarImagen
+          ),
+       ),
+     ]
+   );
+ }
+
+
+  _procesarImagen()async{
+      final _picker = ImagePicker();
+
+      final pickedFile = await _picker.getImage(source: ImageSource.gallery);
+
+      foto = File(pickedFile.path);
+
+      if(foto != null){
+        urlImagen = null;
+      }
+
+      setState(() {
+        _guardarImagen();
+      });
+    }
+
+    _guardarImagen()async{
+      if(foto!=null && urlImagen != ""){
+       
+        setState(() {
+          _isLoading=true;
+        });
+
+        urlImagen = await pBloc.subirFoto(context,foto); 
+        print("++++++++++++++++++++++++++++");
+        print(urlImagen); 
+        pBloc.onChangeUrlImagen(urlImagen);
+
+        setState(() {
+          _isLoading=false;
+        });
+        
  
+      } 
+    }
   
 
   

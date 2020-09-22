@@ -84,4 +84,17 @@ class InventarioService with ChangeNotifier {
       return "";
     }
   }
+
+  Future<bool> deleteHerramientas(int idHerramienta)async{
+    final resp = await inventarioProvider.deleteHerramienta(idHerramienta);
+    if(resp){
+      this.herramientaList.removeWhere((item)=>item.id==idHerramienta);
+      _herramientasController.sink.add(herramientaList);
+      changeResponse("Registro eliminado");
+      return true;
+    }else {
+      changeResponse("Algo salio mal");
+      return false;
+    }
+  }
 }

@@ -6,7 +6,8 @@ import 'package:app_invernadero_trabajador/src/providers/firebase/push_notificat
 import 'package:app_invernadero_trabajador/src/providers/menu_provider.dart';
 import 'package:app_invernadero_trabajador/src/providers/user_provider.dart';
 import 'package:app_invernadero_trabajador/src/services/trabajadorService/trabajador_service.dart';
-import 'package:app_invernadero_trabajador/src/storage/secure_storage.dart';import 'package:app_invernadero_trabajador/src/theme/theme.dart';
+import 'package:app_invernadero_trabajador/src/storage/secure_storage.dart';
+import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:app_invernadero_trabajador/src/utils/colors.dart';
 import 'package:app_invernadero_trabajador/src/utils/icon_string_util.dart';
 import 'package:app_invernadero_trabajador/src/utils/responsive.dart';
@@ -255,7 +256,7 @@ class _AjustesPageState extends State<AjustesPage> {
         _switch = LineIcons.toggle_on;
         
         await fcm.subscribeToTopic(_storage.numberPhone);
-        if(p.rol==AppConfig.rol_admin){
+        if(_storage.rolPersonal==AppConfig.rol_admin){
           await fcm.subscribeToTopic(AppConfig.fcm_topic_admin);
            await fcm.subscribeToTopic(AppConfig.fcm_topic_employee);
         }else if(_storage.rolPersonal == AppConfig.rol_empleado){

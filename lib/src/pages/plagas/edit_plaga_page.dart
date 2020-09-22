@@ -180,7 +180,7 @@ class _PlagaEditPageState extends State<PlagaEditPage> {
   }
 
   Widget _mostrarFoto(){     
-    if(_plagaModel.urlImagen != null){
+    if(_plagaModel.urlImagen != null && foto == null){
       return Stack(
         alignment: const Alignment(0.8, 1.0),
         children: <Widget>[
@@ -245,8 +245,7 @@ class _PlagaEditPageState extends State<PlagaEditPage> {
       final pickedFile = await _picker.getImage(source: ImageSource.gallery);
       foto = File(pickedFile.path);
 
-      if(foto != null){
-        urlImagen = null;
+      if(foto != null){ 
         _plagaModel.urlImagen = null;
       }
 

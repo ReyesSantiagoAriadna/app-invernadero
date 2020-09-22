@@ -319,6 +319,31 @@ class InsumosProvider{
     }
     return [];
   }
+
+    Future<bool> deleteInsumo(int idInsumo) async{
+    final url = "${AppConfig.base_url}/api/personal/delete_insumo/$idInsumo"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",};
+
+    final response = await http.delete(
+      url, 
+      headers: headers,
+      );
+    print("INSUMO RESPUESTA DELETE----------------");
+    print(response.body);
+    
+    if(response.body.contains("message") && response.body.contains("success")){
+      print("eliminando");
+      return true;
+    }
+    if(response.statusCode==200)
+      return true;
+
+    print("Error al eliminar");
+    return false;
+  }
 }
 
 

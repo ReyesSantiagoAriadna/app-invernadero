@@ -401,8 +401,10 @@ class _CultivoAddPageState extends State<CultivoAddPage> {
                 children: <Widget>[
                   Icon(LineIcons.calendar,color: MyColors.GreyIcon,),
                   Container(
+                    width: 90, 
                     margin: EdgeInsets.only(left:20),
-                    child: Text(title,style: _style,)),
+                    child: Text(title,style: _style, overflow: TextOverflow.clip,)),
+                    
                  
                 ],
               ),

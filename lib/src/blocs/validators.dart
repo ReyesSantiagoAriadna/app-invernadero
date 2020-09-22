@@ -173,6 +173,16 @@ class Validators{
     }
   );
 
+   final validateUrlImagenProducto=StreamTransformer<String,String>.fromHandlers(
+    handleData: (url,sink){
+       if(url.length>0){
+        sink.add(url);
+      }else{
+        sink.addError('');
+      }
+    }
+  );
+
   final validateEtapa=StreamTransformer<Etapa,Etapa>.fromHandlers(
     handleData: (e,sink){
      if(e!=null && e.nombre!=""){

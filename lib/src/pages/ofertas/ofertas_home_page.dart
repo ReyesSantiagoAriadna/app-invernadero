@@ -9,6 +9,7 @@ import 'package:app_invernadero_trabajador/src/services/productoService/produtos
 import 'package:app_invernadero_trabajador/src/theme/theme.dart';
 import 'package:app_invernadero_trabajador/src/utils/colors.dart';
 import 'package:app_invernadero_trabajador/src/utils/responsive.dart';
+import 'package:app_invernadero_trabajador/src/widgets/my_alert_dialog.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -256,7 +257,10 @@ class _OfertasHomePageState extends State<OfertasHomePage> {
               leading: new Icon(LineIcons.trash_o),
               title: new Text('Terminar oferta',style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w400),),
               onTap: () {   
-                Provider.of<OfertaService>(context,listen: false)
+                showMyDialog(context, 
+                "Terminar oferta", 
+                "¿Estas seguro de terminar la oferta?",
+                ()=>  Provider.of<OfertaService>(context,listen: false)
                 .terminarOferta(idOferta)
                 .then((r){ 
                   Flushbar(
@@ -265,7 +269,8 @@ class _OfertasHomePageState extends State<OfertasHomePage> {
                   )..show(context).then((r){  
                     Navigator.pop(context);
                   });
-                });
+                })
+                );
               },
             ),
             ],

@@ -142,7 +142,7 @@ class _EditHerramientaPageState extends State<EditHerramientaPage> {
   }
 
    _mostrarFoto(){
-    if(herramienta.urlImagen != null){
+    if(herramienta.urlImagen != null && foto == null){
       return Stack(
         alignment: const Alignment(0.8, 1.0),
         children: <Widget>[

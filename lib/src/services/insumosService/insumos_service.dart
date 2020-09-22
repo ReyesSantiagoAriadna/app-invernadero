@@ -165,4 +165,17 @@ class InsumoService with ChangeNotifier{
     return false;
   } 
 
+  Future<bool> deleteInsumo(int idInsumo)async{
+    final resp = await insumosProvider.deleteInsumo(idInsumo);
+    if(resp){
+      this.insumoList.removeWhere((item)=>item.id==idInsumo);
+      _insumosController.sink.add(insumoList);
+      changeResponse("Registro eliminado");
+      return true;
+    }else {
+      changeResponse("Algo salio mal");
+      return false;
+    }
+  }
+
 }
