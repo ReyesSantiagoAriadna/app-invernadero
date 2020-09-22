@@ -179,7 +179,7 @@ class _PlagaEditPageState extends State<PlagaEditPage> {
     );
   }
 
-  Widget _mostrarFoto(){     
+  _mostrarFoto(){
     if(_plagaModel.urlImagen != null && foto == null){
       return Stack(
         alignment: const Alignment(0.8, 1.0),
@@ -208,46 +208,48 @@ class _PlagaEditPageState extends State<PlagaEditPage> {
           ),
       ],
       );
-    }else{
-     return  Stack(
-        alignment: const Alignment(0.8, 1.0),
-        children: <Widget>[          
-            ClipRRect(
-              borderRadius: BorderRadius.circular(100),
-              child: Container(
-              height: 140,
-              width: 140,
-              child: (foto!=null)
-              ? new Image.file(foto, fit: BoxFit.cover)
-              : Image.asset('assets/bug-96.png', fit: BoxFit.cover,)
-          ),
-            ),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100),
-              color: miTema.accentColor,
-            ),         
-            child: IconButton(
-                icon: Icon(LineIcons.camera, color:Colors.white, size: 30,), 
-                onPressed: _procesarImagen
+    }else{ 
+        //if(foto!=null){
+           return  Stack(
+             alignment: const Alignment(0.8, 1.0),
+             children: <Widget>[
+              ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: Container(
+                  height: 140,
+                  width: 140,
+                  child: (foto!=null) 
+                  ? new Image.file(foto,fit: BoxFit.cover)
+                  : Image.asset('assets/no-image.png', fit: BoxFit.cover,),
+                ),
               ),
-          ),
-        ],
-      );
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                  color: miTema.accentColor,
+                ),         
+                child: IconButton(
+                    icon: Icon(LineIcons.camera, color:Colors.white, size: 30,), 
+                    onPressed: _procesarImagen
+                  ),
+              ),
+             ]
+           ); 
     }
-     
-  } 
+  }
 
-    _procesarImagen()async{
+  _procesarImagen()async{
       //ImageSource origen = ImageSource.gallery;
       //foto = await ImagePicker.pickImage(source: origen);
       final _picker = ImagePicker();
       final pickedFile = await _picker.getImage(source: ImageSource.gallery);
       foto = File(pickedFile.path);
-
-      if(foto != null){ 
-        _plagaModel.urlImagen = null;
+      
+      if(foto != null){
+        urlImagen = null;
       }
+
+      print(foto.path);
 
       setState(() {
         _guardarImagen();
@@ -265,12 +267,15 @@ class _PlagaEditPageState extends State<PlagaEditPage> {
         print("++++++++++++++++++++++++++++");
         print(urlImagen);
         plagaBloc.changeUrlImagen(urlImagen);
+        print("contenido bloc");
+        print((plagaBloc.urlImagen));
 
         setState(() {
           _isLoading=false;
-        });
+        });  
       }
     }
+  
 
     
 
