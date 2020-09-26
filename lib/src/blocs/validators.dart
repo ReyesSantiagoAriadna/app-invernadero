@@ -9,6 +9,8 @@ import 'package:app_invernadero_trabajador/src/models/solares_cultivos/cultivo.d
 import 'package:app_invernadero_trabajador/src/models/solares_cultivos/etapa_cultivo.dart';
 import 'package:app_invernadero_trabajador/src/models/task/tarea_date_mode.dart' ;
 
+import 'actividad_producto_bloc.dart';
+
 class Validators{
   final validarTelefono=StreamTransformer<String,String>.fromHandlers(
     handleData: (telefono,sink){
@@ -154,8 +156,27 @@ class Validators{
       }  
     }
   );
-
-  
+  static final actBloc = new ActividadProductoBloc();
+  final validateMenudeo=StreamTransformer<String,String>.fromHandlers(
+    handleData: (d,sink){
+      bool valid = 
+      RegExp(r'(^\-?\d*\.?\d*)$').hasMatch(d);
+    if(valid&&d.isNotEmpty){
+      if(actBloc.precioMay!=null&&actBloc.precioMay.isNotEmpty){
+        double menudeo = double.parse(d);
+        double mayoreo = double.parse(actBloc.precioMay);
+        if(menudeo<=mayoreo)
+          sink.add(d);
+        else
+          sink.addError('Precio de menudeo debe ser menor o igual al de mayoreo.');
+      }else{
+        sink.addError('Agrega el precio de mayoreo.');
+      }
+    }else{
+        sink.addError('');
+      }  
+    }
+  );
   static final sBloc = new SolarCultivoBloc();
 
   final validateLargoC=StreamTransformer<String,String>.fromHandlers(

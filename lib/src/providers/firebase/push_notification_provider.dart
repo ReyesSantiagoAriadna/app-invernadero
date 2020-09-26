@@ -15,9 +15,6 @@ import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class PushNotificationProvider{
-
-  
-
   final FirebaseMessaging _firebaseMessaging = new FirebaseMessaging();
   
   final _mensajeStreamController = StreamController<String>();
@@ -34,15 +31,19 @@ class PushNotificationProvider{
 
   
   static Future<dynamic> onBackgroundMessage(Map<String, dynamic> message) async {
-    // if (message.containsKey('data')) {
-    //   // Handle data message
-    //   final dynamic data = message['data'];
-    // }
+    if (message.containsKey('data')) {
+      // Handle data message
+      final dynamic data = message['data'];
+      if(data!=null){
+        _toProcessData(data);
+      }
+    }
 
-    // if (message.containsKey('notification')) {
-    //   // Handle notification message
-    //   final dynamic notification = message['notification'];
-    // }
+  //   if (message.containsKey('notification')) {
+  //     // Handle notification message
+  //     final dynamic notification = message['notification'];
+  //   }
+
 
   // Or do other work.
   }
@@ -105,7 +106,7 @@ class PushNotificationProvider{
     isNotified = !isNotified; 
   }
   
-  _toProcessData(dynamic data){
+  static _toProcessData(dynamic data){
     print("===========TIPO DE NOTIFCACION ${data['tipo']}");
     switch (data['tipo']){
       case AppConfig.fcm_type_pedido:  //tipo pedido
@@ -126,7 +127,7 @@ class PushNotificationProvider{
   }
 
 
-  _processPedido(dynamic data){
+  static _processPedido(dynamic data){
     Pedido p = Pedido.fromJson(json.decode(data['pedido']));
     switch(data['event']){
       case AppConfig.event_created:
@@ -144,7 +145,7 @@ class PushNotificationProvider{
     } 
   }
   
-  _processTareaPersonal(dynamic data){
+  static _processTareaPersonal(dynamic data){
     TareasTrabajadorElement task;
     switch(data['event']){
       case AppConfig.event_created:

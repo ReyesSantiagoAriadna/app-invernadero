@@ -358,7 +358,6 @@ class _MyAppState extends State<MyApp> {
 
                 
                 'notifications'         : (BuildContext)=>NotificationsPage(),
-
                 'compras'               : (BuildContext)=>ShoppingPage()
               }
             ),

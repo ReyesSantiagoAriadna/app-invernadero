@@ -41,7 +41,7 @@ class ActividadProductoBloc with Validators{
   final _urlImagenController = new BehaviorSubject<String>();
 
   Stream<String> get kilosXcajaStream => _kilosXcajaController.stream.transform(validateInteger);
-  Stream<String> get precioMenStream => _precioMenController.stream.transform(validateDecimal);
+  Stream<String> get precioMenStream => _precioMenController.stream.transform(validateMenudeo);
   Stream<String> get precioMayStream => _precioMayController.stream.transform(validateDecimal);
   Stream<String> get cantidadStream => _cantidadController.stream.transform(validateDecimal);
   Stream<String> get urlImagenSteam => _urlImagenController.stream.transform(validateUrlImagenProducto);

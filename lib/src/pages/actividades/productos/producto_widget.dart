@@ -222,7 +222,7 @@ class _ProductoWidgetState extends State<ProductoWidget> {
         _element(Icon(LineIcons.dollar,color: Colors.white,), "Precio de Menudeo \$ ${widget.producto.precioMen}"),
          SizedBox(height:2),
         _element(SvgPicture.asset('assets/icons/boxes.svg',color:MyColors.GreyIcon,height: 20,),
-               "Cantidad existente ${widget.producto.cantExis}")
+               "Cantidad existente ${widget.producto.cantExis} kg")
 
         // _element(LineIcons.sitemap, widget.tarea.etapa),
         //  _element(LineIcons.clipboard, widget.tarea.detalle),

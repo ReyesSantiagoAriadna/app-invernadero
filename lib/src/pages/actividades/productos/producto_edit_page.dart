@@ -180,24 +180,20 @@ class _ProductoEditPageState extends State<ProductoEditPage> {
   }
 
   _precios(){
-    return Row(
+    return Column(
       children:<Widget>[
-        Expanded(
-              child: InputBloc(
-              textInputType: TextInputType.number,labelText:"Precio de mayoreo", 
-              icon: Icon(LineIcons.money),
-              stream:pBloc.precioMayStream,
-              onChange:pBloc.onChangePrecioMay,
-              initialData: pBloc.precioMay),
-        ),
-        Expanded(
-                  child: InputBloc(
+        InputBloc(
+        textInputType: TextInputType.number,labelText:"Precio de mayoreo", 
+        icon: Icon(LineIcons.money),
+        stream:pBloc.precioMayStream,
+        onChange:pBloc.onChangePrecioMay,
+        initialData: pBloc.precioMay),
+        InputBloc(
               textInputType: TextInputType.number,labelText:"Precio de menudeo", 
               icon: Icon(LineIcons.money),
               stream:pBloc.precioMenStream,
               onChange:pBloc.onChangePrecioMen,
               initialData: pBloc.precioMen),
-        ),
       ]
     );
   }
