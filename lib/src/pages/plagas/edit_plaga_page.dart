@@ -67,18 +67,29 @@ class _PlagaEditPageState extends State<PlagaEditPage> {
     plagaBloc.changeFecha(_plagaModel.fecha);
     plagaBloc.changeUrlImagen(_plagaModel.urlImagen);
 
-    List<Solar> solares = Provider.of<SolarCultivoService>(context,listen: false).solarList;
-    solar = solares.firstWhere((r) =>r.id==_plagaModel.idSolar);
-    solarCultivoBloc.changeSolarActive(solar);
+    
+
+        try {
+          List<Solar> solares = Provider.of<SolarCultivoService>(context,listen: false).solarList;
+          solar = solares.firstWhere((r) =>r.id==_plagaModel.idSolar);
+          solarCultivoBloc.changeSolarActive(solar);
 
 
-    if(solar.cultivos != null && solar.cultivos.isNotEmpty){
-      List<Cultivo> cultivos = solar.cultivos;
-      Cultivo cultivo = cultivos.firstWhere((c)=>c.id==_plagaModel.idCultivo);
-      solarCultivoBloc.changeCultivoActive(cultivo); 
+          if(solar.cultivos != null && solar.cultivos.isNotEmpty){
+            List<Cultivo> cultivos = solar.cultivos;
+            Cultivo cultivo = cultivos.firstWhere((c)=>c.id==_plagaModel.idCultivo);
+            solarCultivoBloc.changeCultivoActive(cultivo); 
+          } 
+        } on Exception catch(e) {
+        //Handle exception of type SomeException
+        print("Exception error ${e.toString()}");
+        } catch(e) {
+          print("Catch erro ${e.toString()}");
+        //Handle all other exceptions
+        }
     } 
-    } 
 
+    
     
     
     _plagaService = Provider.of<PlagaService>(context); 
