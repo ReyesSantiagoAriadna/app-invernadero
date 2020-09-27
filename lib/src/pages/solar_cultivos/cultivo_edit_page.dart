@@ -80,7 +80,7 @@ class _CultivoEditPageState extends State<CultivoEditPage> {
       // solarCultivoBloc.changeCultivoAncho(c.ancho.toString());
 
       solarCultivoBloc.changeSolarDescrip(c.observacion);
-      solarCultivoBloc.onChangeFechaInicio(formatter.format(c.fechaFinal).toString(),);
+      solarCultivoBloc.onChangeFechaInicio(formatter.format(c.fecha).toString(),);
       solarCultivoBloc.onChangeFechaTerminacion(formatter.format(c.fechaFinal).toString(),);
       solarCultivoBloc.onChangeSensores(false);
       solarCultivoBloc.onChangeCultivoTipo(c.tipo);
@@ -209,24 +209,24 @@ class _CultivoEditPageState extends State<CultivoEditPage> {
             ),
 
           
-            StreamBuilder(
-              stream: solarCultivoBloc.fechaInicioStream,
-              initialData: solarCultivoBloc.fechaInicio,
-              builder: (BuildContext context, AsyncSnapshot snapshot){
-                print("Data de fecha inicio ${snapshot.data}");
-                if(snapshot.hasData){
-                  DateTime date = DateTime.parse(snapshot.data);
-                  date.add(new Duration(days: 1));
-                  solarCultivoBloc.onChangeFechaTerminacion(DateFormat('yyyy-MM-dd').format(date));
-                }
-                return  InputDate(title:"Fecha de Finalización",
+            // StreamBuilder(
+            //   stream: solarCultivoBloc.fechaInicioStream,
+            //   initialData: solarCultivoBloc.fechaInicio,
+            //   builder: (BuildContext context, AsyncSnapshot snapshot){
+            //     print("Data de fecha inicio ${snapshot.data}");
+            //     if(snapshot.hasData){
+            //       DateTime date = DateTime.parse(snapshot.data);
+            //       date.add(new Duration(days: 1));
+            //       solarCultivoBloc.onChangeFechaTerminacion(DateFormat('yyyy-MM-dd').format(date));
+            //     }
+                InputDate(title:"Fecha de Finalización",
                   stream:solarCultivoBloc.fechaTerminacionStream,                     
                   onChange:solarCultivoBloc.onChangeFechaTerminacion,
                   initialDate:solarCultivoBloc.fechaTerminacion,
                   firstDate:solarCultivoBloc.fechaInicio,
-                );
-              },
-            ),
+                ),
+            //   },
+            // ),
             SizedBox(height:_responsive.ip(2)),
             _observacion(),
             // SizedBox(height:_responsive.ip(2)),

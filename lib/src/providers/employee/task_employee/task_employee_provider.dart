@@ -133,7 +133,7 @@ class TaskEmployeeProvider{
 
       if(response.body.contains("fecha") && response.body.contains("id_tarea")){
         TareasTrabajadorElement tarea = TareasTrabajadorElement.fromJson(json.decode(response.body));
-        return {'ok':true, 'tarea_personal' : tarea ,'message' : "Tarea iniciada"};
+        return {'ok':true, 'tarea_personal' : tarea ,'message' : "La tarea ha terminado"};
       }
       return {'ok':false, 'tarea_personal' : null ,'message' : json.decode(response.body)['message']};
     }
