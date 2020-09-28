@@ -11,7 +11,8 @@ class MaskTextInputFormatter extends TextInputFormatter {
   final _resultTextArray = <String>[];
   String _resultTextMasked = "";
 
-  MaskTextInputFormatter({String mask = "(###) ###-##-##", Map<String, RegExp> filter})
+  // MaskTextInputFormatter({String mask = "(###) ###-##-##", Map<String, RegExp> filter})
+  MaskTextInputFormatter({String mask = "##########", Map<String, RegExp> filter})
       : assert(mask != null),
         assert(mask.isNotEmpty) {
     updateMask(mask, filter: filter ?? {"#": RegExp(r'[0-9]'), "A": RegExp(r'[^0-9]')});

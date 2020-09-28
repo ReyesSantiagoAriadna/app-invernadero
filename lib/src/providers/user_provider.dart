@@ -130,7 +130,7 @@ class UserProvider{
     final url = "${AppConfig.base_url}/api/personal/update_password";
     final token = await _storage.read('token');
 
-    
+    print("tokeeene: $token");
     Map<String, String> headers = {
       HttpHeaders.authorizationHeader: "Bearer $token",
       "Accept": "application/json",};
@@ -144,7 +144,22 @@ class UserProvider{
     print("${   response.body}");
     
     print(decodedResp); 
-    if(decodedResp.containsKey('result')){ 
+    if(decodedResp.containsKey('access_token')){ 
+      //  await _storage.write('token',decodedResp['access_token']);
+       
+      //   Personal p = Personal.fromJsonLogin(decodedResp['personal']);
+      //   _storage.rolPersonal= p.rol;
+      //   _storage.idPersonal = p.id;
+      //   _storage.numberPhone = p.celular;
+      //   print("Roooolll de personal ¨*********** ${p.rol}");
+      //   await _fcm.subscribeToTopic(celular);
+      //   if(p.rol==AppConfig.rol_admin){
+      //     await _fcm.subscribeToTopic(AppConfig.fcm_topic_admin);
+      //      await _fcm.subscribeToTopic(AppConfig.fcm_topic_employee);
+      //   }else if(p.rol == AppConfig.rol_empleado){
+      //     await _fcm.subscribeToTopic(AppConfig.fcm_topic_employee);
+      //   }
+
       return {'ok':true, 'message' : decodedResp['message']};
     }else{
       return {'ok':false, 'message' : decodedResp['message']};
@@ -212,7 +227,7 @@ class UserProvider{
         }
 
 
-
+        
         await _storage.delete('token'); 
         _storage.sesion = false;
       // fcm.deleteToken();

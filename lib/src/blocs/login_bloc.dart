@@ -49,7 +49,7 @@ class LoginBloc with Validators{
   Function(bool) get changeLoading => _loadingController.sink.add;
   Function(String) get changePinCode => _pinCodeController.sink.add;
 
-  String get phone => _phoneController.value.replaceAll(RegExp('[^0-9]'),'');
+  String get phone => _phoneController.value;//.replaceAll(RegExp('[^0-9]'),'');
   String get password => _passwordController.value;
   String get code => _codeController.value;
   String get navRoute => _navRouteController.value;
@@ -128,7 +128,7 @@ class LoginBloc with Validators{
     final phone = await  _prefs.read('celular');
     Map response = await _userProvider.changePassword(celular: phone, password: password);
     if(response['ok']){
-      changeNavRoute('home');
+      changeNavRoute('menu_drawer');
     }else{
       changeNavRoute('Ha ocurrido un error en la verificacion');
     }

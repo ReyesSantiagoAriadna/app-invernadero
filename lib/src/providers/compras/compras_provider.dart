@@ -16,7 +16,7 @@ class ComprasProvider{
   int _page=0;
   bool _loading=false;
   final _storage = SecureStorage();
-
+  
   Future<List<Compra>> compras()async{
     if(_loading) return [];
     _loading= false;

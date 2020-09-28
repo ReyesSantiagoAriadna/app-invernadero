@@ -287,7 +287,7 @@ class _MyAppState extends State<MyApp> {
 
               title: 'SS Invernadero',
               theme: miTema,
-              initialRoute:prefs.route,
+              initialRoute:'config_password',//prefs.route,
               debugShowCheckedModeBanner: false,
               routes: {
                 'main'                  : (BuildContext)=>MainPage(),

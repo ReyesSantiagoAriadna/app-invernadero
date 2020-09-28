@@ -24,7 +24,9 @@ class _LoginPhonePageState extends State<LoginPhonePage> {
   Responsive responsive;
   LoginBloc bloc;
   var textEditingController = TextEditingController();
-  var maskTextInputFormatter = MaskTextInputFormatter(mask: "(###) ###-##-##", 
+  // var maskTextInputFormatter = MaskTextInputFormatter(mask: "(###) ###-##-##", 
+  var maskTextInputFormatter = MaskTextInputFormatter(mask: "##########", 
+  
   filter: { "#": RegExp(r'[0-9]') });
   bool _isLoading = false;
 
