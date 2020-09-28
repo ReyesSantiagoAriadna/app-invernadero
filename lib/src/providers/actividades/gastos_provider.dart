@@ -132,6 +132,7 @@ class GastosProvider{
     print("enviando gast..... $idGasto");
     final url = "${AppConfig.base_url}/api/personal/delete_gasto?id_gasto=$idGasto"; 
     final token = await _storage.read('token');
+    
     Map<String, String> headers = {
       HttpHeaders.authorizationHeader: "Bearer $token",
       "Accept": "application/json",};

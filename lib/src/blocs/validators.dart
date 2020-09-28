@@ -224,6 +224,8 @@ class Validators{
     }
   );
 
+
+  
   final validateInteger=StreamTransformer<String,String>.fromHandlers( //enter mayor a 0
     handleData: (cantidad,sink){
       bool valid = 

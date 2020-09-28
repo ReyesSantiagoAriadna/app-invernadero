@@ -93,7 +93,7 @@ class UserProvider{
           "customer_id" : "client-id" ,
           "client_secret" : "client-secret" ,
           "refresh_token" : "refresh-token" ,
-          "provider" : AppConfig.provider_api ,
+          "provider" :'personals' ,
           "celular":celular,
           "password":password}
         );
@@ -103,7 +103,6 @@ class UserProvider{
       print(response.body);
       if(decodedResp.containsKey('access_token')){ //access_token,token_type,expires_at
         await _storage.write('token',decodedResp['access_token']);
-       
         Personal p = Personal.fromJsonLogin(decodedResp['personal']);
         _storage.rolPersonal= p.rol;
         _storage.idPersonal = p.id;
@@ -116,8 +115,6 @@ class UserProvider{
         }else if(p.rol == AppConfig.rol_empleado){
           await _fcm.subscribeToTopic(AppConfig.fcm_topic_employee);
         }
-
-
       return {'ok':true, 'celular' : decodedResp};
       }else{
         return {'ok':false, 'mensaje' : decodedResp['message']};
@@ -220,6 +217,10 @@ class UserProvider{
       
       if(decodedResp.containsKey('message')){ 
         // TODO: remove  token 
+        // _storage.rolPersonal='';
+        // _storage.idPersonal = -1;
+        // _storage.numberPhone = '';
+
         await _fcm.unsubscribeFromTopic( _storage.numberPhone);
         await _fcm.unsubscribeFromTopic(AppConfig.rol_empleado);
         if(_storage.rolPersonal==AppConfig.rol_admin){
@@ -227,7 +228,7 @@ class UserProvider{
         }
 
 
-        
+
         await _storage.delete('token'); 
         _storage.sesion = false;
       // fcm.deleteToken();

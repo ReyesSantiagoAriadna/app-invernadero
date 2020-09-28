@@ -106,7 +106,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
     ); 
   });
 
-  
+    
     if(_prefs.rolPersonal=='0'){
       rol = "Administrador";
       initialRoute = 'home';
@@ -156,13 +156,10 @@ class _MenuDrawerState extends State<MenuDrawer> {
       _pageBloc.pickPage(context,initialRoute, "Inicio");
       _pageBloc.changeScrollController(_scrollBottomBarController);
       _pageBloc.changeShowAppBar(true);
-
-
       _responsive = Responsive.of(context);    
       solaresStream = Provider.of<SolarCultivoService>(context).solarStream;
       ofertaTipoStream = Provider.of<OfertaService>(context).ofertaTipoStream;
       trabajadorStream = Provider.of<TrabajadorService>(context).trabajadorStream;
- 
        if( Provider.of<SolarCultivoService>(context).solarList.isNotEmpty){
         SolarCultivoBloc solarBloc = SolarCultivoBloc();
         solarBloc.changeSolarHome(Provider.of<SolarCultivoService>(context).solarList[0]);

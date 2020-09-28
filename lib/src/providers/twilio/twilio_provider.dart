@@ -68,7 +68,9 @@ class TwilioProvider{
         //save token 
         Personal p = Personal.fromJsonLogin(jsonDecode(response.body)['personal']);
         _storage.idPersonal = p.id;
-        
+        _storage.rolPersonal= p.rol;
+        _storage.numberPhone = p.celular;
+
         await _storage.write('token',decodedResp['access_token']);
         await fcm.subscribeToTopic(this.number);
         if(p.rol==AppConfig.rol_admin){
