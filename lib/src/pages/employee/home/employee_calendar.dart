@@ -904,7 +904,7 @@ class _HomeEmployeePageState extends State<HomeEmployeePage> with TickerProvider
       builder: (BuildContext context, AsyncSnapshot snapshot){
         if(!snapshot.hasData)
           return Container(
-            height: 150,
+            height: 160,
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: Colors.grey[300],
@@ -923,7 +923,7 @@ class _HomeEmployeePageState extends State<HomeEmployeePage> with TickerProvider
     //   taskBloc.onChangeDateNet(date);
     // }
     TextStyle _style =TextStyle(color:Colors.white,fontFamily: AppConfig.quicksand,
-                  fontWeight: FontWeight.w700
+                  fontWeight: FontWeight.w700,
                 );
      return Container( 
       padding: EdgeInsets.all(10),
@@ -932,7 +932,7 @@ class _HomeEmployeePageState extends State<HomeEmployeePage> with TickerProvider
         borderRadius : BorderRadius.circular(15)
       ),
       width: double.infinity,
-      height: 160,
+      height: 170,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -951,7 +951,7 @@ class _HomeEmployeePageState extends State<HomeEmployeePage> with TickerProvider
                 "0.0 °C":
                 "${clima.data[0].temp} °C",style:  TextStyle(fontFamily:AppConfig.quicksand,fontSize:35,color:Colors.white),),
               SizedBox(height:2),
-              Text(clima==null?"":"Sensación termica ${clima.data[0].appTemp} °C",style: _style,),
+              Text(clima==null?"":"Sensación termica ${clima.data[0].appTemp} °C",style: _style,), 
               SizedBox(height:5),
               Text(clima==null?"":"${clima.data[0].datetime}",style: _style,)
 
